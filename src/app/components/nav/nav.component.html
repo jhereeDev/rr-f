@@ -1,0 +1,22 @@
+<mat-sidenav-container class="sidenav-container" *ngIf="user">
+  <mat-sidenav-content>
+    <mat-toolbar color="white">
+      <div class="nav-container">
+        <div class="logo">
+          <a [routerLink]="['/home']">
+            <img src="assets/logo.png" alt="Logo" />
+          </a>
+        </div>
+        <div class="menu logout-button" [matMenuTriggerFor]="menu">
+          <span class="username">
+            {{ user.member_firstname + " " + user.member_lastname }}
+          </span>
+          <mat-icon class="button-arrow">keyboard_arrow_down</mat-icon>
+        </div>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="logout()">Logout</button>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
+  </mat-sidenav-content>
+</mat-sidenav-container>

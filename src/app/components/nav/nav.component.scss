@@ -1,0 +1,77 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #333; 
+  color: white; 
+}
+
+.container {
+  margin-top: 20px; 
+}
+
+
+.sidenav-container {
+  height: 10%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-drawer-container {
+  background-color: white;
+}
+
+.mat-toolbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0 10%;
+}
+
+.logo a {
+  display: flex;
+  align-self: center;
+}
+
+.menu {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  margin-right: 10px;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.menu:hover .username {
+  color: #5236AB;
+}
+
+.button-arrow {
+  font-size: 20px;
+}
+
+.logout-button {
+  cursor: pointer;
+}

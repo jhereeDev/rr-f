@@ -1,0 +1,230 @@
+<div class="container">
+  <button class="close-button" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="title-container">
+    <div class="title-left-container">
+      <h2 class="project-name">{{ data.user.rewards_entry.project_name }}</h2>
+    </div>
+    <div class="title-right-container">
+      <span class="member-name"
+        >{{ data.user.member_firstname }} {{ data.user.member_lastname }}</span
+      >
+      <span class="member-id">{{
+        data.user.rewards_entry.member_employee_id
+      }}</span>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Basic Information Section -->
+    <div class="info-section">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Rewards Points</span>
+          <p class="info-value gradient-number">
+            {{ data.user.rewards_criteria.points }}
+          </p>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Category</span>
+          <p class="info-value">
+            {{ data.user.rewards_criteria.category }}
+          </p>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Accomplishment</span>
+          <p class="info-value">
+            {{ data.user.rewards_criteria.accomplishment }}
+          </p>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">CBPS Group</span>
+          <p class="info-value">{{ data.user.rewards_entry.cbps_group }}</p>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Race Season</span>
+          <p class="info-value">{{ data.user.rewards_entry.race_season }}</p>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Date Accomplished</span>
+          <p class="info-value">
+            {{ data.user.rewards_entry.date_accomplished | date : "MMM d, y" }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Information Section -->
+    <div class="details-section">
+      <div class="detail-card">
+        <span class="detail-label">Short Description</span>
+        <div class="detail-content">
+          {{ data.user.rewards_entry.short_description }}
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <span class="detail-label">Created</span>
+        <div class="detail-content">
+          {{ data.user.rewards_entry.created_at | date : "MMM d, y h:mm a" }}
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <span class="detail-label">Notes</span>
+        <div class="detail-content">{{ data.user.rewards_entry.notes }}</div>
+      </div>
+
+      <!-- Manager Notes Section -->
+      <div class="detail-card" *ngIf="data.user.manager_notes">
+        <span class="detail-label">Manager Notes</span>
+        <div class="detail-content error-panel">
+          <span class="error-description"
+            ><b>Manager: </b>{{ data.user.manager_notes }}</span
+          >
+        </div>
+      </div>
+
+      <!-- Director Notes Section -->
+      <div class="detail-card" *ngIf="data.user.director_notes">
+        <span class="detail-label">Director Notes</span>
+        <div class="detail-content error-panel">
+          <span class="error-description"
+            ><b>Director: </b>{{ data.user.director_notes }}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Attachments Section -->
+    <div class="attachments-section">
+      <span class="section-label">Attachments</span>
+      <div class="attachments-wrapper">
+        <ng-container
+          *ngIf="
+            data.user.rewards_entry.attachments?.length > 0;
+            else noAttachment
+          "
+        >
+          <button
+            *ngFor="let attachment of data.user.rewards_entry.attachments"
+            class="attachment-button"
+            (click)="downloadAttachment(attachment)"
+          >
+            <mat-icon>attachment</mat-icon>
+            <span class="attachment-name">{{ attachment.filename }}</span>
+          </button>
+        </ng-container>
+        <ng-template #noAttachment>
+          <span class="no-attachment">No Attachment</span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons for Edit Access -->
+  <div class="action-buttons" *ngIf="data.access === 'edit'">
+    <button
+      mat-stroked-button
+      class="reject-button"
+      (click)="showRejectionCommentBox()"
+      [disabled]="isRejectLoading || showCommentBox || isApproveLoading"
+    >
+      Reject
+    </button>
+    <button
+      mat-raised-button
+      class="approve-button"
+      (click)="approve()"
+      [disabled]="isApproveLoading || showCommentBox"
+    >
+      <span *ngIf="!isApproveLoading">Approve</span>
+      <mat-spinner
+        *ngIf="isApproveLoading"
+        diameter="20"
+        color="accent"
+      ></mat-spinner>
+    </button>
+  </div>
+
+  <!-- Action Buttons for View Access with Resubmit Option -->
+  <div
+    class="action-buttons"
+    *ngIf="
+      data.access === 'view' &&
+      data.resubmit === true &&
+      approvalStatus === 'rejected'
+    "
+  >
+    <button
+      mat-stroked-button
+      class="reject-button"
+      (click)="showRejectionCommentBox()"
+      [disabled]="isRejectLoading || showCommentBox || isResubmitLoading"
+      *ngIf="
+        data.user.role_id !== 6 &&
+        data.user.rewards_entry.member_employee_id !== user.member_employee_id
+      "
+    >
+      Reject Entry
+    </button>
+    <a [routerLink]="['/edit-rewards', data.user.id]">
+      <button
+        mat-raised-button
+        class="approve-button"
+        (click)="resubmit()"
+        [disabled]="isResubmitLoading || showCommentBox || isRejectLoading"
+      >
+        <span *ngIf="!isResubmitLoading">Resubmit</span>
+        <mat-spinner
+          *ngIf="isResubmitLoading"
+          diameter="20"
+          color="accent"
+        ></mat-spinner>
+      </button>
+    </a>
+  </div>
+
+  <!-- Rejection Comment Box -->
+  <div *ngIf="showCommentBox" class="rejection-comment-box">
+    <mat-form-field appearance="outline">
+      <mat-label>Rejection Comment </mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="rejectionComment"
+        rows="4"
+        placeholder="Please provide a reason for rejection..."
+        required
+      ></textarea>
+      <mat-hint align="end" *ngIf="!rejectionComment.trim()">Required</mat-hint>
+    </mat-form-field>
+    <div class="button-container">
+      <button
+        mat-stroked-button
+        class="cancel-button"
+        (click)="cancelRejection()"
+        [disabled]="isRejectBoxLoading"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="warn"
+        class="reject-button"
+        (click)="rejectWithComment()"
+        [disabled]="isRejectBoxLoading || !rejectionComment.trim()"
+      >
+        <span *ngIf="!isRejectBoxLoading">Submit Rejection</span>
+        <mat-spinner
+          *ngIf="isRejectBoxLoading"
+          diameter="20"
+          color="accent"
+        ></mat-spinner>
+      </button>
+    </div>
+  </div>
+</div>

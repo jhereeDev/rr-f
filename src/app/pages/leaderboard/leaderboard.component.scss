@@ -1,0 +1,159 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 0;
+  width: 100%;
+}
+
+.title-container {
+  width: 90%;
+  max-width: 1400px;
+  padding: 10px;
+  margin: 0 auto;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.title-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.left-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  font-size: 25px;
+  font-weight: 500;
+  color: #5236ab;
+}
+
+.home-button {
+  background-color: #5236ab;
+  box-shadow: none;
+}
+
+.leaderboard-tabs {
+  width: 90%;
+  max-width: 1400px;
+  margin: 20px auto;
+}
+
+.table-responsive {
+  margin-top: 20px;
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th {
+    background-color: #f8f8f8;
+    color: #5236ab;
+    font-weight: 500;
+    padding: 16px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 2px solid #eee;
+  }
+
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background-color: #f8f8f8;
+  }
+
+  // Styling for the current user's row
+  tr.current-user-row td {
+    background-color: #f2effa; // Light blue background
+    font-weight: 500; // Slightly bolder text
+  }
+
+  // Make sure the hover doesn't override the current user highlighting
+  tr.current-user-row:hover td {
+    background-color: #d9e7ff; // Slightly darker blue on hover
+  }
+}
+
+// Pagination styles
+.paginator {
+  background-color: #f8f8f8;
+  border-top: 1px solid #eee;
+  padding: 4px 0;
+}
+
+::ng-deep .mat-paginator-container {
+  justify-content: center;
+  min-height: 48px;
+}
+
+::ng-deep .mat-paginator-page-size {
+  margin-right: 16px;
+}
+
+::ng-deep .mat-paginator-range-label {
+  margin: 0 16px;
+}
+
+::ng-deep .mat-paginator-navigation-previous,
+::ng-deep .mat-paginator-navigation-next {
+  color: #5236ab;
+}
+
+// Loading spinner styles
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .title-container {
+    width: 95%;
+  }
+
+  .leaderboard-tabs {
+    width: 95%;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .leaderboard-table {
+    th,
+    td {
+      padding: 12px;
+      font-size: 14px;
+    }
+  }
+
+  // Responsive styles for pagination
+  ::ng-deep .mat-paginator-page-size-label {
+    display: none;
+  }
+
+  ::ng-deep .mat-paginator-range-label {
+    margin: 0 8px;
+    font-size: 12px;
+  }
+}

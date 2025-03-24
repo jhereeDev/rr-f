@@ -1,0 +1,18 @@
+@mixin flex-container {
+  display: flex;
+  align-items: center;
+}
+
+@mixin card-base {
+  background-color: map-get($colors, background);
+  border-radius: 8px;
+  padding: map-get($spacing, sm);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@mixin button-base {
+  border-radius: 25px;
+  padding: 8px 24px;
+  min-width: 120px;
+  transition: all 0.3s ease;
+}

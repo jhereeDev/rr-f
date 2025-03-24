@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="title-container">
+    <div class="title-left-container">
+      <span class="project-name">{{ data.rewards_entry.project_name }}</span
+      ><br />
+      <div class="attachments">
+        <ng-container
+          *ngIf="
+            data.rewards_entry.attachments &&
+              data.rewards_entry.attachments.length > 0;
+            else noAttachment
+          "
+        >
+          <ng-container
+            *ngFor="let attachment of data.rewards_entry.attachments"
+          >
+            <button
+              class="attachment-button"
+              (click)="downloadAttachment(attachment)"
+            >
+              {{ attachment.filename }}
+            </button>
+          </ng-container>
+        </ng-container>
+        <ng-template #noAttachment>No Attachment</ng-template>
+      </div>
+    </div>
+    <div class="title-right-container">
+      <span class="member-name"
+        >{{ data.member_firstname }} {{ data.member_lastname }}</span
+      ><br />
+      <span class="member-id">{{ data.rewards_entry.member_employee_id }}</span>
+    </div>
+  </div>
+
+  <div class="grid-container">
+    <div class="grid-item">
+      <span class="grid-title">Rewards Points</span>
+      <p class="grid-description">{{ data.rewards_criteria.points }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">Race Season</span>
+      <p class="grid-description">{{ data.rewards_entry.race_season }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">Short Description</span>
+      <p class="grid-description">{{ data.rewards_entry.short_description }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">Accomplishment</span>
+      <p class="grid-description">{{ data.rewards_criteria.accomplishment }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">Date Accomplished</span>
+      <p class="grid-description">{{ data.rewards_entry.date_accomplished }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">CBPS Group</span>
+      <p class="grid-description">{{ data.rewards_entry.cbps_group }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">Created</span>
+      <p class="grid-description">{{ data.rewards_entry.created_at }}</p>
+    </div>
+    <div class="grid-item">
+      <span class="grid-title">Modified</span>
+      <p class="grid-description">{{ data.rewards_entry.updated_at }}</p>
+    </div>
+  </div>
+</div>

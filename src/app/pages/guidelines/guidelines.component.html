@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="title-container">
+    <div class="title-content">
+      <div class="left-content">
+        <img
+          src="assets/buttons/checklist.png"
+          alt="Reward Points and Guidelines"
+        />
+        <div class="text-container">
+          <span class="title">Reward Points and Guidelines</span><br />
+        </div>
+      </div>
+      <div class="right-content">
+        <mat-form-field appearance="fill">
+          <mat-label>Filter by Category</mat-label>
+          <mat-select
+            [(value)]="selectedCategory"
+            (selectionChange)="onCategoryChange($event.value)"
+          >
+            <mat-option value="all">All Categories</mat-option>
+            <mat-option
+              *ngFor="let group of groupedCriterias"
+              [value]="group.category"
+            >
+              {{ group.category }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Director Approval Filter -->
+        <mat-form-field appearance="fill">
+          <mat-label>Director Approval</mat-label>
+          <mat-select
+            [(ngModel)]="directorApprovalFilter"
+            (selectionChange)="onDirectorApprovalChange($event.value)"
+          >
+            <mat-option value="all">All</mat-option>
+            <mat-option value="yes">Required</mat-option>
+            <mat-option value="no">Not Required</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <a mat-fab extended [routerLink]="['/home']" class="home-button">
+          <mat-icon>home</mat-icon>
+          Home
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="guidelines-wrapper">
+    <ng-container *ngIf="isAllCategories()">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Accomplishment</th>
+            <th>Points</th>
+            <th>Guidelines</th>
+            <th>Requires Director Approval</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let criteria of getDisplayedCriterias()">
+            <td>{{ criteria.id }}</td>
+            <td>{{ criteria.category }}</td>
+            <td>{{ criteria.accomplishment }}</td>
+            <td>{{ criteria.points }}</td>
+            <td>{{ criteria.guidelines }}</td>
+            <td>{{ criteria.director_approval ? "Yes" : "No" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-container *ngIf="!isAllCategories()">
+      <ng-container *ngFor="let group of getDisplayedCriterias()">
+        <div class="category-section">
+          <h2 class="category-title">{{ group.category }}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Accomplishment</th>
+                <th>Points</th>
+                <th>Guidelines</th>
+                <th>Requires Director Approval</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let criteria of group.items">
+                <td>{{ criteria.id }}</td>
+                <td>{{ criteria.accomplishment }}</td>
+                <td>{{ criteria.points }}</td>
+                <td>{{ criteria.guidelines }}</td>
+                <td>{{ criteria.director_approval ? "Yes" : "No" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

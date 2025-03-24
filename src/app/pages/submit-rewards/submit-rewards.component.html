@@ -1,0 +1,281 @@
+<div class="container">
+  <div class="button-container">
+    <div class="button-content">
+      <div class="left-content">
+        <img src="assets/buttons/arrow.png" alt="Submit Rewards" />
+        <div class="text-container">
+          <h1 class="title">Submit Reward Points</h1>
+          <p class="description">
+            Specify your accomplishments' details and your manager will be
+            notified. Your points will be reflected in the Leaderboard
+            regardless if approved or not but the points will be categorized as
+            approved points or pending approval.
+          </p>
+          <p class="description-note">
+            NOTE: Rewards will not be granted if employment ends prior to
+            awarding period.
+          </p>
+        </div>
+      </div>
+      <div class="right-content">
+        <button mat-fab extended [routerLink]="['/home']" class="home-button">
+          <mat-icon>home</mat-icon>
+          Home
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="rewardForm" (ngSubmit)="submitRewardPoints()">
+    <div class="grid-container">
+      <mat-form-field appearance="fill">
+        <mat-label>Project Name</mat-label>
+        <input matInput formControlName="projectName" required />
+        <mat-hint>Enter the name of your project</mat-hint>
+        <mat-error
+          *ngIf="
+            rewardForm.get('projectName')?.invalid &&
+            (rewardForm.get('projectName')?.dirty ||
+              rewardForm.get('projectName')?.touched)
+          "
+        >
+          Project name is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Member</mat-label>
+        <input matInput formControlName="member" readonly />
+        <mat-hint
+          >You may only submit entry for yourself and not on behalf of
+          others.</mat-hint
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Employee Number</mat-label>
+        <input matInput formControlName="employeeNumber" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Accomplishment Category</mat-label>
+        <mat-select
+          formControlName="category"
+          (selectionChange)="onCategoryChange($event.value)"
+          required
+        >
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="
+            rewardForm.get('category')?.invalid &&
+            (rewardForm.get('category')?.dirty ||
+              rewardForm.get('category')?.touched)
+          "
+        >
+          Category is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Accomplishment</mat-label>
+        <mat-select formControlName="accomplishment" required>
+          <mat-option
+            *ngFor="let accomplishment of accomplishments"
+            [value]="accomplishment.id"
+          >
+            {{ accomplishment.accomplishment }}
+          </mat-option>
+        </mat-select>
+        <mat-hint
+          >See list guidelines
+          <a [routerLink]="['/guidelines']" target="_blank">here</a></mat-hint
+        >
+        <mat-error
+          *ngIf="
+            rewardForm.get('accomplishment')?.invalid &&
+            (rewardForm.get('accomplishment')?.dirty ||
+              rewardForm.get('accomplishment')?.touched)
+          "
+        >
+          Accomplishment is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Reward Points</mat-label>
+        <input matInput formControlName="rewardPoints" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Date Accomplished</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="dateAccomplished"
+          required
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error
+          *ngIf="
+            rewardForm.get('dateAccomplished')?.invalid &&
+            (rewardForm.get('dateAccomplished')?.dirty ||
+              rewardForm.get('dateAccomplished')?.touched)
+          "
+        >
+          Date is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Status</mat-label>
+        <input matInput formControlName="status" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Race Season</mat-label>
+        <input matInput formControlName="raceSeason" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>CBPS Group</mat-label>
+        <mat-select formControlName="cbpsGroup" required>
+          <mat-option *ngFor="let group of cbpsGroups" [value]="group">
+            {{ group }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="
+            rewardForm.get('cbpsGroup')?.invalid &&
+            (rewardForm.get('cbpsGroup')?.dirty ||
+              rewardForm.get('cbpsGroup')?.touched)
+          "
+        >
+          CBPS Group is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Manager's Name</mat-label>
+        <input matInput formControlName="managerName" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Director's Name</mat-label>
+        <input matInput formControlName="directorName" readonly />
+      </mat-form-field>
+    </div>
+
+    <div class="grid-container-bottom">
+      <mat-form-field appearance="fill">
+        <mat-label>Short Description</mat-label>
+        <textarea
+          matInput
+          formControlName="shortDescription"
+          required
+          cdkTextareaAutosize
+          [cdkAutosizeMinRows]="4"
+          [cdkAutosizeMaxRows]="5"
+          style="
+            overflow-y: auto;
+            resize: none;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+          "
+        ></textarea>
+        <mat-hint
+          >Provide short description specific to your accomplishment.</mat-hint
+        >
+        <mat-error
+          *ngIf="
+            rewardForm.get('shortDescription')?.invalid &&
+            (rewardForm.get('shortDescription')?.dirty ||
+              rewardForm.get('shortDescription')?.touched)
+          "
+        >
+          Short description is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Notes</mat-label>
+        <textarea matInput formControlName="notes" rows="4"></textarea>
+      </mat-form-field>
+
+      <div class="attachment-container">
+        <div *ngIf="chips.length > 0" class="attachment-chip-container">
+          <mat-chip-set>
+            <mat-chip *ngFor="let chip of chips" (removed)="removeChip(chip)">
+              {{ chip.label }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        <mat-label
+          >Attachments<span class="required-asterisk">*</span></mat-label
+        >
+        <p class="label-hint">
+          You can attach IMG, PDF, DOCX, EXCEL, and EMAIL files (EML, MSG)
+        </p>
+        <mat-error *ngIf="submitted && !hasAttachments">
+          At least one attachment is required
+        </mat-error>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          style="display: none"
+          multiple
+        />
+      </div>
+
+      <div class="chip-button-container">
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          (click)="triggerFileInput()"
+        >
+          <mat-icon>attach_file</mat-icon>
+          Attach Files
+        </button>
+      </div>
+    </div>
+
+    <div class="submit-button-container">
+      <button mat-button type="button" (click)="cancel()" [disabled]="loading">
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!isFormValid || loading"
+      >
+        <span *ngIf="!loading">Submit</span>
+        <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+      </button>
+    </div>
+  </form>
+
+  <div class="form-status" *ngIf="submitted && rewardForm.invalid">
+    <p class="error-message">Please fill out all required fields correctly.</p>
+    <ul>
+      <li *ngFor="let control of rewardForm.controls | keyvalue">
+        <ng-container
+          *ngIf="
+            control.value.invalid &&
+            (control.value.dirty || control.value.touched)
+          "
+        >
+          {{ control.key }} is invalid
+        </ng-container>
+      </li>
+    </ul>
+  </div>
+</div>

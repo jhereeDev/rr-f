@@ -1,0 +1,178 @@
+$container-width: 80%;
+$mobile-container-width: 90%;
+$mobile-breakpoint: 768px;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 25px;
+}
+
+.button-container {
+  width: $container-width;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #f8f8f8;
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.left-content {
+  display: flex;
+  align-items: center;
+}
+
+.text-container {
+  margin-left: 10px;
+}
+
+.title {
+  font-size: 25px;
+  font-weight: 400;
+  color: #5236ab;
+  margin-bottom: 5px;
+}
+
+.description {
+  font-size: 16px;
+  font-weight: 400;
+  color: #777777;
+}
+
+.description-note {
+  font-size: 14px;
+  font-weight: 600;
+  color: #777777;
+  margin-right: 1.5625rem;
+}
+
+.home-button {
+  background-color: #5236ab;
+  color: white;
+  box-shadow: none;
+}
+
+form {
+  width: $container-width;
+  margin: 0 auto;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  padding-top: 30px;
+}
+
+.grid-container-bottom {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+  width: 100%;
+  padding-top: 25px;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.cancel-button {
+  margin-right: 10px;
+  background-color: white;
+  color: #333333;
+}
+
+.submit-button {
+  background-color: #5236ab;
+  color: white;
+}
+
+.attachment-container {
+  grid-column: 1 / -1;
+}
+
+.attachment-chip-container {
+  border: 1px solid #777777;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.chip-button-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.label-hint {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #777777;
+}
+
+// Responsive adjustments
+@media (max-width: $mobile-breakpoint) {
+  .button-container,
+  form {
+    width: $mobile-container-width;
+  }
+
+  .grid-container,
+  .grid-container-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .button-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .right-content {
+    margin-top: 10px;
+    align-self: flex-end;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+}
+
+::ng-deep {
+  .mat-mdc-raised-button,
+  .mat-mdc-outlined-button,
+  .mat-mdc-button {
+    border-radius: 24px !important;
+  }
+
+  // Specific style for submit button to ensure correct width
+  .submit-button.mat-mdc-raised-button {
+    width: auto; // This allows the button to expand based on our custom styles
+  }
+}
+
+.required-asterisk {
+  color: red;
+  margin-left: 4px;
+}
+
+.attachment-container {
+  mat-error {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+}

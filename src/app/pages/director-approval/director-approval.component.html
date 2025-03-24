@@ -1,0 +1,64 @@
+<div class="container">
+  <div class="title-container">
+    <div class="title-content">
+      <div class="left-content">
+        <img src="assets/buttons/clock.png" alt="Pending Director Approval" />
+        <div class="text-container">
+          <span class="title">Pending Director Approval</span><br />
+        </div>
+      </div>
+      <div class="right-content">
+        <a mat-fab extended [routerLink]="['/home']" class="home-button">
+          <mat-icon>home</mat-icon>
+          Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading; else directorApproval">
+    <div class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-container>
+
+  <ng-template #directorApproval>
+    <div class="buttons-container">
+      <ng-container *ngIf="users.length > 0; else noDataTemplate">
+        <ng-container *ngFor="let user of users">
+          <div class="button-container">
+            <a (click)="openUserModal(user)">
+              <div class="button-content">
+                <div class="left-content">
+                  <div class="text-container">
+                    <span class="title"
+                      >{{ user.member_firstname }}
+                      {{ user.member_lastname }}</span
+                    ><br />
+                    <span class="description">{{
+                      user.rewards_criteria.accomplishment
+                    }}</span
+                    ><br />
+                    <span class="gradient-number">{{
+                      user.rewards_criteria.points
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </ng-container>
+      </ng-container>
+      <ng-template #noDataTemplate>
+        <div class="no-data">
+          <img
+            src="assets/no-data.png"
+            alt="No data available"
+            class="empty-img"
+          />
+          <p>No pending director approvals available.</p>
+        </div>
+      </ng-template>
+    </div>
+  </ng-template>
+</div>

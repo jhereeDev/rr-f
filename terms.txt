@@ -1,0 +1,31 @@
+ 
+INTRODUCTION
+This privacy information notice (“Privacy Information Notice”) informs CGI members (“You” and “Your”) on how and why Your Personal Data is collected & processed as part of the ____________________  organized by ______________________ (“CGI”).
+WHICH PERSONAL DATA DOES CGI PROCESS & FOR WHAT PURPOSES?
+The R&R Tool (Web Version) is a comprehensive Angular-based application designed to facilitate employee recognition and reward management.To achieve the purpose, CGI will process Your following Personal Data:
+a.	Username (cn)
+b.	First Name (givenName)
+c.	Last Name (sn)
+d.	Job Title (title)
+e.	Joined Department (memberOf)
+f.	Department (department)
+g.	CGI email (userPrincipalName)
+h.	Manager LDAP username credential (manager)
+i.	CGI Member ID (extensionAttribute2)
+
+Purpose of Processing: Your Personal Data is collected & processed to provide an intuitive interface for submitting reward points, managing approvals, and viewing leaderboards.
+WHAT IS THE LEGAL BASIS THAT CGI RELIES UPON FOR PROCESSING YOUR PERSONAL DATA?
+CGI relies on your consent to process your Personal Data and publish it internally for the purposes of this event.
+Further, CGI also relies on your consent for publishing your Personal Data externally on the platforms mentioned above.
+HOW AND WITH WHOM ARE YOUR PERSONAL DATA SHARED?
+Your personal data as explained above in Section 2, will be processed by the _______________ to create a tool that will facilitate employee recognition and reward management. 
+DATA SECURITY
+CGI applies risk-appropriate technical and organizational security measures to protect Your data from unauthorized access, from unauthorized modification, from damage and loss, and from misuse. Where contracted third-party suppliers provide services to CGI that involve processing personal data, they are required by the terms of the contract to meet or exceed CGI’s own security standards. 
+HOW LONG DOES CGI RETAIN YOUR PERSONAL DATA?
+CGI is committed to keep Your Personal Data for no longer than what is strictly necessary regarding the Purpose for which Your Personal Data is collected and processed. Your data would be deleted/archived as per CGI’s Records Retention Policy and Records Retention Procedures.
+WHAT ARE YOUR RIGHTS IN RELATION TO YOUR PERSONAL DATA?
+Subject to applicable law, You have the right to request access to, rectification, erasure, and portability of Your personal data. You may also exercise Your right to request restriction of and /or object to processing of Your personal data. CGI will take all reasonable measures to address Your request to exercise any of these rights.
+When addressing such request, You should also make sure that You identify Yourselves expressly by providing copy of a valid CGI member ID card and Government issued ID card. CGI will not be able to address any requests made without due identification.
+Subject to the above conditions, CGI will endeavor to address Your request in due course and no later than within a month from the receipt of Your request.
+If You wish to exercise these rights and/or obtain all relevant information in relation to the processing of Your Personal Data, please contact the ______________ team at _________________.  You can freely withdraw Your consent at any time by using the contact details mentioned above. In that case, all processing operations that were based on Your consent and took place before the withdrawal of consent remain valid. Alternatively, for grievances on such matters, You may also write to the Data Privacy officer at dpo.ph@cgi.com.
+I give my consent to  

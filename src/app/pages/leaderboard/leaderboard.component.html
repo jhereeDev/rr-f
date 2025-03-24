@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="title-container">
+    <div class="title-content">
+      <div class="left-content">
+        <img src="assets/buttons/trophy.png" alt="Leaderboards" />
+        <div class="text-container">
+          <span class="title">Leaderboards</span>
+        </div>
+      </div>
+      <div class="right-content">
+        <a mat-fab extended [routerLink]="['/home']" class="home-button">
+          <mat-icon>home</mat-icon>
+          Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading; else leaderboardContent">
+    <div class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-container>
+
+  <ng-template #leaderboardContent>
+    <div class="leaderboard-tabs">
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+        <!-- Managers Leaderboard Tab -->
+        <mat-tab
+          label="Managers Leaderboard"
+          *ngIf="userRole === 4 || userRole === 5"
+        >
+          <div class="table-responsive">
+            <table
+              mat-table
+              [dataSource]="managerPagedData"
+              class="leaderboard-table"
+            >
+              <ng-container *ngFor="let column of columns; let i = index">
+                <ng-container [matColumnDef]="column">
+                  <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+                  <td mat-cell *matCellDef="let reward">
+                    {{ getColumnValue(reward, i) }}
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns"></tr>
+            </table>
+
+            <!-- Pagination controls for Managers -->
+            <mat-paginator
+              [length]="managerTotalItems"
+              [pageSize]="managerPageSize"
+              [pageSizeOptions]="[5, 10, 25]"
+              [pageIndex]="managerPageIndex"
+              (page)="onManagerPageChange($event)"
+              *ngIf="managerTotalItems > 0"
+              class="paginator"
+              aria-label="Select page of managers"
+            ></mat-paginator>
+          </div>
+        </mat-tab>
+
+        <!-- Partners Leaderboard Tab -->
+        <mat-tab label="Partners Leaderboard">
+          <div class="table-responsive">
+            <table
+              mat-table
+              [dataSource]="memberPagedData"
+              class="leaderboard-table"
+            >
+              <ng-container *ngFor="let column of columns; let i = index">
+                <ng-container [matColumnDef]="column">
+                  <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+                  <td mat-cell *matCellDef="let reward">
+                    {{ getColumnValue(reward, i) }}
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns"></tr>
+            </table>
+
+            <!-- Pagination controls for Members -->
+            <mat-paginator
+              [length]="memberTotalItems"
+              [pageSize]="memberPageSize"
+              [pageSizeOptions]="[5, 10, 25]"
+              [pageIndex]="memberPageIndex"
+              (page)="onMemberPageChange($event)"
+              *ngIf="memberTotalItems > 0"
+              class="paginator"
+              aria-label="Select page of partners"
+            ></mat-paginator>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </ng-template>
+</div>

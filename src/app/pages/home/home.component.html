@@ -1,0 +1,111 @@
+<div class="container">
+  <ng-container *ngIf="isLoading; else homeContent">
+    <div class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-container>
+
+  <ng-template #homeContent>
+    <div class="show-instructions-button">
+      <a
+        mat-icon-button
+        (click)="showPopupAgain()"
+        matTooltip="Click to view instructions"
+      >
+        <mat-icon>assignment</mat-icon>
+      </a>
+    </div>
+    <!-- Instruction Popup -->
+    <div class="overlay" *ngIf="showPopup"></div>
+    <div class="instruction-popup" *ngIf="showPopup">
+      <div class="popup-content">
+        <h2 class="popup-header">Welcome to the Rewards Management System!</h2>
+        <div class="popup-body">
+          <p>Here’s a quick guide to get you started:</p>
+          <ul>
+            <li *ngIf="userRole === 6 || userRole === 5">
+              <a [routerLink]="['/my-reward-points']" (click)="closePopup()">
+                <strong>My Rewards Point</strong> </a
+              ><br />
+              View your approved, pending, and rejected reward points.
+            </li>
+            <li *ngIf="userRole === 6 || userRole === 5">
+              <a [routerLink]="['/submit-rewards']" (click)="closePopup()">
+                <strong>Submit Reward Point</strong> </a
+              ><br />
+              Submit your reward points for approval.
+            </li>
+            <li *ngIf="userRole === 5">
+              <a [routerLink]="['/manager-approval']" (click)="closePopup()">
+                <strong>Pending Manager Approval</strong> </a
+              ><br />
+              Review and approve pending reward points (for managers) that
+              members submitted.
+            </li>
+            <li *ngIf="userRole === 5">
+              <a [routerLink]="['/declined-entries']" (click)="closePopup()">
+                <strong>Entries Declined by Director</strong> </a
+              ><br />
+              Review entries declined by Director. Choose which points to
+              resubmit or return to member for review.
+            </li>
+            <li *ngIf="userRole === 4">
+              <a [routerLink]="['/director-approval']" (click)="closePopup()">
+                <strong>Pending Director Approval</strong> </a
+              ><br />
+              Review and approve pending reward points (for directors) that
+              managers submitted.
+            </li>
+            <li>
+              <a [routerLink]="['/leaderboard']" (click)="closePopup()">
+                <strong>Leaderboard</strong> </a
+              ><br />
+              Check the top performers and see how you rank.
+            </li>
+            <li *ngIf="userRole === 6 || userRole === 5">
+              <a [routerLink]="['/guidelines']" (click)="closePopup()">
+                <strong>Reward Points Criteria</strong> </a
+              ><br />
+              Understand the guidelines and points for various accomplishments.
+            </li>
+          </ul>
+
+          <p *ngIf="!fromButton">
+            To view this guide again, click the
+            <mat-icon class="sentence-icon">assignment</mat-icon> icon located
+            at the upper right corner of this page.
+          </p>
+        </div>
+        <div class="popup-footer">
+          <mat-checkbox *ngIf="!fromButton" [(ngModel)]="dontShowAgain"
+            >Don't show again at login</mat-checkbox
+          >
+          <a mat-fab extended class="button" (click)="closePopup()">
+            <mat-icon>close</mat-icon>
+            Close
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="grid-container">
+      <ng-container *ngFor="let button of buttons">
+        <div class="button-container" *ngIf="showButton(button)">
+          <!-- <div class="button-container"> -->
+          <a [routerLink]="button.url">
+            <div class="button-content">
+              <div class="left-content">
+                <img src="{{ button.icon }}" alt="{{ button.description }}" />
+                <div class="text-container">
+                  <span class="title">{{ button.title }}</span
+                  ><br />
+                  <span class="description">{{ button.description }}</span>
+                </div>
+              </div>
+              <mat-icon class="button-arrow">keyboard_arrow_right</mat-icon>
+            </div>
+          </a>
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>

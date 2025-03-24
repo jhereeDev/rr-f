@@ -1,0 +1,190 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  margin: 0 10%;
+}
+
+.button-container {
+  padding: 10px;
+  margin: 10px 10px;
+  background-color: #f8f8f8;
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.left-content {
+  display: flex;
+  align-items: center;
+}
+
+.text-container {
+  margin-left: 10px;
+}
+
+.title {
+  font-size: 25px;
+  font-weight: 400;
+  color: #5236ab;
+}
+
+.description {
+  font-size: 20px;
+  font-weight: 400;
+  color: #777777;
+}
+
+.icon-container img {
+  max-height: 100%;
+}
+
+.button-arrow {
+  color: #5236ab;
+  font-size: 50px;
+  height: 50px;
+  width: 50px;
+  font-weight: lighter;
+}
+
+.button-container a {
+  text-decoration: none;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.instruction-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  z-index: 1000;
+  width: 600px;
+}
+
+.popup-content h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.popup-content p {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.popup-content mat-checkbox {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.popup-content button {
+  display: block;
+  margin-left: auto;
+  background-color: #1976d2;
+  color: white;
+}
+
+.button {
+  margin-left: auto;
+  background-color: #5236ab;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+.popup-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.popup-header {
+  color: #5236ab;
+  font-weight: 700;
+  font-size: 25px !important;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.instructions-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  width: 80%;
+  max-width: 400px;
+}
+
+.show-instructions-button {
+  position: absolute;
+  top: 9%;
+  right: 10%;
+  color: #5236ab;
+  z-index: 10000;
+}
+
+.sentence-icon {
+  color: #5236ab;
+  font-size: 26px;
+  margin-top: 20px;
+}
+
+.popup-content {
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 15px;
+
+      a {
+        text-decoration: none;
+        color: #5236ab;
+
+        &:hover {
+          text-decoration: underline;
+          color: #3a287f;
+        }
+
+        strong {
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

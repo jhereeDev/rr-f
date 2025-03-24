@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="grid-container">
+    <img src="assets/logo.png" alt="Logo" class="logo" />
+
+    <div class="text-container">
+      <h2 class="welcome-title">Welcome to CBPS R&R Tool</h2>
+      <span class="welcome-description"></span>
+    </div>
+
+    <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
+      <p>
+        <mat-form-field appearance="fill" class="textbox">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="fill" class="textbox">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
+      </p>
+
+      <mat-checkbox
+        formControlName="termsAccepted"
+        (change)="onTermsChange($event)"
+        color="primary"
+      >
+        I accept the
+        <a href="javascript:void(0)" (click)="openTermsDialog()"
+          >Privacy notice and consent</a
+        >
+      </mat-checkbox>
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="login-button"
+        [disabled]="!loginForm.get('termsAccepted')?.value"
+      >
+        Login
+      </button>
+
+      <mat-error *ngIf="loginError" class="login-error">
+        {{ loginError }}
+      </mat-error>
+    </form>
+
+    <span class="copyright">© CGI Inc. All rights reserved.</span>
+  </div>
+</div>

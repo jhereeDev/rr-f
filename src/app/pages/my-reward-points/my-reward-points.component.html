@@ -1,0 +1,273 @@
+<div class="container">
+  <div class="title-container">
+    <div class="title-content">
+      <div class="left-content">
+        <img src="assets/buttons/trophy.png" alt="Pending Managers Approval" />
+        <div class="text-container">
+          <span class="title">My Reward Points</span><br />
+        </div>
+      </div>
+      <div class="right-content">
+        <a mat-fab extended [routerLink]="['/home']" class="home-button">
+          <mat-icon class="home-icon">home</mat-icon>
+          <span>Home</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading; else rewardPointsContent">
+    <div class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-container>
+
+  <ng-template #rewardPointsContent>
+    <!-- Approved Entries -->
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Approved Entries </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="buttons-container">
+          <ng-container *ngIf="approvedRewards.length > 0; else noApprovedData">
+            <div
+              class="button-container"
+              *ngFor="let reward of approvedPagedData"
+            >
+              <a (click)="openUserModal(reward)">
+                <div class="button-content">
+                  <div class="left-content">
+                    <div class="text-container">
+                      <span class="title">{{
+                        reward.rewards_entry.project_name
+                      }}</span
+                      ><br />
+                      <span class="description">{{
+                        reward.rewards_entry.short_description
+                      }}</span
+                      ><br />
+                      <span class="gradient-number">{{
+                        reward.rewards_criteria.points
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Pagination for Approved Entries -->
+            <mat-paginator
+              *ngIf="approvedTotalItems > 0"
+              [length]="approvedTotalItems"
+              [pageSize]="approvedPageSize"
+              [pageSizeOptions]="[2, 3, 4, 5, 6]"
+              [pageIndex]="approvedPageIndex"
+              (page)="onApprovedPageChange($event)"
+              class="paginator"
+              aria-label="Select page of approved entries"
+            ></mat-paginator>
+          </ng-container>
+          <ng-template #noApprovedData>
+            <div class="no-data">
+              <img
+                src="assets\no-data.png"
+                alt="No data available"
+                class="empty-img"
+              />
+              <p>No approved entries available.</p>
+            </div>
+          </ng-template>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Pending Manager Approval -->
+      <mat-expansion-panel *ngIf="userRole === 6 || userRole === 1">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Pending Manager Approval </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="buttons-container">
+          <ng-container
+            *ngIf="pendingManagerRewards.length > 0; else noManagerData"
+          >
+            <div
+              class="button-container"
+              *ngFor="let reward of pendingManagerPagedData"
+            >
+              <a (click)="openUserModal(reward)">
+                <div class="button-content">
+                  <div class="left-content">
+                    <div class="text-container">
+                      <span class="title">{{
+                        reward.rewards_entry.project_name
+                      }}</span
+                      ><br />
+                      <span class="description">{{
+                        reward.rewards_entry.short_description
+                      }}</span
+                      ><br />
+                      <span class="gradient-number">{{
+                        reward.rewards_criteria.points
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Pagination for Pending Manager Approval -->
+            <mat-paginator
+              *ngIf="pendingManagerTotalItems > 0"
+              [length]="pendingManagerTotalItems"
+              [pageSize]="pendingManagerPageSize"
+              [pageSizeOptions]="[2, 3, 4, 5, 6]"
+              [pageIndex]="pendingManagerPageIndex"
+              (page)="onPendingManagerPageChange($event)"
+              class="paginator"
+              aria-label="Select page of pending manager approvals"
+            ></mat-paginator>
+          </ng-container>
+          <ng-template #noManagerData>
+            <div class="no-data">
+              <img
+                src="assets\no-data.png"
+                alt="No data available"
+                class="empty-img"
+              />
+              <p>No pending manager approvals available.</p>
+            </div>
+          </ng-template>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Pending Director Approval -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Pending Director Approval </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="buttons-container">
+          <ng-container
+            *ngIf="pendingDirectorRewards.length > 0; else noDirectorData"
+          >
+            <div
+              class="button-container"
+              *ngFor="let reward of pendingDirectorPagedData"
+            >
+              <a (click)="openUserModal(reward)">
+                <div class="button-content">
+                  <div class="left-content">
+                    <div class="text-container">
+                      <span class="title">{{
+                        reward.rewards_entry.project_name
+                      }}</span
+                      ><br />
+                      <span class="description">{{
+                        reward.rewards_entry.short_description
+                      }}</span
+                      ><br />
+                      <span class="gradient-number">{{
+                        reward.rewards_criteria.points
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Pagination for Pending Director Approval -->
+            <mat-paginator
+              *ngIf="pendingDirectorTotalItems > 0"
+              [length]="pendingDirectorTotalItems"
+              [pageSize]="pendingDirectorPageSize"
+              [pageSizeOptions]="[2, 3, 4, 5, 6]"
+              [pageIndex]="pendingDirectorPageIndex"
+              (page)="onPendingDirectorPageChange($event)"
+              class="paginator"
+              aria-label="Select page of pending director approvals"
+            ></mat-paginator>
+          </ng-container>
+          <ng-template #noDirectorData>
+            <div class="no-data">
+              <img
+                src="assets\no-data.png"
+                alt="No data available"
+                class="empty-img"
+              />
+              <p>No pending director approvals available.</p>
+            </div>
+          </ng-template>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Rejected Reward Points -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Rejected Entries </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="buttons-container">
+          <ng-container *ngIf="rejectedRewards.length > 0; else noRejectedData">
+            <div
+              class="button-container"
+              *ngFor="let reward of rejectedPagedData"
+            >
+              <a (click)="openUserModal(reward)">
+                <div class="button-content">
+                  <div class="left-content">
+                    <div class="text-container">
+                      <span class="title">{{
+                        reward.rewards_entry.project_name
+                      }}</span
+                      ><br />
+                      <span class="description">{{
+                        reward.rewards_entry.short_description
+                      }}</span
+                      ><br />
+                      <span class="gradient-number">{{
+                        reward.rewards_criteria.points
+                      }}</span>
+                      <div class="error-panel">
+                        <div *ngIf="userRole === 1 || userRole === 6">
+                          <span class="error-description">
+                            <b>Manager Note: </b>{{ reward.manager_notes }}
+                          </span>
+                        </div>
+                        <div *ngIf="userRole === 4 || userRole === 5">
+                          <span class="error-description">
+                            <b>Director Note: </b>{{ reward.director_notes }}
+                          </span>
+                        </div>
+                        <small class="expand-hint">Hover to expand</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Pagination for Rejected Entries -->
+            <mat-paginator
+              *ngIf="rejectedTotalItems > 0"
+              [length]="rejectedTotalItems"
+              [pageSize]="rejectedPageSize"
+              [pageSizeOptions]="[2, 3, 4, 5, 6]"
+              [pageIndex]="rejectedPageIndex"
+              (page)="onRejectedPageChange($event)"
+              class="paginator"
+              aria-label="Select page of rejected entries"
+            ></mat-paginator>
+          </ng-container>
+          <ng-template #noRejectedData>
+            <div class="no-data">
+              <img
+                src="assets\no-data.png"
+                alt="No data available"
+                class="empty-img"
+              />
+              <p>No rejected entries available.</p>
+            </div>
+          </ng-template>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+</div>
