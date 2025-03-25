@@ -57,6 +57,7 @@ export class SubmitRewardsComponent implements OnInit {
   selectedFiles: File[] = [];
   submitted = false;
   loading = false;
+  today = new Date();
 
   constructor(
     private fb: FormBuilder,
