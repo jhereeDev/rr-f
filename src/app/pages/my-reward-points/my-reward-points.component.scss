@@ -114,6 +114,7 @@ table {
     border-radius: 8px;
     border: 1px solid #e0e0e0;
     box-sizing: border-box;
+    isolation: isolate;
 
     &:after {
       content: "";
@@ -124,6 +125,11 @@ table {
     &:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    &:has(.error-panel:hover) {
+      overflow: visible;
+      z-index: 10;
     }
 
     a {
@@ -257,15 +263,16 @@ mat-accordion {
   width: 100%;
   max-height: 80px;
   overflow: hidden;
-  transition: max-height 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   &:hover,
   &:focus-within {
-    max-height: 500px;
-    overflow: visible;
-    z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   &::after {
@@ -295,6 +302,36 @@ mat-accordion {
   word-wrap: break-word;
   white-space: normal !important;
   padding: 4px 0;
+}
+
+.error-description.truncated {
+  position: relative;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.error-description.truncated:hover {
+  white-space: normal;
+  overflow: visible;
+}
+
+.expand-hint {
+  display: inline;
+  margin-left: 5px;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.error-description:hover .expand-hint {
+  display: none;
+}
+
+/* Add this to increase spacing for truncated text */
+.error-panel > div {
+  margin-bottom: 8px;
 }
 
 .text-wrap {
@@ -674,5 +711,36 @@ mat-expansion-panel .buttons-container {
   ::ng-deep .mat-paginator-range-label {
     margin: 0 8px;
     font-size: 12px;
+  }
+}
+
+.note-container {
+  position: relative;
+  overflow: hidden;
+
+  &.expandable:hover {
+    .note-text,
+    .ellipsis,
+    .expand-hint {
+      display: none;
+    }
+
+    .full-text {
+      display: block;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+  }
+
+  .full-text {
+    display: none;
+  }
+
+  .expand-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
   }
 }

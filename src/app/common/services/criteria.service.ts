@@ -23,6 +23,17 @@ export class CriteriaService {
       );
   }
 
+  getCriteriasGuidelines(): Observable<any> {
+    return this.http
+      .get(`${this.apiUrl}/criterias/guidelines`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => response),
+        catchError(this.handleError)
+      );
+  }
+
   getCriteria(id: number): Observable<any> {
     return this.http
       .get(`${this.apiUrl}/criterias/${id}`, {

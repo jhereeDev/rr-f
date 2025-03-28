@@ -102,13 +102,10 @@ tr:nth-child(even) {
 }
 
 .guidelines-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
+  display: block;
+  width: 78%;
   margin: 0 auto;
   overflow-x: auto;
-  width: 78%;
 }
 
 .category-section {
@@ -123,12 +120,6 @@ tr:nth-child(even) {
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #5236ab;
-}
-
-.guidelines-wrapper {
-  width: 78%;
-  margin: 30px auto;
-  overflow-x: auto;
 }
 
 .right-content {
@@ -175,4 +166,18 @@ mat-form-field {
 
 .filtered-no {
   background-color: rgba(244, 67, 54, 0.1);
+}
+
+// Add this to match the leaderboard style
+.leaderboard-tabs {
+  width: 78%;
+  margin: 20px auto;
+}
+
+::ng-deep .leaderboard-tabs .mat-mdc-tab-header {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+::ng-deep .leaderboard-tabs .mat-mdc-tab-label-container {
+  margin-bottom: 15px;
 }

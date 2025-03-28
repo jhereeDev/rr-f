@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { AuthService } from 'src/app/common/services/auth.service';
 import { CriteriaService } from 'src/app/common/services/criteria.service';
+import { UserData } from 'src/app/models/user.model';
 
 interface CriteriaGroup {
   category: string;
@@ -17,10 +19,15 @@ export class GuidelinesComponent implements OnInit {
   groupedCriterias: CriteriaGroup[] = [];
   selectedCategory: string = 'all';
   directorApprovalFilter: string = 'all';
+  user: UserData | null = null;
+  userRole: any | null = null;
+  title: any | null = null;
+  activeTab: string = 'delivery';
 
   constructor(
     private sanitizer: DomSanitizer,
-    private criteriaService: CriteriaService
+    private criteriaService: CriteriaService,
+    private auth: AuthService
   ) {}
 
   sanitizeHtml(content: string): SafeHtml {
@@ -28,14 +35,29 @@ export class GuidelinesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCriterias();
+    this.auth.validateToken().subscribe((res) => {
+      if (!(res && res.success)) {
+        return;
+      }
+      const user = res.user as UserData;
+      this.user = user;
+      this.userRole = this.user?.role_id;
+      this.title = this.user?.member_title.toLowerCase();
+      this.loadCriterias();
+    });
   }
 
   loadCriterias(): void {
-    this.criteriaService.getCriterias().subscribe({
+    this.criteriaService.getCriteriasGuidelines().subscribe({
       next: (res) => {
-        this.criterias = res.data.sort((a: any, b: any) => a.id - b.id);
-        this.groupCriterias();
+        if (this.userRole === 5) {
+          console.log(res.data);
+          this.criterias = res.data.sort((a: any, b: any) => a.id - b.id);
+          this.groupCriterias();
+        } else {
+          this.criterias = res.data.sort((a: any, b: any) => a.id - b.id);
+          this.groupCriterias();
+        }
       },
       error: (error) => {
         console.error('Error loading criteria:', error);
@@ -62,6 +84,22 @@ export class GuidelinesComponent implements OnInit {
   onDirectorApprovalChange(value: string): void {
     // Set the filter value directly without toggling
     this.directorApprovalFilter = value;
+  }
+
+  onTabChange(tab: string): void {
+    this.activeTab = tab;
+  }
+
+  shouldShowTabs(): boolean {
+    return this.userRole === 5;
+  }
+
+  isManagerDelivery(): boolean {
+    return this.title === 'manager consulting delivery';
+  }
+
+  isManagerExpert(): boolean {
+    return this.title === 'manager consulting expert';
   }
 
   filterCriterias(items: any[]): any[] {
@@ -99,23 +137,42 @@ export class GuidelinesComponent implements OnInit {
   }
 
   getDisplayedCriterias(): any[] | CriteriaGroup[] {
+    // First filter by tab if user is a manager
+    let criteriaToFilter = this.criterias;
+
+    if (this.userRole === 5) {
+      if (this.activeTab === 'delivery') {
+        criteriaToFilter = this.criterias.filter(
+          (item) => item.type === 'DELIVERY' || item.type === 'BOTH'
+        );
+      } else if (this.activeTab === 'expert') {
+        criteriaToFilter = this.criterias.filter(
+          (item) => item.type === 'EXPERTS' || item.type === 'BOTH'
+        );
+      }
+    }
+
+    // Then continue with existing filtering logic
     if (this.selectedCategory === 'all') {
-      const result = this.filterCriterias(this.criterias);
+      const result = this.filterCriterias(criteriaToFilter);
       return result;
     }
 
-    // For grouped criterias, apply filter to each group's items
+    // For grouped criterias, create groups from the filtered data
+    const categories = [
+      ...new Set(
+        criteriaToFilter
+          .filter((item) => item.category === this.selectedCategory)
+          .map((item) => item.category)
+      ),
+    ];
 
-    const filteredGroups = this.groupedCriterias
-      .filter((group) => group.category === this.selectedCategory)
-      .map((group) => {
-        const filteredItems = this.filterCriterias(group.items);
-
-        return {
-          ...group,
-          items: filteredItems,
-        };
-      });
+    const filteredGroups = categories.map((category) => ({
+      category,
+      items: this.filterCriterias(
+        criteriaToFilter.filter((item) => item.category === category)
+      ),
+    }));
 
     return filteredGroups;
   }

@@ -226,17 +226,97 @@
                         reward.rewards_criteria.points
                       }}</span>
                       <div class="error-panel">
-                        <div *ngIf="userRole === 1 || userRole === 6">
-                          <span class="error-description">
-                            <b>Manager Note: </b>{{ reward.manager_notes }}
-                          </span>
+                        <div
+                          *ngIf="reward.manager_approval_status === 'rejected'"
+                        >
+                          <div
+                            class="note-container"
+                            [class.expandable]="
+                              reward.manager_notes?.split(' ').length > 6
+                            "
+                          >
+                            <span class="error-description">
+                              <b>Manager Note: </b>
+                              <span class="note-text">{{
+                                reward.manager_notes?.split(" ").length > 6
+                                  ? (reward.manager_notes
+                                    | slice
+                                      : 0
+                                      : (reward.manager_notes
+                                          | wordLimit : 6 : true))
+                                  : reward.manager_notes
+                              }}</span>
+                              <span
+                                class="ellipsis"
+                                *ngIf="
+                                  reward.manager_notes?.split(' ').length > 6
+                                "
+                                >...</span
+                              >
+                            </span>
+                            <span
+                              class="expand-hint"
+                              *ngIf="
+                                reward.manager_notes?.split(' ').length > 6
+                              "
+                              >Hover to expand</span
+                            >
+                            <span
+                              class="full-text"
+                              *ngIf="
+                                reward.manager_notes?.split(' ').length > 6
+                              "
+                              >{{ reward.manager_notes }}</span
+                            >
+                          </div>
                         </div>
-                        <div *ngIf="userRole === 4 || userRole === 5">
-                          <span class="error-description">
-                            <b>Director Note: </b>{{ reward.director_notes }}
-                          </span>
+                        <div
+                          *ngIf="
+                            reward.director_approval_status === 'rejected' &&
+                            reward.manager_approval_status !== 'rejected'
+                          "
+                        >
+                          <div
+                            class="note-container"
+                            [class.expandable]="
+                              reward.director_notes?.split(' ').length > 6
+                            "
+                          >
+                            <span class="error-description">
+                              <b>Director Note: </b>
+                              <span class="note-text">{{
+                                reward.director_notes?.split(" ").length > 6
+                                  ? (reward.director_notes
+                                    | slice
+                                      : 0
+                                      : (reward.director_notes
+                                          | wordLimit : 6 : true))
+                                  : reward.director_notes
+                              }}</span>
+                              <span
+                                class="ellipsis"
+                                *ngIf="
+                                  reward.director_notes?.split(' ').length > 6
+                                "
+                                >...</span
+                              >
+                            </span>
+                            <span
+                              class="expand-hint"
+                              *ngIf="
+                                reward.director_notes?.split(' ').length > 6
+                              "
+                              >Hover to expand</span
+                            >
+                            <span
+                              class="full-text"
+                              *ngIf="
+                                reward.director_notes?.split(' ').length > 6
+                              "
+                              >{{ reward.director_notes }}</span
+                            >
+                          </div>
                         </div>
-                        <small class="expand-hint">Hover to expand</small>
                       </div>
                     </div>
                   </div>
