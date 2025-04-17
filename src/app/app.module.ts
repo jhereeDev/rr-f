@@ -38,6 +38,7 @@ import { EditRewardsComponent } from './pages/edit-rewards/edit-rewards.componen
 import { GuidelinesComponent } from './pages/guidelines/guidelines.component';
 import { TermsDialogComponent } from './components/terms-dialog/terms-dialog.component';
 import { WordLimitPipe } from './common/pipes/word-limit.pipe';
+import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { WordLimitPipe } from './common/pipes/word-limit.pipe';
     GuidelinesComponent,
     TermsDialogComponent,
     WordLimitPipe,
+    AdminHomeComponent,
   ],
   imports: [
     BrowserModule,

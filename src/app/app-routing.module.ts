@@ -11,6 +11,7 @@ import { MyRewardPointsComponent } from './pages/my-reward-points/my-reward-poin
 import { DeclinedEntriesComponent } from './pages/declined-entries/declined-entries.component';
 import { EditRewardsComponent } from './pages/edit-rewards/edit-rewards.component';
 import { GuidelinesComponent } from './pages/guidelines/guidelines.component';
+import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -65,6 +66,12 @@ const routes: Routes = [
     component: GuidelinesComponent,
     canActivate: [AuthGuard],
     data: { roles: [1, 5, 6] }, // Assuming roles 1 (admin) and 5 (manager), and 6 (member) can view reward point guidelines
+  },
+  {
+    path: 'admin-home',
+    component: AdminHomeComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [1, 5, 6] }, // Assuming roles 1 (admin), 5 (manager), and 6 (member) can view rewards history
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' },

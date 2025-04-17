@@ -1,0 +1,158 @@
+@import "@angular/material/theming";
+
+// Custom theme colors
+$primary-color: #4d2d87; // Purple from the header
+$accent-color: #df1e35; // Red from the icon
+$light-grey: #f2f2f2;
+$dark-grey: #7b8389;
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $primary-color;
+  color: white;
+  padding: 0 16px;
+  height: 56px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: $accent-color;
+  }
+
+  .divider {
+    margin: 0 8px;
+  }
+
+  .tool-name {
+    font-size: 16px;
+  }
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+
+  .admin-label {
+    margin-right: 8px;
+    font-size: 14px;
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  background-color: white;
+}
+
+.card-grid {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-card {
+  border-radius: 8px;
+  background-color: $light-grey;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.icon-section {
+  margin-right: 16px;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+
+  &.criteria-icon {
+    color: $accent-color;
+
+    mat-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+      line-height: 20px;
+
+      &:first-child {
+        margin-bottom: -10px;
+      }
+    }
+  }
+
+  &.member-icon {
+    color: $primary-color;
+
+    mat-icon {
+      font-size: 28px;
+      height: 28px;
+      width: 28px;
+    }
+  }
+
+  &.leaderboard-icon {
+    color: $accent-color;
+
+    mat-icon {
+      font-size: 28px;
+      height: 28px;
+      width: 28px;
+    }
+  }
+}
+
+.details-section {
+  flex: 1;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: $primary-color;
+}
+
+.card-subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: $dark-grey;
+}
+
+.action-section {
+  mat-icon {
+    color: $dark-grey;
+  }
+}
