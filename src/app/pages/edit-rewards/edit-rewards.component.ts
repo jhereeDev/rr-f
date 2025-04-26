@@ -8,15 +8,7 @@ import { RewardpointsService } from 'src/app/common/services/rewardpoints.servic
 import { AuthService } from 'src/app/common/services/auth.service';
 import { ToastService } from 'src/app/common/services/toast.service';
 
-const ALLOWED_FILE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-excel',
-];
+const ALLOWED_FILE_TYPES = ['application/pdf'];
 const CBPS_GROUP = [
   'None',
   'AT&T',

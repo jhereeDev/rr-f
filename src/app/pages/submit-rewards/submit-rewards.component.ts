@@ -12,18 +12,8 @@ import { CriteriaService } from 'src/app/common/services/criteria.service';
 import { RewardpointsService } from 'src/app/common/services/rewardpoints.service';
 import { UserData } from 'src/app/models/user.model';
 
-const ALLOWED_FILE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-excel',
-  'message/rfc822', // .eml files (standard email format)
-  'application/vnd.ms-outlook', // .msg files (Outlook email format)
-  'application/x-email', // Alternative MIME type for email files
-];
+// Update to only accept PDF files
+const ALLOWED_FILE_TYPES = ['application/pdf'];
 
 const CBPS_GROUP = [
   'None',
@@ -197,52 +187,20 @@ export class SubmitRewardsComponent implements OnInit {
         this.rewardForm.patchValue({ attachments: this.selectedFiles });
         this.rewardForm.get('attachments')?.markAsTouched();
       } else {
-        // Log invalid file types for debugging
+        // Updated error message to be PDF-specific
         console.warn(`Invalid file type rejected: ${file.name}, ${file.type}`);
         this.toastService.warning(
-          `Invalid file type: ${file.name} (${file.type})`
+          `Only PDF files are allowed. ${file.name} is not a PDF file.`
         );
       }
     });
   }
 
-  // This method is now more useful for debugging purposes
-  updateChips(): void {
-    console.log('Updating chips from selected files');
-    this.chips = [];
-    if (this.selectedFiles && this.selectedFiles.length > 0) {
-      Array.from(this.selectedFiles).forEach((file) => {
-        if (this.isValidFileType(file.type)) {
-          const uniqueId = `file-${Date.now()}-${Math.random()
-            .toString(36)
-            .substr(2, 9)}`;
-          this.chips.push({
-            id: uniqueId,
-            label: file.name,
-            file: file, // Keep the file reference
-          });
-        } else {
-          this.toastService.warning(`Invalid file type: ${file.name}`);
-        }
-      });
-    }
-  }
-
+  // Updated to check only for PDF file type
   isValidFileType(fileType: string): boolean {
-    // Enhanced validation with fallback for docx
     if (fileType === '') {
       console.warn('Empty file type detected');
       return false;
-    }
-
-    // Special handling for docx files - sometimes browsers report different MIME types
-    if (
-      fileType.includes('word') ||
-      fileType.includes('document') ||
-      fileType ===
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ) {
-      return true;
     }
 
     const isValid = ALLOWED_FILE_TYPES.includes(fileType);
@@ -316,7 +274,7 @@ export class SubmitRewardsComponent implements OnInit {
 
     if (!this.hasAttachments) {
       this.rewardForm.get('attachments')?.setErrors({ required: true });
-      this.toastService.warning('At least one attachment is required');
+      this.toastService.warning('At least one PDF attachment is required');
       return;
     }
 

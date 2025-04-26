@@ -221,10 +221,10 @@
           >Attachments<span class="required-asterisk">*</span></mat-label
         >
         <p class="label-hint">
-          You can attach IMG, PDF, DOCX, EXCEL, and EMAIL files (EML, MSG)
+          You can only attach PDF files. Other file types are not supported.
         </p>
         <mat-error *ngIf="submitted && !hasAttachments">
-          At least one attachment is required
+          At least one PDF attachment is required
         </mat-error>
         <input
           #fileInput
@@ -232,6 +232,7 @@
           (change)="onFileSelected($event)"
           style="display: none"
           multiple
+          accept="application/pdf"
         />
       </div>
 

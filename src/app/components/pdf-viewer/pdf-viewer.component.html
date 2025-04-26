@@ -1,0 +1,44 @@
+<div class="pdf-viewer-container">
+  <div class="pdf-preview" (click)="togglePdfView()">
+    <mat-icon>picture_as_pdf</mat-icon>
+    <span class="pdf-name">{{ fileName }}</span>
+    <div class="preview-actions" (click)="$event.stopPropagation()">
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="openFullscreen()"
+        matTooltip="Open in Full Screen"
+      >
+        <mat-icon>fullscreen</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="primary"
+        matTooltip="Toggle Preview"
+        (click)="togglePdfView(); $event.stopPropagation()"
+      >
+        <mat-icon>{{
+          isExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down"
+        }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isExpanded" class="pdf-content">
+    <div *ngIf="loading" class="pdf-loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading PDF...</p>
+    </div>
+    <iframe
+      *ngIf="!loading && pdfUrl"
+      [src]="pdfUrl"
+      width="100%"
+      height="500px"
+      frameborder="0"
+      class="pdf-iframe"
+    ></iframe>
+    <div *ngIf="!loading && !pdfUrl" class="pdf-error">
+      <p>Failed to load PDF. Please try again.</p>
+    </div>
+  </div>
+</div>

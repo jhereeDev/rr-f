@@ -16,6 +16,10 @@ export class RewardPointsModalComponent implements OnInit {
   user: any = null;
   isLoading = false;
 
+  // PDF viewer properties
+  selectedAttachmentIndex: number = 0;
+  selectedAttachment: any = null;
+
   constructor(
     public dialogRef: MatDialogRef<RewardPointsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -33,7 +37,21 @@ export class RewardPointsModalComponent implements OnInit {
       }
       const user = res.user as UserData;
       this.user = user;
+
+      // Set initial selected attachment if available
+      if (
+        this.data.rewards_entry.attachments &&
+        this.data.rewards_entry.attachments.length > 0
+      ) {
+        this.selectedAttachment = this.data.rewards_entry.attachments[0];
+      }
     });
+  }
+
+  // Method to select an attachment for viewing
+  selectAttachment(index: number): void {
+    this.selectedAttachmentIndex = index;
+    this.selectedAttachment = this.data.rewards_entry.attachments[index];
   }
 
   downloadAttachment(attachment: any): void {

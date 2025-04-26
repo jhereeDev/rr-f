@@ -7,6 +7,7 @@ import { User, UserData } from 'src/app/models/user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { RewardpointsService } from 'src/app/common/services/rewardpoints.service';
 import { ToastService } from 'src/app/common/services/toast.service';
+
 @Component({
   selector: 'app-user-modal',
   templateUrl: './user-points-modal.component.html',
@@ -21,6 +22,10 @@ export class UserModalComponent implements OnInit {
   isRejectBoxLoading = false;
   rejectionComment = '';
   approvalStatus = '';
+
+  // New properties for PDF viewer
+  selectedAttachmentIndex: number = 0;
+  selectedAttachment: any = null;
 
   constructor(
     public dialogRef: MatDialogRef<UserModalComponent>,
@@ -44,29 +49,31 @@ export class UserModalComponent implements OnInit {
         this.user.role_id === 6
           ? this.data.user.manager_approval_status
           : this.data.user.director_approval_status;
+
+      // Set initial selected attachment if available
+      if (
+        this.data.user.rewards_entry.attachments &&
+        this.data.user.rewards_entry.attachments.length > 0
+      ) {
+        this.selectedAttachment = this.data.user.rewards_entry.attachments[0];
+      }
     });
+  }
+
+  // Method to select an attachment for viewing
+  selectAttachment(index: number): void {
+    this.selectedAttachmentIndex = index;
+    this.selectedAttachment = this.data.user.rewards_entry.attachments[index];
   }
 
   showNotification(message: string, action: string) {
     this.snackBar.open(message, action, { duration: 3000 });
   }
 
-  downloadAttachment(attachment: any): void {
-    this.rewardpointsService.downloadAttachment(attachment.path).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = attachment.filename;
-        link.click();
-        window.URL.revokeObjectURL(url);
-      },
-
-      error: (error: HttpErrorResponse) => {
-        console.error('Error downloading attachment:', error);
-      },
-    });
-  }
+  // Remove this method as we're now using the PDF viewer
+  // downloadAttachment(attachment: any): void {
+  //   // This is replaced by the PDF viewer
+  // }
 
   showRejectionCommentBox(): void {
     this.showCommentBox = true;

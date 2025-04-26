@@ -136,11 +136,26 @@
         </div>
         <p>Attachments<span class="required-asterisk">*</span></p>
         <p class="attachment-description">
-          You can attach IMG, PDF, DOCX, EXCEL
+          You can only attach PDF files. Other file types are not supported.
         </p>
         <mat-error *ngIf="submitted && !hasAttachments">
-          At least one attachment is required
+          At least one PDF attachment is required
         </mat-error>
+      </div>
+
+      <div class="chip-button-container">
+        <button mat-stroked-button type="button" (click)="fileInput.click()">
+          <mat-icon>attach_file</mat-icon>
+          Attach PDF Files
+        </button>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          style="display: none"
+          multiple
+          accept="application/pdf"
+        />
       </div>
 
       <div class="chip-button-container">

@@ -11,18 +11,32 @@
             else noAttachment
           "
         >
-          <ng-container
-            *ngFor="let attachment of data.rewards_entry.attachments"
-          >
+          <!-- PDF selector buttons -->
+          <div class="pdf-selector">
             <button
+              *ngFor="
+                let attachment of data.rewards_entry.attachments;
+                let i = index
+              "
               class="attachment-button"
-              (click)="downloadAttachment(attachment)"
+              [class.active]="selectedAttachmentIndex === i"
+              (click)="selectAttachment(i)"
             >
-              {{ attachment.filename }}
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span class="attachment-name">{{ attachment.filename }}</span>
             </button>
-          </ng-container>
+          </div>
+
+          <!-- PDF Viewer -->
+          <div class="pdf-viewer-wrapper" *ngIf="selectedAttachment">
+            <app-pdf-viewer
+              [filePath]="selectedAttachment.path"
+            ></app-pdf-viewer>
+          </div>
         </ng-container>
-        <ng-template #noAttachment>No Attachment</ng-template>
+        <ng-template #noAttachment>
+          <div class="no-attachment">No Attachment</div>
+        </ng-template>
       </div>
     </div>
     <div class="title-right-container">

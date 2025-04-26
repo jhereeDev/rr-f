@@ -39,6 +39,10 @@ import { GuidelinesComponent } from './pages/guidelines/guidelines.component';
 import { TermsDialogComponent } from './components/terms-dialog/terms-dialog.component';
 import { WordLimitPipe } from './common/pipes/word-limit.pipe';
 import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
+import {
+  PdfFullscreenComponent,
+  PdfViewerComponent,
+} from './components/pdf-viewer/pdf-viewer.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +63,8 @@ import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
     TermsDialogComponent,
     WordLimitPipe,
     AdminHomeComponent,
+    PdfViewerComponent,
+    PdfFullscreenComponent,
   ],
   imports: [
     BrowserModule,

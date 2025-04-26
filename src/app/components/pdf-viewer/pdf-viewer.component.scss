@@ -1,0 +1,78 @@
+.pdf-viewer-container {
+  width: 100%;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pdf-preview {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #e9e9e9;
+  }
+
+  mat-icon {
+    color: #d93025;
+    margin-right: 12px;
+  }
+
+  .pdf-name {
+    flex-grow: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .preview-actions {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.pdf-content {
+  border-top: 1px solid #eee;
+}
+
+.pdf-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.pdf-loading p {
+  margin-top: 16px;
+  color: #666;
+}
+
+.pdf-iframe {
+  border: none;
+  display: block;
+}
+
+.pdf-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background-color: #f8f8f8;
+  color: #721c24;
+  padding: 16px;
+}
+
+:host ::ng-deep .fullscreen-dialog {
+  max-width: 100vw !important;
+  .mat-mdc-dialog-container {
+    padding: 0;
+  }
+}
