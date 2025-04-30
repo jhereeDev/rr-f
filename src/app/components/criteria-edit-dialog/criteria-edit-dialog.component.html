@@ -1,0 +1,92 @@
+<!-- enhanced-criteria-edit-dialog.component.html -->
+<div class="dialog-container">
+  <h2 mat-dialog-title>
+    Edit {{ isManager ? "Manager" : "Partner" }} Criteria
+  </h2>
+  <div class="criteria-id">Criteria ID: {{ criteriaId }}</div>
+
+  <form [formGroup]="criteriaForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <h3>Accomplishment Category</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option
+            *ngFor="let category of existingCategories"
+            [value]="category"
+          >
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p class="form-hint">Select an existing category or enter a new one</p>
+    </div>
+
+    <div class="form-group">
+      <h3>Accomplishment</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Accomplishment</mat-label>
+        <input matInput formControlName="accomplishment" />
+      </mat-form-field>
+      <p class="form-hint">
+        Provide what kind of Accomplishment this criteria is under
+      </p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <h3>Points</h3>
+        <mat-form-field appearance="outline">
+          <mat-label>Points</mat-label>
+          <input matInput type="number" formControlName="points" />
+        </mat-form-field>
+        <p class="form-hint">Provide corresponding points for this criteria</p>
+      </div>
+
+      <div class="form-group">
+        <h3>Guidelines</h3>
+        <mat-form-field appearance="outline">
+          <mat-label>Guidelines</mat-label>
+          <textarea matInput rows="4" formControlName="guidelines"></textarea>
+        </mat-form-field>
+        <p class="form-hint">Provide the guidelines for this criteria</p>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="isManager">
+      <h3>Criteria Type</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of criteriaTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p class="form-hint">
+        Select whether this criteria applies to Experts, Delivery teams, or Both
+      </p>
+    </div>
+
+    <div class="director-approval">
+      <mat-checkbox formControlName="director_approval"
+        >Requires Director Approval</mat-checkbox
+      >
+    </div>
+
+    <div class="dialog-actions">
+      <button mat-button type="button" (click)="close()">Cancel</button>
+      <button
+        mat-raised-button
+        color="warn"
+        type="button"
+        (click)="deleteCriteria()"
+      >
+        Delete Criteria
+      </button>
+      <button mat-raised-button color="primary" type="submit">
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>

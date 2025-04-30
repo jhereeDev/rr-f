@@ -1,0 +1,38 @@
+/* confirm-dialog.component.scss */
+.confirm-dialog {
+  padding: 20px;
+  max-width: 400px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #5236ab;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+[mat-dialog-actions] {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+
+  button[color="primary"] {
+    background-color: #5236ab;
+    color: white;
+  }
+
+  button[color="warn"] {
+    background-color: #ca2b3e;
+    color: white;
+  }
+}

@@ -1,0 +1,236 @@
+<!-- enhanced-criteria-management.component.html -->
+<div class="container">
+  <div class="header">
+    <div class="title-section">
+      <div class="icon-title">
+        <div class="checklist-icon">
+          <div class="icon-container">
+            <img
+              src="assets/buttons/checklist.png"
+              alt="Criteria Management Icon"
+            />
+          </div>
+        </div>
+        <h1>
+          {{
+            isInDraftMode
+              ? "Rewards & Criteria Management Drafts"
+              : "Rewards & Criteria Management"
+          }}
+        </h1>
+      </div>
+      <div class="action-buttons">
+        <button
+          *ngIf="isInDraftMode"
+          mat-flat-button
+          class="back-button"
+          (click)="toggleDraftMode()"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+        <button
+          *ngIf="!isInDraftMode"
+          mat-flat-button
+          class="drafts-button"
+          (click)="toggleDraftMode()"
+        >
+          <mat-icon>description</mat-icon>
+          Drafts
+        </button>
+        <button mat-flat-button class="home-button" [routerLink]="['/admin']">
+          <mat-icon>home</mat-icon>
+          Home
+        </button>
+        <button
+          *ngIf="isInDraftMode"
+          mat-flat-button
+          class="publish-button"
+          (click)="publishAll()"
+        >
+          Publish All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="tab-container">
+      <div class="tabs">
+        <div
+          class="tab"
+          [class.active]="selectedTab === 'managers'"
+          (click)="onTabChange('managers')"
+        >
+          Manager Criteria
+        </div>
+        <div
+          class="tab"
+          [class.active]="selectedTab === 'partners'"
+          (click)="onTabChange('partners')"
+        >
+          Partner Criteria
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Choose a category</mat-label>
+          <mat-select
+            [(value)]="selectedCategory"
+            (selectionChange)="onCategoryChange($event.value)"
+          >
+            <mat-option value="all">All Categories</mat-option>
+            <mat-option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="action-section">
+          <!-- <button
+            mat-flat-button
+            class="upload-button"
+            (click)="fileInput.click()"
+          >
+            <mat-icon>upload</mat-icon>
+            Upload Excel
+          </button>
+          <input
+            hidden
+            type="file"
+            #fileInput
+            accept=".xlsx, .xls"
+            (change)="onFileSelected($event)"
+          />
+          <button
+            mat-flat-button
+            class="process-button"
+            [disabled]="!selectedFile"
+            (click)="uploadExcelFile()"
+          >
+            <mat-icon>send</mat-icon>
+            Process Excel
+          </button> -->
+          <button
+            mat-flat-button
+            class="add-guideline-button"
+            (click)="openAddDialog()"
+          >
+            <mat-icon>add</mat-icon>
+            Add Criteria
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="selected-file" *ngIf="selectedFile">
+      <span>Selected file: {{ selectedFile.name }}</span>
+      <button mat-icon-button (click)="selectedFile = null">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="filteredCriterias" class="criteria-table">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let criteria">{{ criteria.id }}</td>
+        </ng-container>
+
+        <!-- Category Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let criteria">{{ criteria.category }}</td>
+        </ng-container>
+
+        <!-- Accomplishment Column -->
+        <ng-container matColumnDef="accomplishment">
+          <th mat-header-cell *matHeaderCellDef>Accomplishment</th>
+          <td mat-cell *matCellDef="let criteria">
+            {{ criteria.accomplishment }}
+          </td>
+        </ng-container>
+
+        <!-- Points Column -->
+        <ng-container matColumnDef="points">
+          <th mat-header-cell *matHeaderCellDef>Points</th>
+          <td mat-cell *matCellDef="let criteria">{{ criteria.points }}</td>
+        </ng-container>
+
+        <!-- Guidelines Column -->
+        <ng-container matColumnDef="guidelines">
+          <th mat-header-cell *matHeaderCellDef>Guidelines</th>
+          <td mat-cell *matCellDef="let criteria" class="guidelines-cell">
+            {{ criteria.guidelines }}
+          </td>
+        </ng-container>
+
+        <!-- Director Approval Column -->
+        <ng-container matColumnDef="director_approval">
+          <th mat-header-cell *matHeaderCellDef>Requires Director Approval</th>
+          <td mat-cell *matCellDef="let criteria">
+            {{ criteria.director_approval ? "Yes" : "No" }}
+          </td>
+        </ng-container>
+
+        <!-- Type Column (Show only for Manager criteria) -->
+        <ng-container matColumnDef="type" *ngIf="selectedTab === 'managers'">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let criteria">
+            {{ criteria.type || "BOTH" }}
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let criteria">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Actions"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(criteria)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="deleteCriteria(criteria.id)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+              <button
+                mat-menu-item
+                *ngIf="isInDraftMode"
+                (click)="publishCriteria(criteria.id)"
+              >
+                <mat-icon>publish</mat-icon>
+                <span>Publish</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <div class="no-data" *ngIf="!isLoading && filteredCriterias.length === 0">
+        <img
+          src="assets/no-data.png"
+          alt="No data available"
+          class="empty-img"
+        />
+        <p>No criteria found for the selected category.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,20 +1,64 @@
 <div class="container">
   <div class="grid-container">
-    <ng-container *ngFor="let card of adminCards">
-      <div class="button-container">
-        <a [routerLink]="card.url">
-          <div class="button-content">
-            <div class="left-content">
-              <img src="{{ card.icon }}" alt="{{ card.description }}" />
-              <div class="text-container">
-                <span class="title">{{ card.title }}</span>
-                <span class="description">{{ card.description }}</span>
-              </div>
+    <div class="button-container">
+      <a [routerLink]="'/admin/criteria'">
+        <div class="button-content">
+          <div class="left-content">
+            <div class="icon-container">
+              <img
+                src="assets/buttons/checklist.png"
+                alt="Criteria Management Icon"
+              />
             </div>
-            <mat-icon class="button-arrow">keyboard_arrow_right</mat-icon>
+            <div class="text-container">
+              <span class="title">Rewards Criteria Management</span>
+              <span class="description"
+                >Partner/Manager Checklist Criteria Edits</span
+              >
+            </div>
           </div>
-        </a>
-      </div>
-    </ng-container>
+          <mat-icon class="button-arrow">keyboard_arrow_right</mat-icon>
+        </div>
+      </a>
+    </div>
+
+    <div class="button-container">
+      <a [routerLink]="'/admin/members'">
+        <div class="button-content">
+          <div class="left-content">
+            <div class="icon-container">
+              <img
+                src="assets/buttons/trophy.png"
+                alt="Member Management Icon"
+              />
+            </div>
+            <div class="text-container">
+              <span class="title">Member Management</span>
+              <span class="description"
+                >View and Edit Current Member Details</span
+              >
+            </div>
+          </div>
+          <mat-icon class="button-arrow">keyboard_arrow_right</mat-icon>
+        </div>
+      </a>
+    </div>
+
+    <div class="button-container">
+      <a [routerLink]="'/admin/leaderboard'">
+        <div class="button-content">
+          <div class="left-content">
+            <div class="icon-container">
+              <img src="assets/buttons/graph.png" alt="Leaderboard Icon" />
+            </div>
+            <div class="text-container">
+              <span class="title">Leaderboards</span>
+              <span class="description">Current Race Season leaderboard</span>
+            </div>
+          </div>
+          <mat-icon class="button-arrow">keyboard_arrow_right</mat-icon>
+        </div>
+      </a>
+    </div>
   </div>
 </div>

@@ -43,6 +43,17 @@ import {
   PdfFullscreenComponent,
   PdfViewerComponent,
 } from './components/pdf-viewer/pdf-viewer.component';
+import { CriteriaManagementComponent } from './pages/criteria-management/criteria-management.component';
+import { CriteriaAddDialogComponent } from './components/criteria-add-dialog/criteria-add-dialog.component';
+import { CriteriaEditDialogComponent } from './components/criteria-edit-dialog/criteria-edit-dialog.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { MemberControlComponent } from './pages/member-control/member-control.component';
+import { MemberAddDialogComponent } from './components/member-add-dialog/member-add-dialog.component';
+import { MemberEditDialogComponent } from './components/member-edit-dialog/member-edit-dialog.component';
+import { MemberDetailsComponent } from './components/member-details/member-details.component';
+import { MemberMappingDialogComponent } from './components/member-mapping-dialog/member-mapping-dialog.component';
+import { MemberConfirmDialogComponent } from './components/member-confirm-dialog/member-confirm-dialog.component';
+import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderboard.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +76,17 @@ import {
     AdminHomeComponent,
     PdfViewerComponent,
     PdfFullscreenComponent,
+    CriteriaManagementComponent,
+    CriteriaAddDialogComponent,
+    CriteriaEditDialogComponent,
+    ConfirmDialogComponent,
+    MemberControlComponent,
+    MemberAddDialogComponent,
+    MemberEditDialogComponent,
+    MemberDetailsComponent,
+    MemberMappingDialogComponent,
+    MemberConfirmDialogComponent,
+    CBPSLeaderboardComponent,
   ],
   imports: [
     BrowserModule,

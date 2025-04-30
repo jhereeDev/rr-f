@@ -1,0 +1,178 @@
+<!-- member-control.component.html -->
+<div class="container">
+  <div class="header">
+    <div class="title-section">
+      <div class="icon-title">
+        <div class="checklist-icon">
+          <div class="icon-container">
+            <img
+              src="assets/buttons/clock.png"
+              alt="Criteria Management Icon"
+            />
+          </div>
+        </div>
+        <h1>Member Management</h1>
+      </div>
+      <div class="action-buttons">
+        <button mat-flat-button class="home-button" [routerLink]="['/admin']">
+          <mat-icon>home</mat-icon>
+          Home
+        </button>
+        <button
+          mat-flat-button
+          class="sync-button"
+          (click)="syncMemberMapping()"
+        >
+          Sync Member Mapping
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="search-container">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Member</mat-label>
+        <input matInput [(ngModel)]="searchText" (input)="search($event)" />
+        <button
+          *ngIf="searchText"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="clearSearch()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        class="search-button"
+        (click)="updateDisplayedMembers()"
+      >
+        Search
+      </button>
+
+      <button
+        mat-flat-button
+        class="add-member-button"
+        (click)="openAddMemberDialog()"
+      >
+        <mat-icon>add</mat-icon>
+        Add a Member
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table class="member-table">
+        <thead>
+          <tr>
+            <th>Member Name</th>
+            <th>Job Title</th>
+            <th>Department</th>
+            <th>Manager</th>
+            <th>Director</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of filteredMembers">
+            <td>{{ member.firstName }} {{ member.lastName }}</td>
+            <td>{{ member.jobTitle }}</td>
+            <td>{{ member.department }}</td>
+            <td>{{ member.manager }}</td>
+            <td>{{ member.director }}</td>
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(member.status)"
+              >
+                {{ member.status }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                aria-label="Actions"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="openEditMemberDialog(member)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit Member</span>
+                </button>
+                <button mat-menu-item (click)="viewMemberDetails(member)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>View Details</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination-container">
+        <div class="items-per-page">
+          Items per page:
+          <mat-form-field appearance="outline">
+            <mat-select
+              [(value)]="pageSize"
+              (selectionChange)="
+                onPageChange({
+                  pageIndex: pageIndex,
+                  pageSize: $event.value,
+                  length: totalItems
+                })
+              "
+            >
+              <mat-option
+                *ngFor="let option of pageSizeOptions"
+                [value]="option"
+              >
+                {{ option }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="pagination-info">
+          {{ pageIndex * pageSize + 1 }} -
+          {{ mathRef.min((pageIndex + 1) * pageSize, totalItems) }} of
+          {{ totalItems }} items
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            mat-icon-button
+            [disabled]="pageIndex === 0"
+            (click)="
+              onPageChange({
+                pageIndex: pageIndex - 1,
+                pageSize: pageSize,
+                length: totalItems
+              })
+            "
+          >
+            <mat-icon>keyboard_arrow_left</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            [disabled]="(pageIndex + 1) * pageSize >= totalItems"
+            (click)="
+              onPageChange({
+                pageIndex: pageIndex + 1,
+                pageSize: pageSize,
+                length: totalItems
+              })
+            "
+          >
+            <mat-icon>keyboard_arrow_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

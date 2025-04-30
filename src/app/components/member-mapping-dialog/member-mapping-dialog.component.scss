@@ -1,0 +1,53 @@
+/* member-mapping-dialog.component.scss */
+.mapping-dialog-container {
+  padding: 24px;
+  min-width: 400px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #5236ab;
+  margin-top: 0;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.progress-container {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+
+  button {
+    min-width: 120px;
+    background-color: #ca2b3e;
+    color: white;
+  }
+}
+
+/* Progress bar color customization */
+::ng-deep .mat-mdc-progress-bar {
+  --mdc-linear-progress-active-indicator-color: #5236ab;
+  --mdc-linear-progress-track-color: #e0e0e0;
+  height: 8px !important;
+  border-radius: 4px;
+  overflow: hidden;
+}

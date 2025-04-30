@@ -1,0 +1,106 @@
+<!-- cbps-leaderboard.component.html -->
+<div class="container">
+  <div class="header">
+    <div class="title-section">
+      <div class="icon-title">
+        <div class="leaderboard-icon">
+          <img
+            src="assets/buttons/graph.png"
+            alt="Checklist Icon"
+            width="32"
+            height="32"
+          />
+        </div>
+        <h1>CBPS Leaderboard</h1>
+      </div>
+      <div class="action-buttons">
+        <div class="alias-toggle">
+          <span>Show Alias</span>
+          <mat-slide-toggle
+            [checked]="showAlias"
+            (change)="setAliasDisplay($event.checked)"
+            color="primary"
+          >
+          </mat-slide-toggle>
+          <span class="debug-info" *ngIf="showAlias">Showing Alias</span>
+          <span class="debug-info" *ngIf="!showAlias">Showing Real Names</span>
+        </div>
+        <button mat-flat-button class="home-button" [routerLink]="['/admin']">
+          <mat-icon>home</mat-icon>
+          Home
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="tab-container">
+      <div class="tabs">
+        <a
+          class="tab"
+          [class.active]="selectedTabIndex === 0"
+          (click)="selectedTabIndex = 0"
+        >
+          Managers Leaderboard
+        </a>
+        <a
+          class="tab"
+          [class.active]="selectedTabIndex === 1"
+          (click)="selectedTabIndex = 1"
+        >
+          Partners Leaderboard
+        </a>
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="selectedTabIndex === 0">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Alias Name</th>
+            <th>Fiscal Year</th>
+            <th>Race Season Total Points</th>
+            <th>Race Season Approved Points</th>
+            <th>Race Season For Approval Points</th>
+            <th>Race Season Rejected Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of managerLeaderboard">
+            <td>{{ getDisplayName(entry) }}</td>
+            <td>{{ entry.fiscalYear }}</td>
+            <td>{{ entry.totalPoints }}</td>
+            <td>{{ entry.approvedPoints }}</td>
+            <td>{{ entry.forApprovalPoints }}</td>
+            <td>{{ entry.rejectedPoints }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-container" *ngIf="selectedTabIndex === 1">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Alias Name</th>
+            <th>Fiscal Year</th>
+            <th>Race Season Total Points</th>
+            <th>Race Season Approved Points</th>
+            <th>Race Season For Approval Points</th>
+            <th>Race Season Rejected Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of partnerLeaderboard">
+            <td>{{ getDisplayName(entry) }}</td>
+            <td>{{ entry.fiscalYear }}</td>
+            <td>{{ entry.totalPoints }}</td>
+            <td>{{ entry.approvedPoints }}</td>
+            <td>{{ entry.forApprovalPoints }}</td>
+            <td>{{ entry.rejectedPoints }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
