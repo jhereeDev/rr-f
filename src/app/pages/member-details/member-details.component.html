@@ -1,0 +1,126 @@
+<div class="member-details-container">
+  <div class="member-header">
+    <h2 class="member-name">
+      {{ memberData?.firstName }} {{ memberData?.lastName }}
+    </h2>
+    <p class="member-title">{{ memberData?.jobTitle }}</p>
+
+    <button mat-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+  </div>
+
+  <!-- Project Details Section For Editing a Particular Project/Reward Entry -->
+  <div class="project-details-section">
+    <h3 class="section-title">My Project Name</h3>
+    <div class="status-badge-container">
+      <span class="status-badge status-approved">Approved</span>
+    </div>
+
+    <div class="attachments">
+      <button mat-raised-button class="attachment-button">proof.pdf</button>
+      <button mat-raised-button class="attachment-button">proof.jpeg</button>
+    </div>
+
+    <form [formGroup]="editProjectForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <h4>Reward Points</h4>
+          <mat-form-field appearance="outline">
+            <input matInput formControlName="rewardPoints" />
+          </mat-form-field>
+          <p class="form-hint">Edit Reward Point</p>
+        </div>
+
+        <div class="form-group">
+          <h4>Accomplishment</h4>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="accomplishment">
+              <mat-option
+                *ngFor="let accomplishment of accomplishments"
+                [value]="accomplishment"
+              >
+                {{ accomplishment }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <p class="form-hint">Edit Accomplishment Title</p>
+        </div>
+      </div>
+
+      <div class="date-info-container">
+        <div class="date-group">
+          <h4>Date Accomplished</h4>
+          <p class="date-value">28 March, 2024</p>
+        </div>
+
+        <div class="date-group">
+          <h4>CAMS Group</h4>
+          <p class="date-value">D&AS</p>
+        </div>
+
+        <div class="date-group">
+          <h4>Created</h4>
+          <p class="date-value">15 April, 2024</p>
+        </div>
+
+        <div class="date-group">
+          <h4>Modified</h4>
+          <p class="date-value">16 April, 2024</p>
+        </div>
+      </div>
+
+      <div class="save-changes-container">
+        <button mat-raised-button color="primary" type="submit">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- All Reward Entries Table -->
+  <div class="reward-entries-section">
+    <h3 class="section-title">Reward Entries</h3>
+
+    <div class="table-container">
+      <table class="reward-entries-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Accomplishment</th>
+            <th>Points</th>
+            <th>Short Description</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Notes</th>
+            <th>Attachments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of rewardEntries">
+            <td>{{ entry.category }}</td>
+            <td>{{ entry.accomplishment }}</td>
+            <td>{{ entry.points }}</td>
+            <td>{{ entry.shortDescription }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(entry.status)">
+                {{ entry.status }}
+              </span>
+            </td>
+            <td>{{ entry.date }}</td>
+            <td>{{ entry.notes }}</td>
+            <td>
+              <button
+                mat-icon-button
+                color="primary"
+                *ngFor="let attachment of entry.attachments"
+              >
+                <mat-icon>download</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

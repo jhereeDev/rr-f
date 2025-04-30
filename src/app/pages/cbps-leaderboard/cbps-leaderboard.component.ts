@@ -1,19 +1,21 @@
 // cbps-leaderboard.component.ts
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { LeaderboardsService } from 'src/app/common/services/leaderboards.service';
 import { ToastService } from 'src/app/common/services/toast.service';
+import { finalize } from 'rxjs/operators';
 
 interface LeaderboardEntry {
   id: number;
   aliasName: string;
-  realName?: string;
   fiscalYear: string;
   totalPoints: number;
   approvedPoints: number;
   forApprovalPoints: number;
   rejectedPoints: number;
-  role?: number;
+  member_firstname?: string;
+  member_lastname?: string;
+  member_email?: string;
+  role_id?: number;
 }
 
 @Component({
@@ -25,20 +27,13 @@ export class CBPSLeaderboardComponent implements OnInit {
   // Data
   managerLeaderboard: LeaderboardEntry[] = [];
   partnerLeaderboard: LeaderboardEntry[] = [];
-  displayedColumns: string[] = [
-    'aliasName',
-    'fiscalYear',
-    'totalPoints',
-    'approvedPoints',
-    'forApprovalPoints',
-    'rejectedPoints',
-  ];
 
   // UI state
   selectedTabIndex = 0;
   isLoading = true;
   showAlias = true;
   graphImagePath = 'assets/buttons/graph.png';
+  error: string | null = null;
 
   constructor(
     private leaderboardService: LeaderboardsService,
@@ -47,13 +42,12 @@ export class CBPSLeaderboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Skip API call and just use static data for testing
-    this.simulateLeaderboardData();
-    this.isLoading = false;
+    this.loadLeaderboards();
   }
 
   loadLeaderboards(): void {
     this.isLoading = true;
+    this.error = null;
 
     // Load both leaderboards in parallel
     Promise.all([
@@ -61,76 +55,82 @@ export class CBPSLeaderboardComponent implements OnInit {
       this.leaderboardService.getLeaderboardByRole(6).toPromise(), // Partners (role 6)
     ])
       .then(([managerResponse, partnerResponse]) => {
-        if (
-          managerResponse &&
-          managerResponse.success &&
-          Array.isArray(managerResponse.data)
-        ) {
+        // Process manager data
+        if (managerResponse && managerResponse.data) {
           this.managerLeaderboard = this.processLeaderboardData(
             managerResponse.data
           );
+        } else {
+          console.warn('No manager leaderboard data returned from API');
+          this.managerLeaderboard = [];
         }
 
-        if (
-          partnerResponse &&
-          partnerResponse.success &&
-          Array.isArray(partnerResponse.data)
-        ) {
+        // Process partner data
+        if (partnerResponse && partnerResponse.data) {
           this.partnerLeaderboard = this.processLeaderboardData(
             partnerResponse.data
           );
+        } else {
+          console.warn('No partner leaderboard data returned from API');
+          this.partnerLeaderboard = [];
         }
       })
       .catch((error) => {
         console.error('Error loading leaderboards:', error);
+        this.error = 'Failed to load leaderboard data. Please try again.';
         this.toastService.error('Failed to load leaderboard data');
+
+        // Fall back to simulated data when there's an error
+        this.simulateLeaderboardData();
       })
       .finally(() => {
         this.isLoading = false;
+        this.cdr.detectChanges();
       });
-
-    // Simulated data if API doesn't work
-    this.simulateLeaderboardData();
   }
 
   processLeaderboardData(data: any[]): LeaderboardEntry[] {
     return data.map((item) => ({
       id: item.id,
       aliasName: item.alias_name,
-      realName: item.real_name || item.alias_name,
       fiscalYear: item.fiscal_year,
-      totalPoints: item.total_points,
-      approvedPoints: item.approved_points,
-      forApprovalPoints: item.for_approval_points,
-      rejectedPoints: item.rejected_points,
-      role: item.role_id,
+      totalPoints: item.total_points || 0,
+      approvedPoints: item.approved_points || 0,
+      forApprovalPoints: item.for_approval_points || 0,
+      rejectedPoints: item.rejected_points || 0,
+      member_firstname: item.member_firstname,
+      member_lastname: item.member_lastname,
+      member_email: item.member_email,
+      role_id: item.role_id,
     }));
   }
 
   simulateLeaderboardData(): void {
-    // Managers - use very distinct names to clearly see the toggle effect
+    // Managers - use realistic naming to improve testing
     this.managerLeaderboard = [
       {
         id: 1,
         aliasName: 'FY24-00001',
-        realName: 'Angelica Ware',
+        member_firstname: 'Angelica',
+        member_lastname: 'Ware',
         fiscalYear: 'FY24',
         totalPoints: 90,
         approvedPoints: 40,
         forApprovalPoints: 50,
         rejectedPoints: 0,
-        role: 5,
+        role_id: 5,
       },
       {
         id: 2,
         aliasName: 'FY24-00002',
-        realName: 'Jheremiah Figueroa',
+        member_firstname: 'Jheremiah',
+        member_lastname: 'Figueroa',
         fiscalYear: 'FY24',
         totalPoints: 90,
         approvedPoints: 40,
         forApprovalPoints: 50,
         rejectedPoints: 0,
-        role: 5,
+        role_id: 5,
       },
     ];
 
@@ -139,30 +139,28 @@ export class CBPSLeaderboardComponent implements OnInit {
       {
         id: 3,
         aliasName: 'FY24-00003',
-        realName: 'Angelica Ware',
+        member_firstname: 'Adrian',
+        member_lastname: 'Magpili',
         fiscalYear: 'FY24',
         totalPoints: 90,
         approvedPoints: 40,
         forApprovalPoints: 50,
         rejectedPoints: 0,
-        role: 6,
+        role_id: 6,
       },
       {
         id: 4,
         aliasName: 'FY24-00004',
-        realName: 'Jheremiah Figueroa',
+        member_firstname: 'Victor',
+        member_lastname: 'Arias',
         fiscalYear: 'FY24',
         totalPoints: 90,
         approvedPoints: 40,
         forApprovalPoints: 50,
         rejectedPoints: 0,
-        role: 6,
+        role_id: 6,
       },
     ];
-  }
-
-  onTabChange(event: MatTabChangeEvent): void {
-    this.selectedTabIndex = event.index;
   }
 
   // Set the alias display directly based on the toggle state
@@ -171,13 +169,15 @@ export class CBPSLeaderboardComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Toggle the alias display
-  toggleAliasDisplay(): void {
-    this.showAlias = !this.showAlias;
-    this.cdr.detectChanges();
-  }
-
+  // Get the display name based on the alias toggle state
   getDisplayName(entry: LeaderboardEntry): string {
-    return this.showAlias ? entry.aliasName : entry.realName || entry.aliasName;
+    if (this.showAlias) {
+      return entry.aliasName;
+    } else {
+      if (entry.member_firstname && entry.member_lastname) {
+        return `${entry.member_firstname} ${entry.member_lastname}`;
+      }
+      return entry.aliasName; // Fallback to alias if no name
+    }
   }
 }

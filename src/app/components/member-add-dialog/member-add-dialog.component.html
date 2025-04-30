@@ -1,33 +1,11 @@
 <!-- member-add-dialog.component.html -->
 <div class="dialog-container">
-  <h2 mat-dialog-title>Add New Member</h2>
+  <h2 mat-dialog-title>Add New Partner</h2>
 
   <form [formGroup]="memberForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group">
-        <h3>User First Name</h3>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            formControlName="firstName"
-            placeholder="First Name"
-          />
-        </mat-form-field>
-        <p class="form-hint">Enter New Member's First Name</p>
-      </div>
-
-      <div class="form-group">
-        <h3>User Last Name</h3>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="lastName" placeholder="Last Name" />
-        </mat-form-field>
-        <p class="form-hint">Enter New Member's Last Name</p>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <h3>User Email</h3>
+        <h3>Partner CGI Email</h3>
         <mat-form-field appearance="outline">
           <input
             matInput
@@ -35,31 +13,11 @@
             placeholder="newmember@cgi.com"
           />
         </mat-form-field>
-        <p class="form-hint">Enter New Member's Email</p>
-      </div>
-
-      <div class="form-group">
-        <h3>Manager</h3>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="manager" placeholder="John Nunez" />
-        </mat-form-field>
-        <p class="form-hint">Enter Member's Manager</p>
+        <p class="form-hint">Enter New Partner's Email</p>
       </div>
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <h3>Director Name</h3>
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            formControlName="director"
-            placeholder="Ronwald King"
-          />
-        </mat-form-field>
-        <p class="form-hint">Enter Member's Director</p>
-      </div>
-
       <div class="form-group">
         <h3>Status</h3>
         <mat-form-field appearance="outline">
@@ -69,13 +27,13 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <p class="form-hint">Choose New Member's Status</p>
+        <p class="form-hint">Choose New Partner's Status</p>
       </div>
     </div>
 
     <div class="dialog-actions">
       <button mat-flat-button type="button" (click)="close()">Cancel</button>
-      <button mat-flat-button color="primary" type="submit">Add Member</button>
+      <button mat-flat-button color="primary" type="submit">Add Partner</button>
     </div>
   </form>
 </div>

@@ -19,11 +19,7 @@ export class MemberAddDialogComponent implements OnInit {
     private toastService: ToastService
   ) {
     this.memberForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      manager: ['', Validators.required],
-      director: ['', Validators.required],
       status: ['New Joiner', Validators.required],
     });
   }

@@ -1,13 +1,27 @@
 <mat-sidenav-container class="sidenav-container" *ngIf="user">
   <mat-sidenav-content>
-    <mat-toolbar color="white">
+    <mat-toolbar
+      [ngClass]="{ 'admin-toolbar': user.role_id === 1 }"
+      color="white"
+    >
       <div class="nav-container">
         <div class="logo">
           <a [routerLink]="['/home']">
-            <img src="assets/logo.png" alt="Logo" />
+            <img
+              src="{{
+                user.role_id === 1
+                  ? 'assets/cgi-logo-white.png'
+                  : 'assets/logo-admin.png'
+              }}"
+              alt="Logo"
+            />
           </a>
         </div>
-        <div class="menu logout-button" [matMenuTriggerFor]="menu">
+        <div
+          class="menu logout-button"
+          [matMenuTriggerFor]="menu"
+          [ngClass]="{ 'admin-text': user.role === 1 }"
+        >
           <span class="username">
             {{ user.member_firstname + " " + user.member_lastname }}
           </span>

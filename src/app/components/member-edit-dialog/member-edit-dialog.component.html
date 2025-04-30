@@ -16,25 +16,33 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <p class="form-hint">Choose member's new Job Title</p>
+        <p class="form-hint">Choose partner's new Job Title</p>
       </div>
 
       <div class="form-group">
-        <h3>Manager</h3>
+        <h3>Manager Email</h3>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="manager" />
+          <input
+            matInput
+            formControlName="manager"
+            placeholder="manager@cgi.com"
+          />
         </mat-form-field>
-        <p class="form-hint">Enter Member's new Manager</p>
+        <p class="form-hint">Enter Manager's Email</p>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <h3>Director Name</h3>
+        <h3>Director Email</h3>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="director" />
+          <input
+            matInput
+            formControlName="director"
+            placeholder="director@cgi.com"
+          />
         </mat-form-field>
-        <p class="form-hint">Enter Member's new Director</p>
+        <p class="form-hint">Enter Director's Email</p>
       </div>
 
       <div class="form-group">
@@ -46,7 +54,21 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <p class="form-hint">Choose member's new Status</p>
+        <p class="form-hint">Choose partner's new Status</p>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <h3>Role</h3>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="role">
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{ role }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p class="form-hint">Choose partner's Role</p>
       </div>
     </div>
 

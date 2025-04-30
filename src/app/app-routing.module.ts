@@ -15,6 +15,7 @@ import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 import { CriteriaManagementComponent } from './pages/criteria-management/criteria-management.component';
 import { MemberControlComponent } from './pages/member-control/member-control.component';
 import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderboard.component';
+import { MemberDetailsComponent } from './pages/member-details/member-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -85,6 +86,12 @@ const routes: Routes = [
   {
     path: 'admin/members',
     component: MemberControlComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [1] }, // Admin role only
+  },
+  {
+    path: 'admin/members/:id',
+    component: MemberDetailsComponent,
     canActivate: [AuthGuard],
     data: { roles: [1] }, // Admin role only
   },

@@ -3,14 +3,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #333; 
-  color: white; 
+  background-color: #333;
+  color: white;
 }
 
 .container {
-  margin-top: 20px; 
+  margin-top: 20px;
 }
-
 
 .sidenav-container {
   height: 10%;
@@ -31,6 +30,19 @@
 .mat-toolbar {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: white;
+}
+
+.admin-toolbar {
+  background-color: #3a2679 !important;
+  color: white !important;
+}
+
+.admin-text {
+  color: white !important;
+}
+
+.admin-text:hover .username {
+  color: white !important;
 }
 
 .mat-toolbar.mat-primary {
@@ -65,7 +77,7 @@
 }
 
 .menu:hover .username {
-  color: #5236AB;
+  color: #5236ab;
 }
 
 .button-arrow {

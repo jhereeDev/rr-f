@@ -18,6 +18,7 @@ export class MemberEditDialogComponent implements OnInit {
     'Senior Consultant',
     'Manager',
   ];
+  roles = ['Partner', 'Admin', 'Manager', 'Director'];
 
   constructor(
     private fb: FormBuilder,
@@ -30,6 +31,7 @@ export class MemberEditDialogComponent implements OnInit {
       manager: [data.member.manager, Validators.required],
       director: [data.member.director, Validators.required],
       status: [data.member.status, Validators.required],
+      role: [data.member.role || 'Partner', Validators.required],
     });
   }
 

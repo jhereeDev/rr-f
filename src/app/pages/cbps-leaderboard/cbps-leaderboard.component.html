@@ -22,12 +22,21 @@
             color="primary"
           >
           </mat-slide-toggle>
-          <span class="debug-info" *ngIf="showAlias">Showing Alias</span>
-          <span class="debug-info" *ngIf="!showAlias">Showing Real Names</span>
+          <span class="toggle-label">{{
+            showAlias ? "Showing Alias Names" : "Showing Real Names"
+          }}</span>
         </div>
         <button mat-flat-button class="home-button" [routerLink]="['/admin']">
           <mat-icon>home</mat-icon>
           Home
+        </button>
+        <button
+          mat-flat-button
+          class="refresh-button"
+          (click)="loadLeaderboards()"
+        >
+          <mat-icon>refresh</mat-icon>
+          Refresh
         </button>
       </div>
     </div>
@@ -53,16 +62,40 @@
       </div>
     </div>
 
-    <div class="table-container" *ngIf="selectedTabIndex === 0">
-      <table class="leaderboard-table">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading leaderboard data...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="error && !isLoading">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-stroked-button color="primary" (click)="loadLeaderboards()">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Manager Leaderboard Table -->
+    <div
+      class="table-container"
+      *ngIf="selectedTabIndex === 0 && !isLoading && !error"
+    >
+      <div class="empty-state" *ngIf="managerLeaderboard.length === 0">
+        <img src="assets/no-data.png" alt="No data" class="empty-img" />
+        <p>No manager leaderboard data available.</p>
+      </div>
+
+      <table class="leaderboard-table" *ngIf="managerLeaderboard.length > 0">
         <thead>
           <tr>
-            <th>Alias Name</th>
+            <th>Member Name</th>
             <th>Fiscal Year</th>
-            <th>Race Season Total Points</th>
-            <th>Race Season Approved Points</th>
-            <th>Race Season For Approval Points</th>
-            <th>Race Season Rejected Points</th>
+            <th>Total Points</th>
+            <th>Approved Points</th>
+            <th>For Approval Points</th>
+            <th>Rejected Points</th>
           </tr>
         </thead>
         <tbody>
@@ -78,16 +111,25 @@
       </table>
     </div>
 
-    <div class="table-container" *ngIf="selectedTabIndex === 1">
-      <table class="leaderboard-table">
+    <!-- Partner Leaderboard Table -->
+    <div
+      class="table-container"
+      *ngIf="selectedTabIndex === 1 && !isLoading && !error"
+    >
+      <div class="empty-state" *ngIf="partnerLeaderboard.length === 0">
+        <img src="assets/no-data.png" alt="No data" class="empty-img" />
+        <p>No partner leaderboard data available.</p>
+      </div>
+
+      <table class="leaderboard-table" *ngIf="partnerLeaderboard.length > 0">
         <thead>
           <tr>
-            <th>Alias Name</th>
+            <th>Member Name</th>
             <th>Fiscal Year</th>
-            <th>Race Season Total Points</th>
-            <th>Race Season Approved Points</th>
-            <th>Race Season For Approval Points</th>
-            <th>Race Season Rejected Points</th>
+            <th>Total Points</th>
+            <th>Approved Points</th>
+            <th>For Approval Points</th>
+            <th>Rejected Points</th>
           </tr>
         </thead>
         <tbody>

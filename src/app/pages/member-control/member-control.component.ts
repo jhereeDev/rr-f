@@ -3,9 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 import { MemberAddDialogComponent } from '../../components/member-add-dialog/member-add-dialog.component';
 import { MemberEditDialogComponent } from '../../components/member-edit-dialog/member-edit-dialog.component';
-import { MemberDetailsComponent } from '../../components/member-details/member-details.component';
 import { MemberMappingDialogComponent } from '../../components/member-mapping-dialog/member-mapping-dialog.component';
 import { MemberConfirmDialogComponent } from '../../components/member-confirm-dialog/member-confirm-dialog.component';
 import { ToastService } from '../../common/services/toast.service';
@@ -53,7 +53,8 @@ export class MemberControlComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private toastService: ToastService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -71,8 +72,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Inactive',
         },
         {
@@ -81,8 +82,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'New Joiner',
         },
         {
@@ -91,8 +92,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         {
@@ -101,8 +102,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         {
@@ -111,8 +112,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Inactive',
         },
         {
@@ -121,8 +122,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         {
@@ -131,8 +132,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ware',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         // Additional members for pagination
@@ -142,8 +143,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Figueroa',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'New Joiner',
         },
         {
@@ -152,8 +153,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Magpili',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         {
@@ -162,8 +163,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Arias',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         {
@@ -172,8 +173,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Gelacio',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Inactive',
         },
         {
@@ -182,8 +183,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Quino',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
         {
@@ -192,8 +193,8 @@ export class MemberControlComponent implements OnInit {
           lastName: 'Ramirez',
           jobTitle: 'Associate Consultant',
           department: 'PH022: Philippines Operations',
-          manager: 'John Nunez',
-          director: 'Ronwald King',
+          manager: 'john.nunez@cgi.com',
+          director: 'ronwald.king@cgi.com',
           status: 'Active',
         },
       ];
@@ -286,11 +287,7 @@ export class MemberControlComponent implements OnInit {
   }
 
   viewMemberDetails(member: Member): void {
-    this.dialog.open(MemberDetailsComponent, {
-      width: '80%',
-      data: { member },
-      panelClass: 'member-details-dialog',
-    });
+    this.router.navigate(['/admin/members', member.id]);
   }
 
   syncMemberMapping(): void {
