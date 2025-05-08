@@ -1,0 +1,40 @@
+<div class="attachments-container">
+  <div class="attachments-header">
+    <h4>{{ title }}</h4>
+  </div>
+
+  <div class="attachments-list">
+    <ng-container
+      *ngIf="attachments && attachments.length > 0; else noAttachments"
+    >
+      <div
+        *ngFor="let attachment of attachments; let i = index"
+        class="attachment-item"
+        [class.active]="selectedAttachmentIndex === i"
+        (click)="selectAttachment(i)"
+      >
+        <mat-icon>{{ getFileIcon(attachment.filename) }}</mat-icon>
+        <span class="attachment-name" [title]="attachment.filename">{{
+          attachment.filename
+        }}</span>
+      </div>
+    </ng-container>
+
+    <ng-template #noAttachments>
+      <div class="empty-message">No attachments available</div>
+    </ng-template>
+  </div>
+
+  <div class="preview-container" [class.empty]="!selectedAttachment">
+    <ng-container *ngIf="selectedAttachment; else noAttachmentSelected">
+      <app-attachment-viewer
+        [filePath]="selectedAttachment.path"
+        [fileType]="selectedAttachment.type || ''"
+      ></app-attachment-viewer>
+    </ng-container>
+
+    <ng-template #noAttachmentSelected>
+      <div class="empty-preview">Select an attachment to preview</div>
+    </ng-template>
+  </div>
+</div>

@@ -1,17 +1,19 @@
-// member-control.component.ts
+// member-control.component.ts with real data integration
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { MemberService } from '../../common/services/member.service';
 import { MemberAddDialogComponent } from '../../components/member-add-dialog/member-add-dialog.component';
 import { MemberEditDialogComponent } from '../../components/member-edit-dialog/member-edit-dialog.component';
 import { MemberMappingDialogComponent } from '../../components/member-mapping-dialog/member-mapping-dialog.component';
 import { MemberConfirmDialogComponent } from '../../components/member-confirm-dialog/member-confirm-dialog.component';
 import { ToastService } from '../../common/services/toast.service';
+import { finalize } from 'rxjs/operators';
 
 interface Member {
-  id: number;
+  id: string | number;
   firstName: string;
   lastName: string;
   jobTitle: string;
@@ -20,6 +22,7 @@ interface Member {
   director: string;
   status: string;
   email?: string;
+  role?: number;
 }
 
 @Component({
@@ -41,6 +44,8 @@ export class MemberControlComponent implements OnInit {
   ];
   isLoading = true;
   searchText = '';
+  error = false;
+  errorMessage = '';
 
   // Pagination variables
   pageSize = 7;
@@ -54,7 +59,8 @@ export class MemberControlComponent implements OnInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private memberService: MemberService
   ) {}
 
   ngOnInit(): void {
@@ -63,176 +69,38 @@ export class MemberControlComponent implements OnInit {
 
   loadMembers(): void {
     this.isLoading = true;
-    // Simulated API call - would be replaced with an actual service call
-    setTimeout(() => {
-      this.members = [
-        {
-          id: 1,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Inactive',
-        },
-        {
-          id: 2,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'New Joiner',
-        },
-        {
-          id: 3,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        {
-          id: 4,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        {
-          id: 5,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Inactive',
-        },
-        {
-          id: 6,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        {
-          id: 7,
-          firstName: 'Angelica',
-          lastName: 'Ware',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        // Additional members for pagination
-        {
-          id: 8,
-          firstName: 'Jheremiah',
-          lastName: 'Figueroa',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'New Joiner',
-        },
-        {
-          id: 9,
-          firstName: 'Adrian',
-          lastName: 'Magpili',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        {
-          id: 10,
-          firstName: 'Victor',
-          lastName: 'Arias',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        {
-          id: 11,
-          firstName: 'Samuel',
-          lastName: 'Gelacio',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Inactive',
-        },
-        {
-          id: 12,
-          firstName: 'Danica',
-          lastName: 'Quino',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-        {
-          id: 13,
-          firstName: 'Candy',
-          lastName: 'Ramirez',
-          jobTitle: 'Associate Consultant',
-          department: 'PH022: Philippines Operations',
-          manager: 'john.nunez@cgi.com',
-          director: 'ronwald.king@cgi.com',
-          status: 'Active',
-        },
-      ];
+    this.error = false;
 
-      this.totalItems = this.members.length;
-      this.updateDisplayedMembers();
-      this.isLoading = false;
-    }, 500);
+    const filters = this.searchText ? { search: this.searchText } : undefined;
+
+    this.memberService
+      .getMembers(filters)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.members = data;
+          this.totalItems = this.members.length;
+          this.updateDisplayedMembers();
+        },
+        error: (err) => {
+          this.error = true;
+          this.errorMessage = err.message || 'Failed to load members';
+          this.toastService.error(this.errorMessage);
+          this.members = [];
+          this.filteredMembers = [];
+          this.totalItems = 0;
+        },
+      });
   }
 
   updateDisplayedMembers(): void {
-    // Filter members based on search text
-    const filtered = this.searchText
-      ? this.members.filter(
-          (member) =>
-            `${member.firstName} ${member.lastName}`
-              .toLowerCase()
-              .includes(this.searchText.toLowerCase()) ||
-            member.jobTitle
-              .toLowerCase()
-              .includes(this.searchText.toLowerCase()) ||
-            member.department
-              .toLowerCase()
-              .includes(this.searchText.toLowerCase()) ||
-            member.manager
-              .toLowerCase()
-              .includes(this.searchText.toLowerCase()) ||
-            member.director
-              .toLowerCase()
-              .includes(this.searchText.toLowerCase())
-        )
-      : [...this.members];
-
-    this.totalItems = filtered.length;
-
     // Apply pagination
     const startIndex = this.pageIndex * this.pageSize;
-    this.filteredMembers = filtered.slice(
+    this.filteredMembers = this.members.slice(
       startIndex,
       startIndex + this.pageSize
     );
@@ -248,13 +116,13 @@ export class MemberControlComponent implements OnInit {
     const value = (event.target as HTMLInputElement).value;
     this.searchText = value;
     this.pageIndex = 0; // Reset to first page when searching
-    this.updateDisplayedMembers();
+    this.loadMembers(); // Reload with search filter
   }
 
   clearSearch(): void {
     this.searchText = '';
     this.pageIndex = 0;
-    this.updateDisplayedMembers();
+    this.loadMembers(); // Reload without search filter
   }
 
   openAddMemberDialog(): void {
@@ -265,8 +133,21 @@ export class MemberControlComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.toastService.success('Member added successfully');
-        this.loadMembers();
+        // Transform the dialog result to match the API expectations
+        const memberData = {
+          email: result.email,
+          status: result.status,
+        };
+
+        this.memberService.addMember(memberData).subscribe({
+          next: () => {
+            this.toastService.success('Member added successfully');
+            this.loadMembers();
+          },
+          error: (err) => {
+            this.toastService.error(err.message || 'Failed to add member');
+          },
+        });
       }
     });
   }
@@ -280,8 +161,27 @@ export class MemberControlComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.toastService.success('Member updated successfully');
-        this.loadMembers();
+        // Transform the dialog result to match the API expectations
+
+        const memberData = {
+          jobTitle: result.jobTitle,
+          manager: result.manager,
+          director: result.director,
+          status: result.status,
+          role: result.role,
+        };
+
+        this.memberService
+          .updateMember(member.id.toString(), memberData)
+          .subscribe({
+            next: () => {
+              this.toastService.success('Member updated successfully');
+              this.loadMembers();
+            },
+            error: (err) => {
+              this.toastService.error(err.message || 'Failed to update member');
+            },
+          });
       }
     });
   }
@@ -298,7 +198,20 @@ export class MemberControlComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
-        this.toastService.success('Member mapping synchronized successfully');
+        // Actually perform the mapping operation
+        this.memberService.mapMembersHierarchy().subscribe({
+          next: () => {
+            this.toastService.success(
+              'Member mapping synchronized successfully'
+            );
+            this.loadMembers(); // Reload member list
+          },
+          error: (err) => {
+            this.toastService.error(
+              err.message || 'Failed to sync member mapping'
+            );
+          },
+        });
       }
     });
   }

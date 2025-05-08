@@ -50,10 +50,12 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { MemberControlComponent } from './pages/member-control/member-control.component';
 import { MemberAddDialogComponent } from './components/member-add-dialog/member-add-dialog.component';
 import { MemberEditDialogComponent } from './components/member-edit-dialog/member-edit-dialog.component';
-import { MemberDetailsComponent } from './components/member-details/member-details.component';
+import { MemberDetailsComponent as ComponentsMemberDetailsComponent } from './components/member-details/member-details.component';
 import { MemberMappingDialogComponent } from './components/member-mapping-dialog/member-mapping-dialog.component';
 import { MemberConfirmDialogComponent } from './components/member-confirm-dialog/member-confirm-dialog.component';
 import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderboard.component';
+import { MemberDetailsModule } from './pages/member-details.module';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -83,10 +85,11 @@ import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderbo
     MemberControlComponent,
     MemberAddDialogComponent,
     MemberEditDialogComponent,
-    MemberDetailsComponent,
+    ComponentsMemberDetailsComponent,
     MemberMappingDialogComponent,
     MemberConfirmDialogComponent,
     CBPSLeaderboardComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -110,6 +113,7 @@ import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderbo
     MatProgressSpinnerModule,
     MatCheckboxModule,
     A11yModule,
+    MemberDetailsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

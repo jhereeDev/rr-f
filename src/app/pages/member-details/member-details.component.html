@@ -17,10 +17,11 @@
       <span class="status-badge status-approved">Approved</span>
     </div>
 
-    <div class="attachments">
-      <button mat-raised-button class="attachment-button">proof.pdf</button>
-      <button mat-raised-button class="attachment-button">proof.jpeg</button>
-    </div>
+    <!-- New Attachments Container Component -->
+    <app-attachments-container
+      [attachments]="currentProjectAttachments"
+      title="Project Attachments"
+    ></app-attachments-container>
 
     <form [formGroup]="editProjectForm" (ngSubmit)="onSubmit()">
       <div class="form-row">
@@ -109,14 +110,24 @@
             </td>
             <td>{{ entry.date }}</td>
             <td>{{ entry.notes }}</td>
-            <td>
-              <button
-                mat-icon-button
-                color="primary"
-                *ngFor="let attachment of entry.attachments"
-              >
-                <mat-icon>download</mat-icon>
-              </button>
+            <td class="attachments-cell">
+              <div class="attachment-buttons">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  *ngFor="let attachment of entry.attachments"
+                  (click)="viewAttachment(attachment)"
+                  [title]="attachment.filename"
+                >
+                  <mat-icon>{{
+                    attachment.type === "pdf"
+                      ? "picture_as_pdf"
+                      : attachment.type === "image"
+                      ? "image"
+                      : "insert_drive_file"
+                  }}</mat-icon>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

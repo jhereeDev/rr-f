@@ -64,7 +64,34 @@
     </div>
 
     <div class="table-container">
-      <table class="member-table">
+      <!-- Loading indicator -->
+      <div class="loading-state" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading members...</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="error-state" *ngIf="error && !isLoading">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <p>{{ errorMessage }}</p>
+        <button mat-stroked-button color="primary" (click)="loadMembers()">
+          Try Again
+        </button>
+      </div>
+
+      <!-- No data state -->
+      <div
+        class="empty-state"
+        *ngIf="!isLoading && !error && members.length === 0"
+      >
+        <img src="assets/no-data.png" alt="No data" class="empty-img" />
+        <p>No members found. You can add new members using the button above.</p>
+      </div>
+
+      <table
+        class="member-table"
+        *ngIf="!isLoading && !error && members.length > 0"
+      >
         <thead>
           <tr>
             <th>Member Name</th>
@@ -114,7 +141,10 @@
         </tbody>
       </table>
 
-      <div class="pagination-container">
+      <div
+        class="pagination-container"
+        *ngIf="!isLoading && !error && members.length > 0"
+      >
         <div class="items-per-page">
           Items per page:
           <mat-form-field appearance="outline">

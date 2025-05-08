@@ -35,6 +35,15 @@
   padding: 0 16px;
   display: flex;
   align-items: center;
+
+  mat-icon {
+    color: white;
+  }
+
+  .mdc-button__label,
+  ::ng-deep .mdc-button__label {
+    color: white;
+  }
 }
 
 .section-title {
@@ -88,8 +97,8 @@
 .attachments {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .attachment-button {
@@ -209,6 +218,25 @@
   display: none !important;
 }
 
+app-attachments-container {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.attachments-cell {
+  .attachment-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    button {
+      mat-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .member-header {
     padding-right: 80px;
@@ -222,5 +250,42 @@
   .date-info-container {
     flex-direction: column;
     gap: 16px;
+  }
+
+  .member-details-container {
+    padding: 12px;
+  }
+
+  .project-details-section,
+  .reward-entries-section {
+    padding: 16px;
+  }
+
+  .table-container {
+    overflow-x: auto;
+
+    .reward-entries-table {
+      min-width: 800px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .member-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    .back-button {
+      margin-top: 10px;
+    }
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .date-info-container {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,14 +1,10 @@
+// member-details.component.ts with real data integration
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastService } from '../../common/services/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { MemberService } from '../../common/services/member.service';
+import { finalize } from 'rxjs/operators';
 
 interface RewardEntry {
   id: number;
@@ -19,23 +15,23 @@ interface RewardEntry {
   status: string;
   date: string;
   notes: string;
-  attachments?: string[];
+  attachments?: Array<{
+    filename: string;
+    path: string;
+    type?: string;
+  }>;
+}
+
+interface Attachment {
+  filename: string;
+  path: string;
+  type?: string;
 }
 
 @Component({
   selector: 'app-member-details',
   templateUrl: './member-details.component.html',
   styleUrls: ['./member-details.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-  ],
 })
 export class MemberDetailsComponent implements OnInit {
   editProjectForm: FormGroup;
@@ -51,13 +47,19 @@ export class MemberDetailsComponent implements OnInit {
     'notes',
     'attachments',
   ];
-  memberData: any;
+  memberData: any = null;
+  isLoading = false;
+  errorMessage = '';
+
+  // Current project attachments (can be updated after API integration)
+  currentProjectAttachments: Attachment[] = [];
 
   constructor(
     private fb: FormBuilder,
     private toastService: ToastService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private memberService: MemberService
   ) {
     // Initialize the form for editing a specific project
     this.editProjectForm = this.fb.group({
@@ -70,132 +72,68 @@ export class MemberDetailsComponent implements OnInit {
     // Get member ID from route params
     this.route.params.subscribe((params) => {
       const memberId = params['id'];
-      // TODO: Fetch member data using the ID
       this.loadMemberData(memberId);
+      this.loadMemberRewardEntries(memberId);
     });
-
-    // Load mock reward entries
-    this.loadRewardEntries();
   }
 
   loadMemberData(memberId: string): void {
-    // In a real application, we would fetch this data from a service
-    // For now, we're using mock data similar to member-control
-    const mockMembers = [
-      {
-        id: '1',
-        firstName: 'Angelica',
-        lastName: 'Ware',
-        jobTitle: 'Associate Consultant',
-        department: 'PH022: Philippines Operations',
-        manager: 'john.nunez@cgi.com',
-        director: 'ronwald.king@cgi.com',
-        status: 'Inactive',
-      },
-      {
-        id: '2',
-        firstName: 'Jheremiah',
-        lastName: 'Figueroa',
-        jobTitle: 'Associate Consultant',
-        department: 'PH022: Philippines Operations',
-        manager: 'john.nunez@cgi.com',
-        director: 'ronwald.king@cgi.com',
-        status: 'New Joiner',
-      },
-      {
-        id: '3',
-        firstName: 'Adrian',
-        lastName: 'Magpili',
-        jobTitle: 'Associate Consultant',
-        department: 'PH022: Philippines Operations',
-        manager: 'john.nunez@cgi.com',
-        director: 'ronwald.king@cgi.com',
-        status: 'Active',
-      },
-      {
-        id: '4',
-        firstName: 'Victor',
-        lastName: 'Arias',
-        jobTitle: 'Associate Consultant',
-        department: 'PH022: Philippines Operations',
-        manager: 'john.nunez@cgi.com',
-        director: 'ronwald.king@cgi.com',
-        status: 'Active',
-      },
-    ];
+    this.isLoading = true;
 
-    // Find the member with the matching ID
-    const member = mockMembers.find((m) => m.id === memberId);
-
-    if (member) {
-      this.memberData = member;
-    } else {
-      // If no member is found, use default data
-      this.memberData = {
-        id: memberId,
-        firstName: 'John',
-        lastName: 'Doe',
-        jobTitle: 'Senior Developer',
-        department: 'IT Department',
-        manager: 'manager@example.com',
-        director: 'director@example.com',
-        status: 'Active',
-      };
-    }
+    this.memberService
+      .getMember(memberId)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe({
+        next: (member) => {
+          if (member) {
+            this.memberData = member;
+          } else {
+            this.errorMessage = 'Member not found';
+            this.toastService.error(this.errorMessage);
+          }
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to load member details';
+          this.toastService.error(this.errorMessage);
+        },
+      });
   }
 
-  loadRewardEntries(): void {
-    this.rewardEntries = [
-      {
-        id: 1,
-        category: 'Clients',
-        accomplishment: 'OSAP >9.5',
-        points: 10,
-        shortDescription: 'This is a Sample Project short description',
-        status: 'Approved',
-        date: '3/10/2025, 3:59 PM',
-        notes: 'No notes',
-        attachments: ['doc1.pdf'],
-      },
-      {
-        id: 2,
-        category: 'Clients',
-        accomplishment: 'Clients/PBU Commendation',
-        points: 10,
-        shortDescription: 'Sample Project',
-        status: 'Rejected',
-        date: '3/10/2025, 3:59 PM',
-        notes: 'Please Provide Attachment',
-        attachments: ['doc2.pdf'],
-      },
-      {
-        id: 3,
-        category: 'Clients',
-        accomplishment: 'OSAP >9.5',
-        points: 10,
-        shortDescription: 'This is a Sample Project short description',
-        status: 'Approved',
-        date: '3/10/2025, 3:59 PM',
-        notes: 'No notes',
-        attachments: ['doc3.pdf'],
-      },
-      {
-        id: 4,
-        category: 'Clients',
-        accomplishment: 'OSAP >9.5',
-        points: 10,
-        shortDescription: 'This is a Sample Project short description',
-        status: 'Approved',
-        date: '3/10/2025, 3:59 PM',
-        notes: 'No notes',
-        attachments: ['doc4.pdf'],
-      },
-    ];
+  loadMemberRewardEntries(memberId: string): void {
+    this.isLoading = true;
+
+    this.memberService
+      .getMemberRewardEntries(memberId)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe({
+        next: (entries) => {
+          this.rewardEntries = entries;
+
+          // If there are entries, set the current project attachments from the first entry
+          if (entries.length > 0 && entries[0].attachments) {
+            this.currentProjectAttachments = entries[0].attachments;
+          }
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to load reward entries';
+          this.toastService.error(this.errorMessage);
+          this.rewardEntries = [];
+        },
+      });
   }
 
   onSubmit(): void {
     if (this.editProjectForm.valid) {
       // Here you would call the service to update the project
+      // For now, we'll just show a success toast
       this.toastService.success('Project updated successfully');
     } else {
       this.editProjectForm.markAllAsTouched();
@@ -220,5 +158,10 @@ export class MemberDetailsComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/admin/members']);
+  }
+
+  viewAttachment(attachment: Attachment): void {
+    // In a real application, you would use the RewardpointsService to download
+    window.open(attachment.path, '_blank');
   }
 }

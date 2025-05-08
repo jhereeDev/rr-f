@@ -31,7 +31,7 @@ export class CBPSLeaderboardComponent implements OnInit {
   // UI state
   selectedTabIndex = 0;
   isLoading = true;
-  showAlias = true;
+  showAlias = false;
   graphImagePath = 'assets/buttons/graph.png';
   error: string | null = null;
 
@@ -171,7 +171,7 @@ export class CBPSLeaderboardComponent implements OnInit {
 
   // Get the display name based on the alias toggle state
   getDisplayName(entry: LeaderboardEntry): string {
-    if (this.showAlias) {
+    if (!this.showAlias) {
       return entry.aliasName;
     } else {
       if (entry.member_firstname && entry.member_lastname) {

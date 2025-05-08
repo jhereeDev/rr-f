@@ -46,13 +46,22 @@ export class AuthGuard implements CanActivate, CanLoad {
       map((res: any) => {
         if (res && res.success) {
           if (url === '/login') {
+            return this.router.createUrlTree([res.user.role_id === 1 ? '/admin' : '/home']);
+          }
+
+          if (url.startsWith('/admin') && res.user.role_id !== 1) {
             return this.router.createUrlTree(['/home']);
           }
+
+          if (!url.startsWith('/admin') && res.user.role_id === 1) {
+            return this.router.createUrlTree(['/admin']);
+          }
+
           if (roles && roles.length > 0) {
             if (roles.includes(this.auth.user.role_id)) {
               return true;
             } else {
-              return this.router.createUrlTree(['/home']);
+              return this.router.createUrlTree([res.user.role_id === 1 ? '/admin' : '/home']);
             }
           }
           return true;

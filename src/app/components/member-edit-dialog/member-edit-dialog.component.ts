@@ -13,10 +13,15 @@ export class MemberEditDialogComponent implements OnInit {
   memberForm: FormGroup;
   statuses = ['Active', 'Inactive', 'New Joiner'];
   jobTitles = [
-    'Associate Consultant',
-    'Consultant',
-    'Senior Consultant',
-    'Manager',
+    'ASSOCIATE CONSULTANT',
+    'JUNIOR CONSULTANT',
+    'SERVICE CONSULTANT',
+    'PRINCIPAL CONSULTANT',
+    'LEAD CONSULTANT',
+    'MANAGER CONSULTING DELIVERY',
+    'MANAGER CONSULTING EXPERT',
+    'DIRECTOR CONSULTING DELIVERY',
+    'DIRECTOR CONSULTING EXPERT',
   ];
   roles = ['Partner', 'Admin', 'Manager', 'Director'];
 
@@ -26,6 +31,7 @@ export class MemberEditDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { member: any },
     private toastService: ToastService
   ) {
+    console.log(data.member);
     this.memberForm = this.fb.group({
       jobTitle: [data.member.jobTitle, Validators.required],
       manager: [data.member.manager, Validators.required],

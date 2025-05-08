@@ -1,0 +1,44 @@
+<div class="attachment-viewer-container">
+  <!-- Loading Indicator -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading preview...</p>
+  </div>
+
+  <!-- Error Display -->
+  <div class="error-container" *ngIf="hasError">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>Unable to preview this file</p>
+    <a [href]="filePath" target="_blank" class="download-link">
+      <mat-icon>download</mat-icon> Download Instead
+    </a>
+  </div>
+
+  <!-- PDF Viewer -->
+  <div
+    class="pdf-container"
+    *ngIf="isPdf && safeUrl && !hasError && !isLoading"
+  >
+    <iframe [src]="safeUrl" frameborder="0" class="pdf-frame"></iframe>
+  </div>
+
+  <!-- Image Viewer -->
+  <div
+    class="image-container"
+    *ngIf="isImage && safeUrl && !hasError && !isLoading"
+  >
+    <img
+      [src]="safeUrl"
+      (load)="onImageLoad()"
+      (error)="onImageError()"
+      class="preview-image"
+    />
+  </div>
+
+  <!-- Download Button -->
+  <div class="download-button-container" *ngIf="!hasError && !isLoading">
+    <a [href]="filePath" download class="download-button">
+      <mat-icon>download</mat-icon> Download
+    </a>
+  </div>
+</div>

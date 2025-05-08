@@ -71,25 +71,26 @@ export class LoginComponent implements OnInit {
     this.auth.login(loginData).subscribe({
       next: (res) => {
         if (res && res.success) {
-          const consents = this.consentService.getStoredConsents();
-          if (consents) {
-            // Log consents after successful login
-            this.consentService.logConsent(consents).subscribe({
-              next: () => {
-                this.router.navigateByUrl('/home');
-                const hide = res.user.hidePopup === 0 ? 'false' : 'true';
-                localStorage.setItem('hidePopup', hide);
-                // Clear consents after successful logging
-                this.consentService.clearConsents();
-              },
-              error: (error) => {
-                console.error('Error logging consents:', error);
-                this.loginError = 'Error saving consent data';
-              },
-            });
+          if (res.user.role_id === 1) {
+            this.router.navigateByUrl('/admin');
           } else {
-            // Logout if somehow logged in without consents
-            this.auth.logout().subscribe();
+            const consents = this.consentService.getStoredConsents();
+            if (consents) {
+              this.consentService.logConsent(consents).subscribe({
+                next: () => {
+                  this.router.navigateByUrl('/home');
+                  const hide = res.user.hidePopup === 0 ? 'false' : 'true';
+                  localStorage.setItem('hidePopup', hide);
+                  this.consentService.clearConsents();
+                },
+                error: (error) => {
+                  console.error('Error logging consents:', error);
+                  this.loginError = 'Error saving consent data';
+                },
+              });
+            } else {
+              this.auth.logout().subscribe();
+            }
           }
         } else {
           this.loginError = 'Invalid credentials. Please try again.';
