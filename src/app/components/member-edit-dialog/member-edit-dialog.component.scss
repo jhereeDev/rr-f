@@ -1,4 +1,4 @@
-/* member-edit-dialog.component.scss */
+/* Updated member-edit-dialog.component.scss */
 .dialog-container {
   padding: 24px;
   max-width: 800px;
@@ -63,6 +63,27 @@ h3 {
   }
 }
 
+/* Read-only field styling */
+.read-only-field {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px 16px;
+  font-size: 16px;
+  color: #666;
+  min-height: 20px;
+}
+
+.read-only-content {
+  word-break: break-word;
+}
+
+/* Required field indicator */
+.required-indicator {
+  color: #f44336;
+  margin-left: 2px;
+}
+
 /* Remove form field bottom spacing */
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
@@ -72,5 +93,9 @@ h3 {
   .form-row {
     flex-direction: column;
     gap: 0;
+  }
+
+  .read-only-field {
+    margin-bottom: 12px;
   }
 }

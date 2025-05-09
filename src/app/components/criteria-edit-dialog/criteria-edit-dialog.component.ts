@@ -46,6 +46,7 @@ export class CriteriaEditDialogComponent implements OnInit {
         data.criteria.type || this.criteriaTypes[0],
         this.isManager ? Validators.required : null,
       ],
+      remarks: [data.criteria.remarks || ''],
     });
   }
 
@@ -63,6 +64,7 @@ export class CriteriaEditDialogComponent implements OnInit {
         guidelines: formData.guidelines,
         director_approval: formData.director_approval,
         type: this.isManager ? formData.type : 'BOTH', // Type is only relevant for manager criteria
+        remarks: formData.remarks,
       };
 
       this.dialogRef.close(criteriaData);

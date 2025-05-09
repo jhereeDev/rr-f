@@ -60,14 +60,20 @@ export class AuthService {
       });
     }
 
-  // Change Password
-  changePassword(data: {
-    currentPassword: string;
-    newPassword: string;
-  }): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/auth/change-password`, data, {
-      withCredentials: true,
-      responseType: 'json',
-    });
-  }
+    // Get current user ID
+    getCurrentUserId(): number {
+      return this.user?.id;
+    }
+
+    // Change Password
+    changePassword(userId: number, data: {
+      oldPassword: string;
+      newPassword: string;
+      confirmPassword: string;
+    }): Observable<any> {
+      return this.http.put<any>(`${this.apiUrl}/admins/users/${userId}/password`, data, {
+        withCredentials: true,
+        responseType: 'json',
+      });
+    }
 }

@@ -3,6 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from 'src/app/common/services/auth.service';
 import { CriteriaService } from 'src/app/common/services/criteria.service';
 import { UserData } from 'src/app/models/user.model';
+import { forkJoin } from 'rxjs';
 
 interface CriteriaGroup {
   category: string;
@@ -48,20 +49,25 @@ export class GuidelinesComponent implements OnInit {
   }
 
   loadCriterias(): void {
-    this.criteriaService.getCriteriasGuidelines().subscribe({
-      next: (res) => {
-        if (this.userRole === 5) {
-          console.log(res.data);
-          this.criterias = res.data.sort((a: any, b: any) => a.id - b.id);
-          this.groupCriterias();
-        } else {
-          this.criterias = res.data.sort((a: any, b: any) => a.id - b.id);
-          this.groupCriterias();
-        }
+    // Create a combined observable that fetches both partner and manager criteria
+    forkJoin({
+      partner: this.criteriaService.getAllPartnerCriteria(),
+      manager: this.criteriaService.getAllManagerCriteria()
+    }).subscribe({
+      next: (results) => {
+        // Combine the results from both API calls
+        const partnerCriteria = results.partner.data || [];
+        const managerCriteria = results.manager.data || [];
+
+        // Merge both arrays and sort by ID
+        this.criterias = [...partnerCriteria, ...managerCriteria].sort((a: any, b: any) => a.id - b.id);
+
+        // Group the criteria as before
+        this.groupCriterias();
       },
       error: (error) => {
         console.error('Error loading criteria:', error);
-      },
+      }
     });
   }
 

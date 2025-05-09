@@ -1,19 +1,88 @@
 <!-- member-mapping-dialog.component.html -->
 <div class="mapping-dialog-container">
-  <h2 mat-dialog-title>Updating Member Mapping</h2>
+  <h2 mat-dialog-title>{{ dialogTitle }}</h2>
 
   <div class="dialog-content">
-    <p class="loading-text">Please Wait</p>
+    <p class="loading-text">{{ statusMessage }}</p>
 
+    <!-- Progress indicators -->
     <div class="progress-container">
       <mat-progress-bar
         mode="determinate"
         [value]="progress"
       ></mat-progress-bar>
+      <p class="progress-text" *ngIf="progressDetails">
+        {{ progressDetails }}
+      </p>
+    </div>
+
+    <!-- Role progress indicators -->
+    <div class="role-progress-indicators" *ngIf="!isComplete && (progress > 5)">
+      <div class="role-indicator">
+        <div class="role-icon" [class.completed]="directorsSynced">
+          <mat-icon>supervisor_account</mat-icon>
+        </div>
+        <div class="role-label">Directors</div>
+        <div class="role-status">{{ directorsSynced ? 'Complete' : 'In Progress' }}</div>
+      </div>
+
+      <div class="role-separator"></div>
+
+      <div class="role-indicator">
+        <div class="role-icon" [class.completed]="managersSynced" [class.in-progress]="directorsSynced && !managersSynced">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="role-label">Managers</div>
+        <div class="role-status">
+          <ng-container *ngIf="managersSynced">Complete</ng-container>
+          <ng-container *ngIf="directorsSynced && !managersSynced">In Progress</ng-container>
+          <ng-container *ngIf="!directorsSynced">Pending</ng-container>
+        </div>
+      </div>
+
+      <div class="role-separator"></div>
+
+      <div class="role-indicator">
+        <div class="role-icon" [class.completed]="membersSynced" [class.in-progress]="managersSynced && !membersSynced">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="role-label">Partners</div>
+        <div class="role-status">
+          <ng-container *ngIf="membersSynced">Complete</ng-container>
+          <ng-container *ngIf="managersSynced && !membersSynced">In Progress</ng-container>
+          <ng-container *ngIf="!managersSynced">Pending</ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats display when complete -->
+    <div *ngIf="mappingStats && isComplete" class="stats-container">
+      <div class="stat-item">
+        <div class="stat-value created">{{ mappingStats.created }}</div>
+        <div class="stat-label">Created</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value updated">{{ mappingStats.updated }}</div>
+        <div class="stat-label">Updated</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value skipped">{{ mappingStats.skipped }}</div>
+        <div class="stat-label">Skipped</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value failed">{{ mappingStats.failed }}</div>
+        <div class="stat-label">Failed</div>
+      </div>
     </div>
   </div>
 
   <div class="dialog-actions">
-    <button mat-raised-button color="warn" (click)="cancel()">Cancel</button>
+    <button
+      mat-raised-button
+      [color]="isComplete ? 'primary' : 'warn'"
+      (click)="isComplete ? close() : cancel()"
+    >
+      {{ isComplete ? 'Done' : 'Cancel' }}
+    </button>
   </div>
 </div>

@@ -1,7 +1,6 @@
-// member-control.component.ts with real data integration
+// Updated member-control.component.ts
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { MemberService } from '../../common/services/member.service';
@@ -33,19 +32,11 @@ interface Member {
 export class MemberControlComponent implements OnInit {
   members: Member[] = [];
   filteredMembers: Member[] = [];
-  displayedColumns: string[] = [
-    'memberName',
-    'jobTitle',
-    'department',
-    'manager',
-    'director',
-    'status',
-    'actions',
-  ];
   isLoading = true;
   searchText = '';
   error = false;
   errorMessage = '';
+  refreshAfterAction = false;
 
   // Pagination variables
   pageSize = 7;
@@ -58,7 +49,6 @@ export class MemberControlComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private toastService: ToastService,
-    private snackBar: MatSnackBar,
     private router: Router,
     private memberService: MemberService
   ) {}
@@ -70,6 +60,7 @@ export class MemberControlComponent implements OnInit {
   loadMembers(): void {
     this.isLoading = true;
     this.error = false;
+    this.refreshAfterAction = false;
 
     const filters = this.searchText ? { search: this.searchText } : undefined;
 
@@ -78,15 +69,41 @@ export class MemberControlComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.isLoading = false;
+
         })
       )
       .subscribe({
-        next: (data) => {
-          this.members = data;
+        next: (response) => {
+
+          // Ensure we have an array of members with the correct structure
+          let membersData = [];
+          if (response && response.data && Array.isArray(response.data)) {
+            membersData = response.data;
+          } else if (response && Array.isArray(response)) {
+            membersData = response;
+          } else if (response && response.results && Array.isArray(response.results)) {
+            membersData = response.results;
+          }
+
+          // Transform API data to match our interface
+          this.members = membersData.map((member: any) => ({
+            id: member.id || member.member_employee_id || '',
+            firstName: member.member_firstname || member.firstName || '',
+            lastName: member.member_lastname || member.lastName || '',
+            jobTitle: member.member_title || member.jobTitle || '',
+            department: member.department || '',
+            manager: member.member_manager_id || member.manager || '',
+            director: member.member_director_id || member.director || '',
+            status: member.member_status || member.status || 'ACTIVE',
+            email: member.member_email || member.email || '',
+            role: member.role_id || member.role || 6
+          }));
+
           this.totalItems = this.members.length;
           this.updateDisplayedMembers();
         },
         error: (err) => {
+          console.error('Error loading members:', err);
           this.error = true;
           this.errorMessage = err.message || 'Failed to load members';
           this.toastService.error(this.errorMessage);
@@ -98,12 +115,15 @@ export class MemberControlComponent implements OnInit {
   }
 
   updateDisplayedMembers(): void {
+
     // Apply pagination
     const startIndex = this.pageIndex * this.pageSize;
     this.filteredMembers = this.members.slice(
       startIndex,
       startIndex + this.pageSize
     );
+
+
   }
 
   onPageChange(event: PageEvent): void {
@@ -127,27 +147,20 @@ export class MemberControlComponent implements OnInit {
 
   openAddMemberDialog(): void {
     const dialogRef = this.dialog.open(MemberAddDialogComponent, {
-      width: '800px',
+      width: '600px',
       disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // Transform the dialog result to match the API expectations
-        const memberData = {
-          email: result.email,
-          status: result.status,
-        };
+      if (result && result.success) {
+        // Mark that we need to refresh the list
+        this.refreshAfterAction = true;
 
-        this.memberService.addMember(memberData).subscribe({
-          next: () => {
-            this.toastService.success('Member added successfully');
-            this.loadMembers();
-          },
-          error: (err) => {
-            this.toastService.error(err.message || 'Failed to add member');
-          },
-        });
+        // Show success toast message
+        this.toastService.success(result.message || 'Member added successfully');
+
+        // Reload the member list
+        this.loadMembers();
       }
     });
   }
@@ -161,27 +174,9 @@ export class MemberControlComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Transform the dialog result to match the API expectations
-
-        const memberData = {
-          jobTitle: result.jobTitle,
-          manager: result.manager,
-          director: result.director,
-          status: result.status,
-          role: result.role,
-        };
-
-        this.memberService
-          .updateMember(member.id.toString(), memberData)
-          .subscribe({
-            next: () => {
-              this.toastService.success('Member updated successfully');
-              this.loadMembers();
-            },
-            error: (err) => {
-              this.toastService.error(err.message || 'Failed to update member');
-            },
-          });
+        this.refreshAfterAction = true;
+        this.toastService.success('Member updated successfully');
+        this.loadMembers();
       }
     });
   }
@@ -198,32 +193,58 @@ export class MemberControlComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
-        // Actually perform the mapping operation
-        this.memberService.mapMembersHierarchy().subscribe({
-          next: () => {
-            this.toastService.success(
-              'Member mapping synchronized successfully'
-            );
-            this.loadMembers(); // Reload member list
-          },
-          error: (err) => {
-            this.toastService.error(
-              err.message || 'Failed to sync member mapping'
-            );
-          },
-        });
+        this.refreshAfterAction = true;
+        this.toastService.success('Member mapping synchronized successfully');
+        this.loadMembers(); // Reload member list
       }
     });
   }
 
+  confirmStatusChange(member: Member, newStatus: string): void {
+    const dialogRef = this.dialog.open(MemberConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: `${newStatus === 'ACTIVE' ? 'Activate' : 'Deactivate'} Member`,
+        message: `Are you sure you want to ${newStatus === 'ACTIVE' ? 'activate' : 'deactivate'} ${member.firstName} ${member.lastName}?`,
+        confirmText: 'Confirm',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.updateMemberStatus(member, newStatus);
+      }
+    });
+  }
+
+  updateMemberStatus(member: Member, newStatus: string): void {
+    this.memberService.updateMemberStatus(Number(member.id), newStatus)
+      .subscribe({
+        next: (response) => {
+          if (response && response.success) {
+            this.toastService.success(`Member ${newStatus === 'ACTIVE' ? 'activated' : 'deactivated'} successfully`);
+            this.loadMembers();
+          } else {
+            this.toastService.error(response.error || 'Failed to update member status');
+          }
+        },
+        error: (err) => {
+          this.toastService.error(err.message || 'An error occurred while updating member status');
+        }
+      });
+  }
+
   getStatusClass(status: string): string {
-    switch (status.toLowerCase()) {
-      case 'active':
+    if (!status) {
+      return '';
+    }
+
+    switch (status.toUpperCase()) {
+      case 'ACTIVE':
         return 'status-active';
-      case 'inactive':
+      case 'INACTIVE':
         return 'status-inactive';
-      case 'new joiner':
-        return 'status-new';
       default:
         return '';
     }

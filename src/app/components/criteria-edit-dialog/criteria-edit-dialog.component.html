@@ -6,82 +6,89 @@
   <div class="criteria-id">Criteria ID: {{ criteriaId }}</div>
 
   <form [formGroup]="criteriaForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <h3>Accomplishment Category</h3>
-      <mat-form-field appearance="outline">
-        <mat-label>Category</mat-label>
-        <mat-select formControlName="category">
-          <mat-option
-            *ngFor="let category of existingCategories"
-            [value]="category"
-          >
-            {{ category }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <p class="form-hint">Select an existing category or enter a new one</p>
-    </div>
+    <div class="form-content">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h3>Basic Information</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let category of existingCategories" [value]="category">
+                {{ category }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="criteriaForm.get('category')?.hasError('required')">
+              Category is required
+            </mat-error>
+          </mat-form-field>
 
-    <div class="form-group">
-      <h3>Accomplishment</h3>
-      <mat-form-field appearance="outline">
-        <mat-label>Accomplishment</mat-label>
-        <input matInput formControlName="accomplishment" />
-      </mat-form-field>
-      <p class="form-hint">
-        Provide what kind of Accomplishment this criteria is under
-      </p>
-    </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Points</mat-label>
+            <input matInput type="number" formControlName="points" />
+            <mat-error *ngIf="criteriaForm.get('points')?.hasError('required')">
+              Points are required
+            </mat-error>
+            <mat-error *ngIf="criteriaForm.get('points')?.hasError('min')">
+              Points must be at least 1
+            </mat-error>
+          </mat-form-field>
+        </div>
 
-    <div class="form-grid">
-      <div class="form-group">
-        <h3>Points</h3>
-        <mat-form-field appearance="outline">
-          <mat-label>Points</mat-label>
-          <input matInput type="number" formControlName="points" />
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Accomplishment</mat-label>
+          <input matInput formControlName="accomplishment" />
+          <mat-error *ngIf="criteriaForm.get('accomplishment')?.hasError('required')">
+            Accomplishment is required
+          </mat-error>
         </mat-form-field>
-        <p class="form-hint">Provide corresponding points for this criteria</p>
       </div>
 
-      <div class="form-group">
-        <h3>Guidelines</h3>
-        <mat-form-field appearance="outline">
+      <!-- Details Section -->
+      <div class="form-section">
+        <h3>Details</h3>
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Guidelines</mat-label>
-          <textarea matInput rows="4" formControlName="guidelines"></textarea>
+          <textarea matInput formControlName="guidelines" rows="3"></textarea>
+          <mat-error *ngIf="criteriaForm.get('guidelines')?.hasError('required')">
+            Guidelines are required
+          </mat-error>
         </mat-form-field>
-        <p class="form-hint">Provide the guidelines for this criteria</p>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Remarks</mat-label>
+          <textarea matInput formControlName="remarks" rows="2"></textarea>
+        </mat-form-field>
       </div>
-    </div>
 
-    <div class="form-group" *ngIf="isManager">
-      <h3>Criteria Type</h3>
-      <mat-form-field appearance="outline">
-        <mat-label>Type</mat-label>
-        <mat-select formControlName="type">
-          <mat-option *ngFor="let type of criteriaTypes" [value]="type">
-            {{ type }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <p class="form-hint">
-        Select whether this criteria applies to Experts, Delivery teams, or Both
-      </p>
-    </div>
+      <!-- Additional Settings Section -->
+      <div class="form-section">
+        <h3>Additional Settings</h3>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" *ngIf="isManager">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type">
+              <mat-option *ngFor="let type of criteriaTypes" [value]="type">
+                {{ type }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="criteriaForm.get('type')?.hasError('required')">
+              Type is required
+            </mat-error>
+          </mat-form-field>
 
-    <div class="director-approval">
-      <mat-checkbox formControlName="director_approval"
-        >Requires Director Approval</mat-checkbox
-      >
+          <div class="director-approval">
+            <mat-checkbox formControlName="director_approval">
+              Requires Director Approval
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="dialog-actions">
       <button mat-button type="button" (click)="close()">Cancel</button>
-      <button
-        mat-raised-button
-        color="warn"
-        type="button"
-        (click)="deleteCriteria()"
-      >
+      <button mat-raised-button color="warn" type="button" (click)="deleteCriteria()">
         Delete Criteria
       </button>
       <button mat-raised-button color="primary" type="submit">

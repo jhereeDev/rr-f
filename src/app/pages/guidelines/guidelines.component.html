@@ -67,21 +67,21 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Category</th>
             <th>Accomplishment</th>
             <th>Points</th>
             <th>Guidelines</th>
+            <th>Remarks</th>
             <th>Requires Director Approval</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let criteria of getDisplayedCriterias()">
-            <td>{{ criteria.id }}</td>
             <td>{{ criteria.category }}</td>
             <td>{{ criteria.accomplishment }}</td>
             <td>{{ criteria.points }}</td>
             <td>{{ criteria.guidelines }}</td>
+            <td class="remarks-cell">{{ criteria.remarks || '-' }}</td>
             <td>{{ criteria.director_approval ? "Yes" : "No" }}</td>
           </tr>
         </tbody>
@@ -94,20 +94,20 @@
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Accomplishment</th>
                 <th>Points</th>
                 <th>Guidelines</th>
                 <th>Requires Director Approval</th>
+                <th>Remarks</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let criteria of group.items">
-                <td>{{ criteria.id }}</td>
                 <td>{{ criteria.accomplishment }}</td>
                 <td>{{ criteria.points }}</td>
                 <td>{{ criteria.guidelines }}</td>
                 <td>{{ criteria.director_approval ? "Yes" : "No" }}</td>
+                <td class="remarks-cell">{{ criteria.remarks || '-' }}</td>
               </tr>
             </tbody>
           </table>

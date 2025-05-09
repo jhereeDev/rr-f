@@ -81,7 +81,7 @@ export class MemberDetailsComponent implements OnInit {
     this.isLoading = true;
 
     this.memberService
-      .getMember(memberId)
+      .getMember(Number(memberId))
       .pipe(
         finalize(() => {
           this.isLoading = false;
@@ -107,7 +107,7 @@ export class MemberDetailsComponent implements OnInit {
     this.isLoading = true;
 
     this.memberService
-      .getMemberRewardEntries(memberId)
+      .getMemberRewardEntries(Number(memberId))
       .pipe(
         finalize(() => {
           this.isLoading = false;

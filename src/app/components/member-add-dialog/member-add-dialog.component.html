@@ -1,39 +1,58 @@
-<!-- member-add-dialog.component.html -->
+<!-- Updated member-add-dialog.component.html -->
 <div class="dialog-container">
   <h2 mat-dialog-title>Add New Partner</h2>
 
   <form [formGroup]="memberForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group">
-        <h3>Partner CGI Email</h3>
+        <h3>Partner CGI Email <span class="required-indicator">*</span></h3>
         <mat-form-field appearance="outline">
           <input
             matInput
             formControlName="email"
             placeholder="newmember@cgi.com"
+            type="email"
           />
+          <mat-error *ngIf="memberForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="memberForm.get('email')?.hasError('email')">
+            Please enter a valid email address
+          </mat-error>
         </mat-form-field>
-        <p class="form-hint">Enter New Partner's Email</p>
+        <p class="form-hint">Enter New Partner's CGI Email</p>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <h3>Status</h3>
+        <h3>Status <span class="required-indicator">*</span></h3>
         <mat-form-field appearance="outline">
           <mat-select formControlName="status">
             <mat-option *ngFor="let status of statuses" [value]="status">
               {{ status }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="memberForm.get('status')?.hasError('required')">
+            Status is required
+          </mat-error>
         </mat-form-field>
         <p class="form-hint">Choose New Partner's Status</p>
       </div>
     </div>
 
+    <!-- Error Message Display -->
+    <div class="error-message" *ngIf="errorMessage">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
     <div class="dialog-actions">
-      <button mat-flat-button type="button" (click)="close()">Cancel</button>
-      <button mat-flat-button color="primary" type="submit">Add Partner</button>
+      <button mat-flat-button type="button" (click)="close()" [disabled]="isLoading">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="memberForm.invalid || isLoading">
+        <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+        <span *ngIf="!isLoading">Add Partner</span>
+      </button>
     </div>
   </form>
 </div>

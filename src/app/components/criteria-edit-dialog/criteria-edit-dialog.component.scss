@@ -1,85 +1,80 @@
 /* criteria-edit-dialog.component.scss */
 .dialog-container {
-  padding: 24px;
+  padding: 20px;
+  width: fit-content;
+  min-width: 600px;
   max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0 auto;
 }
 
-h2 {
-  font-size: 20px;
-  font-weight: 600;
+h2[mat-dialog-title] {
+  margin: 0 0 8px;
   color: #5236ab;
-  margin-top: 0;
-  margin-bottom: 8px;
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .criteria-id {
+  color: #6c757d;
   font-size: 14px;
-  color: #666;
   margin-bottom: 24px;
 }
 
-h3 {
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  margin-bottom: 8px;
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
-.form-group {
-  margin-bottom: 24px;
+.form-section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
 
-  mat-form-field {
-    width: 100%;
+  h3 {
+    margin: 0 0 12px;
+    color: #495057;
+    font-size: 16px;
+    font-weight: 500;
   }
-}
-
-/* Fix for vertical alignment of placeholder text */
-::ng-deep .mat-mdc-text-field-wrapper {
-  height: auto !important;
-}
-
-::ng-deep .mat-mdc-form-field-infix {
-  min-height: 40px !important;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-::ng-deep
-  .mat-mdc-text-field-wrapper.mdc-text-field--outlined
-  .mat-mdc-form-field-infix {
-  padding-top: 12px !important;
-  padding-bottom: 12px !important;
-}
-
-::ng-deep .mat-mdc-form-field-text-prefix,
-::ng-deep .mat-mdc-form-field-text-suffix {
-  align-self: center !important;
-}
-
-::ng-deep textarea.mat-mdc-input-element {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  align-self: stretch !important;
-  padding-top: 12px !important;
-  min-height: 80px !important;
-}
-
-.form-hint {
-  font-size: 12px;
-  color: #777;
-  margin-top: 4px;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+// Special handling for longer text fields
+mat-form-field.full-width {
+  max-width: 600px;
+}
+
+mat-form-field textarea {
+  min-height: 80px;
 }
 
 .director-approval {
-  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  width: 100%;
 }
 
 .dialog-actions {
@@ -87,21 +82,29 @@ h3 {
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
+  width: 100%;
 
-  button[color="primary"] {
-    background-color: #5236ab;
-    color: white;
-    border-radius: 4px;
-  }
-
-  button[color="warn"] {
-    background-color: #ca2b3e;
-    color: white;
-    border-radius: 4px;
+  button {
+    min-width: 120px;
   }
 }
 
-@media (max-width: 768px) {
+// Responsive adjustments
+@media (max-width: 800px) {
+  .dialog-container {
+    width: 95vw;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 600px) {
+  .dialog-container {
+    width: 100vw;
+    padding: 16px;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -114,3 +117,23 @@ h3 {
     }
   }
 }
+
+// Material form field customizations
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    background-color: white;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: 40px;
+  }
+}
+

@@ -1,5 +1,5 @@
 // Enhanced criteria-management.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CriteriaService } from '../../common/services/criteria.service';
@@ -19,6 +19,7 @@ interface Criteria {
   type?: string; // EXPERTS, DELIVERY, BOTH
   isDraft?: boolean; // Frontend only flag for draft management
   published?: boolean; // Backend flag for published status
+  remarks?: string;
 }
 
 @Component({
@@ -36,12 +37,12 @@ export class CriteriaManagementComponent implements OnInit {
   criteriaTypes: string[] = ['EXPERTS', 'DELIVERY', 'BOTH'];
 
   displayedColumns: string[] = [
-    'id',
     'category',
     'accomplishment',
     'points',
     'guidelines',
     'director_approval',
+    'remarks',
     'actions',
   ];
 
@@ -64,7 +65,9 @@ export class CriteriaManagementComponent implements OnInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private snackBar: MatSnackBar,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {
     this.fileUploadForm = this.fb.group({
       file: [''],
@@ -193,143 +196,165 @@ export class CriteriaManagementComponent implements OnInit {
       });
   }
 
+
+ /**
+ * Load published criteria (default view)
+ */
+loadPublishedCriterias(): void {
+  this.isLoading = true;
+  this.isInDraftMode = false; // Ensure draft mode flag is reset
+
+  Promise.all([
+    this.criteriaService.getAllManagerCriteria().toPromise(),
+    this.criteriaService.getAllPartnerCriteria().toPromise(),
+  ])
+    .then(([managerResponse, partnerResponse]) => {
+      if (
+        managerResponse &&
+        managerResponse.success &&
+        managerResponse.data
+      ) {
+        this.managerCriterias = managerResponse.data.map((item: any) => ({
+          ...item,
+          isDraft: false,
+          published: true,
+        }));
+      }
+
+      if (
+        partnerResponse &&
+        partnerResponse.success &&
+        partnerResponse.data
+      ) {
+        this.partnerCriterias = partnerResponse.data.map((item: any) => ({
+          ...item,
+          isDraft: false,
+          published: true,
+        }));
+      }
+
+      // Combine all criteria
+      this.allCriterias = [
+        ...this.managerCriterias,
+        ...this.partnerCriterias,
+      ];
+
+      // Extract categories for current view (we already have all categories loaded)
+      this.categories = [
+        ...new Set(this.allCriterias.map((item) => item.category)),
+      ];
+
+      // Apply filtering
+      this.filterCriterias();
+      this.isLoading = false;
+
+      // Force change detection to update the view immediately
+      this.cdr.detectChanges();
+    })
+    .catch((error) => {
+      console.error('Error loading published criteria:', error);
+      this.toastService.error(
+        'Error loading published criteria. Please try again.'
+      );
+      this.isLoading = false;
+    });
+}
+
   /**
-   * Load published criteria (default view)
-   */
-  loadPublishedCriterias(): void {
-    this.isLoading = true;
+ * Load draft criteria
+ */
+loadDraftCriterias(): void {
+  this.isLoading = true;
+  this.isInDraftMode = true; // Ensure draft mode flag is set
 
-    Promise.all([
-      this.criteriaService.getAllManagerCriteria().toPromise(),
-      this.criteriaService.getAllPartnerCriteria().toPromise(),
-    ])
-      .then(([managerResponse, partnerResponse]) => {
-        if (
-          managerResponse &&
-          managerResponse.success &&
-          managerResponse.data
-        ) {
-          this.managerCriterias = managerResponse.data.map((item: any) => ({
+  console.log('Loading draft criteria, isInDraftMode:', this.isInDraftMode);
+
+  Promise.all([
+    this.criteriaService.getAllManagerCriteriaDraft().toPromise(),
+    this.criteriaService.getAllPartnerCriteriaDraft().toPromise(),
+  ])
+    .then(([managerDraftResponse, partnerDraftResponse]) => {
+      if (
+        managerDraftResponse &&
+        managerDraftResponse.success &&
+        managerDraftResponse.data
+      ) {
+        this.managerDraftCriterias = managerDraftResponse.data.map(
+          (item: any) => ({
             ...item,
-            isDraft: false,
-            published: true,
-          }));
-        }
+            isDraft: true,
+            published: false,
+          })
+        );
+      }
 
-        if (
-          partnerResponse &&
-          partnerResponse.success &&
-          partnerResponse.data
-        ) {
-          this.partnerCriterias = partnerResponse.data.map((item: any) => ({
+      if (
+        partnerDraftResponse &&
+        partnerDraftResponse.success &&
+        partnerDraftResponse.data
+      ) {
+        this.partnerDraftCriterias = partnerDraftResponse.data.map(
+          (item: any) => ({
             ...item,
-            isDraft: false,
-            published: true,
-          }));
-        }
-
-        // Combine all criteria
-        this.allCriterias = [
-          ...this.managerCriterias,
-          ...this.partnerCriterias,
-        ];
-
-        // Extract categories for current view (we already have all categories loaded)
-        this.categories = [
-          ...new Set(this.allCriterias.map((item) => item.category)),
-        ];
-
-        // Apply filtering
-        this.filterCriterias();
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.error('Error loading published criteria:', error);
-        this.toastService.error(
-          'Error loading published criteria. Please try again.'
+            isDraft: true,
+            published: false,
+          })
         );
-        this.isLoading = false;
+      }
+
+      // Update current criteria lists based on draft mode
+      this.managerCriterias = this.managerDraftCriterias;
+      this.partnerCriterias = this.partnerDraftCriterias;
+
+      // Combine all criteria
+      this.allCriterias = [
+        ...this.managerCriterias,
+        ...this.partnerCriterias,
+      ];
+
+      // Extract categories for current view (we already have all categories loaded)
+      this.categories = [
+        ...new Set(this.allCriterias.map((item) => item.category)),
+      ];
+
+      // Apply filtering with draft data
+      this.filterCriterias();
+      this.isLoading = false;
+
+      console.log('Draft criteria loaded, isInDraftMode:', this.isInDraftMode);
+
+      // Force change detection to update the view
+      this.ngZone.run(() => {
+        this.cdr.detectChanges();
       });
-  }
-
-  /**
-   * Load draft criteria
-   */
-  loadDraftCriterias(): void {
-    this.isLoading = true;
-
-    Promise.all([
-      this.criteriaService.getAllManagerCriteriaDraft().toPromise(),
-      this.criteriaService.getAllPartnerCriteriaDraft().toPromise(),
-    ])
-      .then(([managerDraftResponse, partnerDraftResponse]) => {
-        if (
-          managerDraftResponse &&
-          managerDraftResponse.success &&
-          managerDraftResponse.data
-        ) {
-          this.managerDraftCriterias = managerDraftResponse.data.map(
-            (item: any) => ({
-              ...item,
-              isDraft: true,
-              published: false,
-            })
-          );
-        }
-
-        if (
-          partnerDraftResponse &&
-          partnerDraftResponse.success &&
-          partnerDraftResponse.data
-        ) {
-          this.partnerDraftCriterias = partnerDraftResponse.data.map(
-            (item: any) => ({
-              ...item,
-              isDraft: true,
-              published: false,
-            })
-          );
-        }
-
-        // Update current criteria lists based on draft mode
-        this.managerCriterias = this.managerDraftCriterias;
-        this.partnerCriterias = this.partnerDraftCriterias;
-
-        // Combine all criteria
-        this.allCriterias = [
-          ...this.managerCriterias,
-          ...this.partnerCriterias,
-        ];
-
-        // Extract categories for current view (we already have all categories loaded)
-        this.categories = [
-          ...new Set(this.allCriterias.map((item) => item.category)),
-        ];
-
-        // Apply filtering with draft data
-        this.filterCriterias();
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.error('Error loading draft criteria:', error);
-        this.toastService.error(
-          'Error loading draft criteria. Please try again.'
-        );
-        this.isLoading = false;
-      });
-  }
+    })
+    .catch((error) => {
+      console.error('Error loading draft criteria:', error);
+      this.toastService.error(
+        'Error loading draft criteria. Please try again.'
+      );
+      this.isLoading = false;
+    });
+}
 
   /**
    * Toggle between draft and published mode
    */
   toggleDraftMode(): void {
     this.isInDraftMode = !this.isInDraftMode;
+    console.log('Draft mode toggled to:', this.isInDraftMode);
 
     if (this.isInDraftMode) {
       this.loadDraftCriterias();
     } else {
       this.loadPublishedCriterias();
     }
+
+    // Force change detection
+    setTimeout(() => {
+      this.cdr.detectChanges();
+      console.log('Change detection forced after toggle');
+    }, 0);
   }
 
   /**
@@ -353,15 +378,31 @@ export class CriteriaManagementComponent implements OnInit {
    */
   filterCriterias(): void {
     this.isLoading = true;
+    console.log('Filtering criteria, draft mode:', this.isInDraftMode);
 
     let filtered: Criteria[] = [];
 
-    // Filter by tab (manager vs partner)
-    if (this.selectedTab === 'managers') {
-      filtered = [...this.managerCriterias];
+    // First determine the correct source array based on draft mode
+    let sourceList: Criteria[] = [];
+
+    if (this.isInDraftMode) {
+      // Use draft lists
+      if (this.selectedTab === 'managers') {
+        sourceList = [...this.managerDraftCriterias];
+      } else {
+        sourceList = [...this.partnerDraftCriterias];
+      }
     } else {
-      filtered = [...this.partnerCriterias];
+      // Use published lists
+      if (this.selectedTab === 'managers') {
+        sourceList = [...this.managerCriterias.filter(c => !c.isDraft)];
+      } else {
+        sourceList = [...this.partnerCriterias.filter(c => !c.isDraft)];
+      }
     }
+
+    // Now filter the correct source by category
+    filtered = [...sourceList];
 
     // Filter by category if not "all"
     if (this.selectedCategory !== 'all') {
@@ -373,6 +414,7 @@ export class CriteriaManagementComponent implements OnInit {
     setTimeout(() => {
       this.filteredCriterias = filtered;
       this.isLoading = false;
+      console.log('After filtering, found', filtered.length, 'criteria, draft mode still:', this.isInDraftMode);
     }, 300); // Small delay for better UX
   }
 
@@ -530,6 +572,10 @@ export class CriteriaManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        // Store the current state
+        const currentDraftMode = this.isInDraftMode;
+        console.log('Current draft mode before delete:', currentDraftMode);
+
         // Determine which API method to call based on current tab and draft mode
         let observable;
         if (this.selectedTab === 'managers') {
@@ -546,14 +592,28 @@ export class CriteriaManagementComponent implements OnInit {
           next: (response: any) => {
             if (response && response.success) {
               this.toastService.success('Criteria deleted successfully');
-              // Reload appropriate data based on current mode
-              if (this.isInDraftMode) {
-                this.loadDraftCriterias();
-              } else {
-                this.loadPublishedCriterias();
-              }
-              // Reload all categories to keep them in sync
-              this.loadAllCriteriaCategories();
+
+              console.log('Draft mode during delete success:', this.isInDraftMode);
+
+              // Run inside NgZone to ensure change detection
+              this.ngZone.run(() => {
+                // Just reload the current view - stay in draft mode if we were in draft mode
+                if (currentDraftMode) {
+                  console.log('Reloading draft criteria...');
+                  // Reload draft view regardless of remaining items
+                  this.isInDraftMode = true; // Explicitly set it before loading
+                  this.loadDraftCriterias();
+                } else {
+                  console.log('Reloading published criteria...');
+                  this.loadPublishedCriterias();
+                }
+
+                // Force another change detection cycle
+                this.cdr.detectChanges();
+
+                // Reload all categories to keep them in sync
+                this.loadAllCriteriaCategories();
+              });
             } else {
               this.toastService.error('Failed to delete criteria');
             }

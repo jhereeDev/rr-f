@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthService } from '../../common/services/auth.service';
+import { ToastService } from '../../common/services/toast.service';
 
 @Component({
   selector: 'app-change-password',
@@ -11,22 +11,23 @@ import { AuthService } from '../../common/services/auth.service';
 })
 export class ChangePasswordComponent implements OnInit {
   changePasswordForm!: FormGroup;
-  hideCurrentPassword = true;
+  hideOldPassword = true;
   hideNewPassword = true;
   hideConfirmPassword = true;
   isSubmitting = false;
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private snackBar: MatSnackBar,
+    private toastService: ToastService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.changePasswordForm = this.fb.group(
       {
-        currentPassword: ['', [Validators.required]],
+        oldPassword: ['', [Validators.required]],
         newPassword: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', [Validators.required]],
       },
@@ -57,34 +58,31 @@ export class ChangePasswordComponent implements OnInit {
   onSubmit(): void {
     if (this.changePasswordForm.valid) {
       this.isSubmitting = true;
+      this.errorMessage = ''; // Clear any previous error messages
       const payload = {
-        currentPassword: this.changePasswordForm.value.currentPassword,
+        oldPassword: this.changePasswordForm.value.oldPassword,
         newPassword: this.changePasswordForm.value.newPassword,
+        confirmPassword: this.changePasswordForm.value.confirmPassword
       };
 
-      this.authService.changePassword(payload).subscribe(
+      const userId = this.authService.getCurrentUserId();
+
+      this.authService.changePassword(userId, payload).subscribe(
         (response: any) => {
           this.isSubmitting = false;
-          this.snackBar.open('Password changed successfully', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar'],
-          });
+          this.toastService.success('Password changed successfully');
           this.router.navigate(['/home']);
         },
         (error: any) => {
           this.isSubmitting = false;
-          this.snackBar.open(
-            error.error.message || 'Failed to change password',
-            'Close',
-            {
-              duration: 5000,
-              panelClass: ['error-snackbar'],
-            }
-          );
+          console.log(error);
+          this.errorMessage = error.error.error || 'Failed to change password';
+          this.toastService.error(this.errorMessage);
         }
       );
     } else {
       this.changePasswordForm.markAllAsTouched();
+      this.toastService.warning('Please fill out all required fields correctly');
     }
   }
 }

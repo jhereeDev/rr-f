@@ -1,7 +1,10 @@
 /* member-mapping-dialog.component.scss */
 .mapping-dialog-container {
   padding: 24px;
-  min-width: 400px;
+  width: 90%;
+  max-width: 800px;
+  min-width: 320px;
+  margin: 0 auto;
 }
 
 h2 {
@@ -32,14 +35,116 @@ h2 {
   margin-bottom: 16px;
 }
 
+.progress-text {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Role progress indicators */
+.role-progress-indicators {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0;
+  padding: 12px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.role-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+}
+
+.role-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+
+  &.completed {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  &.in-progress {
+    background-color: #ff9800;
+    color: white;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.role-label {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.role-status {
+  font-size: 10px;
+  color: #666;
+}
+
+.role-separator {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #e0e0e0;
+  margin: 0 12px;
+  position: relative;
+  top: -12px;
+}
+
+/* Stats display */
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.stat-value.created { color: #4caf50; }
+.stat-value.updated { color: #2196f3; }
+.stat-value.skipped { color: #ff9800; }
+.stat-value.failed { color: #f44336; }
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
+
 .dialog-actions {
   display: flex;
   justify-content: center;
 
   button {
     min-width: 120px;
-    background-color: #ca2b3e;
-    color: white;
   }
 }
 

@@ -74,7 +74,7 @@ const routes: Routes = [
     data: { roles: [5, 6] }, // Assuming roles 1 (admin) and 5 (manager), and 6 (member) can view reward point guidelines
   },
   {
-    path: 'change-password',
+    path: 'admin/change-password',
     component: ChangePasswordComponent,
     canActivate: [AuthGuard],
     data: { roles: [1] }, // Admin role only
@@ -84,6 +84,12 @@ const routes: Routes = [
     component: AdminHomeComponent,
     canActivate: [AuthGuard],
     data: { roles: [1] }, // Only admin role can access admin
+  },
+  {
+    path: 'admin/change-password',
+    component: ChangePasswordComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [1] }, // Admin role only
   },
   {
     path: 'admin/criteria',

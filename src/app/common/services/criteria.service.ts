@@ -93,7 +93,7 @@ export class CriteriaService {
    */
   addPartnerCriteriaDraft(criteria: any): Observable<any> {
     return this.http
-      .post(`${this.apiUrl}/criterias/partner/draft`, criteria, {
+      .post(`${this.apiUrl}/criterias/partner`, criteria, {
         withCredentials: true,
       })
       .pipe(
@@ -149,7 +149,7 @@ export class CriteriaService {
    */
   deletePartnerCriteriaDraft(id: number): Observable<any> {
     return this.http
-      .delete(`${this.apiUrl}/criterias/partner/draft/${id}`, {
+      .delete(`${this.apiUrl}/criterias/partner/${id}`, {
         withCredentials: true,
       })
       .pipe(
@@ -323,7 +323,7 @@ export class CriteriaService {
    */
   deleteManagerCriteriaDraft(id: number): Observable<any> {
     return this.http
-      .delete(`${this.apiUrl}/criterias/manager/draft/${id}`, {
+      .delete(`${this.apiUrl}/criterias/manager/${id}`, {
         withCredentials: true,
       })
       .pipe(

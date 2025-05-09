@@ -1,4 +1,5 @@
 <!-- enhanced-criteria-management.component.html -->
+<!-- Draft mode status: {{isInDraftMode}} -->
 <div class="container">
   <div class="header">
     <div class="title-section">
@@ -172,6 +173,14 @@
           <th mat-header-cell *matHeaderCellDef>Requires Director Approval</th>
           <td mat-cell *matCellDef="let criteria">
             {{ criteria.director_approval ? "Yes" : "No" }}
+          </td>
+        </ng-container>
+
+        <!-- Remarks Column -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef>Remarks</th>
+          <td mat-cell *matCellDef="let criteria" class="remarks-cell">
+            {{ criteria.remarks || '-' }}
           </td>
         </ng-container>
 
