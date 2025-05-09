@@ -3,11 +3,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastService } from '../../common/services/toast.service';
-
-interface Manager {
-  email: string;
-  directorEmail: string;
-}
+import { MemberService } from '../../common/services/member.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-member-edit-dialog',
@@ -16,7 +13,7 @@ interface Manager {
 })
 export class MemberEditDialogComponent implements OnInit {
   memberForm: FormGroup;
-  statuses = ['Active', 'Inactive', 'New Joiner'];
+  statuses = ['ACTIVE', 'INACTIVE'];
   jobTitles = [
     'Associate Consultant',
     'Consultant',
@@ -25,61 +22,73 @@ export class MemberEditDialogComponent implements OnInit {
     'Director',
     'Vice President',
   ];
-  roles = ['Partner', 'Admin', 'Manager', 'Director'];
-
-  // Map of managers to their directors (mock data)
-  managerToDirectorMap: { [key: string]: string } = {
-    'john.nunez@cgi.com': 'ronwald.king@cgi.com',
-    'jane.doe@cgi.com': 'richard.roe@cgi.com',
-    'sarah.smith@cgi.com': 'michael.brown@cgi.com'
-  };
-
-  directorEmail: string = '';
+  roles = [
+    { id: 6, name: 'Partner' },
+    { id: 5, name: 'Manager' },
+    { id: 4, name: 'Director' },
+    { id: 3, name: 'VP/SVP' },
+    { id: 2, name: 'Admin' },
+  ];
+  isSubmitting = false;
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<MemberEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { member: any },
-    private toastService: ToastService
+    private toastService: ToastService,
+    private memberService: MemberService
   ) {
+    // Get the role ID as a number
+    const roleId = typeof data.member.role === 'number'
+      ? data.member.role
+      : parseInt(data.member.role) || 6;
+
     // Initialize the form with just the editable fields
     this.memberForm = this.fb.group({
       jobTitle: [data.member.jobTitle, Validators.required],
-      manager: [data.member.manager, Validators.required],
+      managerEmail: [data.member.manager, Validators.required],
       status: [data.member.status, Validators.required],
-      role: [data.member.role || 'Partner', Validators.required],
-    });
-
-    // Set initial director value based on the current manager
-    this.directorEmail = this.getDirectorForManager(data.member.manager);
-  }
-
-  ngOnInit(): void {
-    // Listen for changes to the manager field to update director automatically
-    this.memberForm.get('manager')?.valueChanges.subscribe(managerEmail => {
-      this.directorEmail = this.getDirectorForManager(managerEmail);
+      roleId: [roleId, Validators.required],
     });
   }
 
-  /**
-   * Get the director email for a given manager email
-   * In a real app, this would make an API call to the backend
-   */
-  getDirectorForManager(managerEmail: string): string {
-    // Return the mapped director or a default value
-    return this.managerToDirectorMap[managerEmail] || 'Not found';
-  }
+  ngOnInit(): void {}
 
   onSubmit(): void {
     if (this.memberForm.valid) {
-      // Add the director email to the form data for submission
-      const formData = {
-        ...this.memberForm.value,
-        director: this.directorEmail
+      this.isSubmitting = true;
+      this.errorMessage = '';
+
+      // Create the update data object
+      const updateData = {
+        member_title: this.memberForm.value.jobTitle,
+        member_manager_id: this.memberForm.value.managerEmail, // This will be processed on the backend
+        member_status: this.memberForm.value.status,
+        role_id: this.memberForm.value.roleId
       };
 
-      // Here you would call the service to update the member
-      this.dialogRef.close(formData);
+      this.memberService.updateMember(this.data.member.id, updateData)
+        .pipe(
+          finalize(() => {
+            this.isSubmitting = false;
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            if (response && response.success) {
+              this.toastService.success('Member updated successfully');
+              this.dialogRef.close(true);
+            } else {
+              this.errorMessage = response.error || 'Failed to update member';
+              this.toastService.error(this.errorMessage);
+            }
+          },
+          error: (err) => {
+            this.errorMessage = err.error?.message || 'An unexpected error occurred';
+            this.toastService.error(this.errorMessage);
+          }
+        });
     } else {
       this.memberForm.markAllAsTouched();
       this.toastService.warning('Please fill out all required fields correctly');

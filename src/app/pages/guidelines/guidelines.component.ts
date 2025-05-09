@@ -49,26 +49,51 @@ export class GuidelinesComponent implements OnInit {
   }
 
   loadCriterias(): void {
-    // Create a combined observable that fetches both partner and manager criteria
-    forkJoin({
-      partner: this.criteriaService.getAllPartnerCriteria(),
-      manager: this.criteriaService.getAllManagerCriteria()
-    }).subscribe({
-      next: (results) => {
-        // Combine the results from both API calls
-        const partnerCriteria = results.partner.data || [];
-        const managerCriteria = results.manager.data || [];
+    // Fetch criteria based on user role
+    if (this.userRole === 6) {
+      // For role 6, fetch only partner criteria
+      this.criteriaService.getAllPartnerCriteria().subscribe({
+        next: (result) => {
+          this.criterias = result.data || [];
+          this.groupCriterias();
+        },
+        error: (error) => {
+          console.error('Error loading partner criteria:', error);
+        }
+      });
+    } else if (this.userRole === 5) {
+      // For role 5, fetch only manager criteria
+      this.criteriaService.getAllManagerCriteria().subscribe({
+        next: (result) => {
+          this.criterias = result.data || [];
+          this.groupCriterias();
+        },
+        error: (error) => {
+          console.error('Error loading manager criteria:', error);
+        }
+      });
+    } else {
+      // For other roles, fetch both criteria types (maintain original behavior)
+      forkJoin({
+        partner: this.criteriaService.getAllPartnerCriteria(),
+        manager: this.criteriaService.getAllManagerCriteria()
+      }).subscribe({
+        next: (results) => {
+          // Combine the results from both API calls
+          const partnerCriteria = results.partner.data || [];
+          const managerCriteria = results.manager.data || [];
 
-        // Merge both arrays and sort by ID
-        this.criterias = [...partnerCriteria, ...managerCriteria].sort((a: any, b: any) => a.id - b.id);
+          // Merge both arrays and sort by ID
+          this.criterias = [...partnerCriteria, ...managerCriteria].sort((a: any, b: any) => a.id - b.id);
 
-        // Group the criteria as before
-        this.groupCriterias();
-      },
-      error: (error) => {
-        console.error('Error loading criteria:', error);
-      }
-    });
+          // Group the criteria as before
+          this.groupCriterias();
+        },
+        error: (error) => {
+          console.error('Error loading criteria:', error);
+        }
+      });
+    }
   }
 
   groupCriterias(): void {

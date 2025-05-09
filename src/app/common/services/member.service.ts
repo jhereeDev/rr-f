@@ -90,6 +90,7 @@ export class MemberService {
 
     return data.map(member => ({
       id: member.id || member.member_employee_id || '',
+      member_employee_id: member.member_employee_id || '',
       firstName: member.member_firstname || member.firstName || '',
       lastName: member.member_lastname || member.lastName || '',
       jobTitle: member.member_title || member.jobTitle || '',
@@ -286,27 +287,28 @@ export class MemberService {
       );
   }
 
-  /**
-   * Update member status
-   * @param id Member ID
-   * @param status New status
-   */
-  updateMemberStatus(id: number, status: string): Observable<any> {
-    return this.http
-      .patch(
-        `${this.apiUrl}/members/${id}/status`,
-        { status },
-        {
-          withCredentials: true,
-          responseType: 'json',
-        }
-      )
-      .pipe(
-        catchError((error) => {
-          console.error(`Error updating status for member ${id}:`, error);
-          this.toastService.error('Could not update member status. Please try again.');
-          return of({ success: false, error: error.message });
-        })
-      );
-  }
+/**
+ * Update member status
+ * @param id Member ID
+ * @param status New status (ACTIVE/INACTIVE)
+ */
+updateMemberStatus(id: any, status: string): Observable<any> {
+  return this.http
+    .put(
+      `${this.apiUrl}/members/${id}/status`,
+      { status },
+      {
+        withCredentials: true,
+        responseType: 'json',
+      }
+    )
+    .pipe(
+      tap(response => console.log(`Status update response for member ${id}:`, response)),
+      catchError((error) => {
+        console.error(`Error updating status for member ${id}:`, error);
+        this.toastService.error('Could not update member status. Please try again.');
+        return of({ success: false, error: error.message });
+      })
+    );
+}
 }

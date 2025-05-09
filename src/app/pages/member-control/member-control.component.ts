@@ -13,6 +13,7 @@ import { finalize } from 'rxjs/operators';
 
 interface Member {
   id: string | number;
+  member_employee_id: string;
   firstName: string;
   lastName: string;
   jobTitle: string;
@@ -32,6 +33,7 @@ interface Member {
 export class MemberControlComponent implements OnInit {
   members: Member[] = [];
   filteredMembers: Member[] = [];
+  allMembers: Member[] = []; // Store all members for client-side filtering
   isLoading = true;
   searchText = '';
   error = false;
@@ -62,14 +64,12 @@ export class MemberControlComponent implements OnInit {
     this.error = false;
     this.refreshAfterAction = false;
 
-    const filters = this.searchText ? { search: this.searchText } : undefined;
-
+    // Get all members without filtering on the backend
     this.memberService
-      .getMembers(filters)
+      .getMembers()
       .pipe(
         finalize(() => {
           this.isLoading = false;
-
         })
       )
       .subscribe({
@@ -85,9 +85,11 @@ export class MemberControlComponent implements OnInit {
             membersData = response.results;
           }
 
+
           // Transform API data to match our interface
-          this.members = membersData.map((member: any) => ({
+          this.allMembers = membersData.map((member: any) => ({
             id: member.id || member.member_employee_id || '',
+            member_employee_id: member.member_employee_id || '',
             firstName: member.member_firstname || member.firstName || '',
             lastName: member.member_lastname || member.lastName || '',
             jobTitle: member.member_title || member.jobTitle || '',
@@ -99,8 +101,8 @@ export class MemberControlComponent implements OnInit {
             role: member.role_id || member.role || 6
           }));
 
-          this.totalItems = this.members.length;
-          this.updateDisplayedMembers();
+          // Apply filtering based on search text
+          this.applyFilter();
         },
         error: (err) => {
           console.error('Error loading members:', err);
@@ -114,16 +116,38 @@ export class MemberControlComponent implements OnInit {
       });
   }
 
-  updateDisplayedMembers(): void {
+  applyFilter(): void {
+    if (!this.searchText.trim()) {
+      // If no search text, use all members
+      this.members = [...this.allMembers];
+    } else {
+      // Apply search filter across multiple fields
+      const searchTerm = this.searchText.toLowerCase().trim();
 
+      this.members = this.allMembers.filter(member => {
+        return (
+          member.firstName.toLowerCase().includes(searchTerm) ||
+          member.lastName.toLowerCase().includes(searchTerm) ||
+          `${member.firstName} ${member.lastName}`.toLowerCase().includes(searchTerm) ||
+          (member.email && member.email.toLowerCase().includes(searchTerm)) ||
+          (member.jobTitle && member.jobTitle.toLowerCase().includes(searchTerm)) ||
+          (member.member_employee_id && member.member_employee_id.toLowerCase().includes(searchTerm))
+        );
+      });
+    }
+
+    this.totalItems = this.members.length;
+    this.pageIndex = 0; // Reset to first page when filtering
+    this.updateDisplayedMembers();
+  }
+
+  updateDisplayedMembers(): void {
     // Apply pagination
     const startIndex = this.pageIndex * this.pageSize;
     this.filteredMembers = this.members.slice(
       startIndex,
       startIndex + this.pageSize
     );
-
-
   }
 
   onPageChange(event: PageEvent): void {
@@ -135,14 +159,12 @@ export class MemberControlComponent implements OnInit {
   search(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchText = value;
-    this.pageIndex = 0; // Reset to first page when searching
-    this.loadMembers(); // Reload with search filter
+    this.applyFilter();
   }
 
   clearSearch(): void {
     this.searchText = '';
-    this.pageIndex = 0;
-    this.loadMembers(); // Reload without search filter
+    this.applyFilter();
   }
 
   openAddMemberDialog(): void {
@@ -219,7 +241,8 @@ export class MemberControlComponent implements OnInit {
   }
 
   updateMemberStatus(member: Member, newStatus: string): void {
-    this.memberService.updateMemberStatus(Number(member.id), newStatus)
+
+    this.memberService.updateMemberStatus(member.member_employee_id, newStatus)
       .subscribe({
         next: (response) => {
           if (response && response.success) {

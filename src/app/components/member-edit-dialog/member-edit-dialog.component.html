@@ -15,6 +15,9 @@
               {{ title }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="memberForm.get('jobTitle')?.hasError('required')">
+            Job title is required
+          </mat-error>
         </mat-form-field>
         <p class="form-hint">Select the member's job title</p>
       </div>
@@ -27,6 +30,9 @@
               {{ status }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="memberForm.get('status')?.hasError('required')">
+            Status is required
+          </mat-error>
         </mat-form-field>
         <p class="form-hint">Set the member's current status</p>
       </div>
@@ -34,23 +40,18 @@
 
     <div class="form-row">
       <div class="form-group">
-        <h3>Manager Email <span class="required-indicator">*</span></h3>
+        <h3>Manager ID <span class="required-indicator">*</span></h3>
         <mat-form-field appearance="outline">
           <input
             matInput
-            formControlName="manager"
-            placeholder="manager@cgi.com"
+            formControlName="managerEmail"
+            placeholder="Manager ID"
           />
+          <mat-error *ngIf="memberForm.get('managerEmail')?.hasError('required')">
+            Manager ID is required
+          </mat-error>
         </mat-form-field>
-        <p class="form-hint">Enter the manager's email address</p>
-      </div>
-
-      <div class="form-group">
-        <h3>Director Email</h3>
-        <div class="read-only-field">
-          <div class="read-only-content">{{ directorEmail }}</div>
-        </div>
-        <p class="form-hint">Auto-populated based on manager hierarchy</p>
+        <p class="form-hint">Enter the manager's employee ID</p>
       </div>
     </div>
 
@@ -58,20 +59,30 @@
       <div class="form-group">
         <h3>Role <span class="required-indicator">*</span></h3>
         <mat-form-field appearance="outline">
-          <mat-select formControlName="role">
-            <mat-option *ngFor="let role of roles" [value]="role">
-              {{ role }}
+          <mat-select formControlName="roleId">
+            <mat-option *ngFor="let role of roles" [value]="role.id">
+              {{ role.name }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="memberForm.get('roleId')?.hasError('required')">
+            Role is required
+          </mat-error>
         </mat-form-field>
         <p class="form-hint">Choose the member's role in the system</p>
       </div>
     </div>
 
+    <!-- Error Message Display -->
+    <div class="error-message" *ngIf="errorMessage">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
     <div class="dialog-actions">
-      <button mat-button type="button" (click)="close()">Cancel</button>
-      <button mat-raised-button color="primary" type="submit">
-        Save Changes
+      <button mat-button type="button" (click)="close()" [disabled]="isSubmitting">Cancel</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="memberForm.invalid || isSubmitting">
+        <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+        <span *ngIf="!isSubmitting">Save Changes</span>
       </button>
     </div>
   </form>
