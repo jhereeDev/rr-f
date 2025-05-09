@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/common/services/auth.service';
 import { CriteriaService } from 'src/app/common/services/criteria.service';
 import { RewardpointsService } from 'src/app/common/services/rewardpoints.service';
 import { UserData } from 'src/app/models/user.model';
+import { forkJoin } from 'rxjs';
 
 // Update to only accept PDF files
 const ALLOWED_FILE_TYPES = ['application/pdf'];
@@ -78,7 +79,6 @@ export class SubmitRewardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUserData();
-    this.loadCriterias();
     this.setupAccomplishmentListener();
   }
 
@@ -88,6 +88,7 @@ export class SubmitRewardsComponent implements OnInit {
         if (res && res.success) {
           this.user = res.user as UserData;
           this.updateFormWithUserData();
+          this.loadCriterias();
         }
       },
       error: (error) => {
@@ -110,18 +111,43 @@ export class SubmitRewardsComponent implements OnInit {
   }
 
   loadCriterias(): void {
-    this.criteriaService.getCriterias().subscribe({
-      next: (res) => {
-        this.criterias = res.data;
-        this.categories = Array.from(
-          new Set(this.criterias.map((item) => item.category))
-        );
-      },
-      error: (error) => {
-        console.error('Error fetching criteria:', error);
-        this.toastService.error('Error loading criteria. Please try again.');
-      },
-    });
+    if (!this.user) {
+      console.error('User data not available');
+      this.toastService.error('Error loading user data. Please try again.');
+      return;
+    }
+
+    if (this.user.role_id === 6) {
+      this.criteriaService.getAllPartnerCriteria().subscribe({
+        next: (res) => {
+          this.criterias = res.data || [];
+          this.categories = Array.from(
+            new Set(this.criterias.map((item) => item.category))
+          );
+        },
+        error: (error) => {
+          console.error('Error fetching partner criteria:', error);
+          this.toastService.error('Error loading criteria. Please try again.');
+        }
+      });
+    } else if (this.user.role_id === 5) {
+      this.criteriaService.getAllManagerCriteria().subscribe({
+        next: (res) => {
+          this.criterias = res.data || [];
+          this.categories = Array.from(
+            new Set(this.criterias.map((item) => item.category))
+          );
+        },
+        error: (error) => {
+          console.error('Error fetching manager criteria:', error);
+          this.toastService.error('Error loading criteria. Please try again.');
+        }
+      });
+    } else {
+      console.warn(`Unknown role: ${this.user.role_id}, no criteria loaded`);
+      this.criterias = [];
+      this.categories = [];
+    }
   }
 
   setupAccomplishmentListener(): void {
