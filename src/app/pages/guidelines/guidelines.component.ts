@@ -24,6 +24,11 @@ export class GuidelinesComponent implements OnInit {
   userRole: any | null = null;
   title: any | null = null;
   activeTab: string = 'delivery';
+  categoryOrder: { [key: string]: number } = {
+    'Clients': 1,
+    'Partners': 2,
+    'Shareholders': 3
+  };
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -83,8 +88,12 @@ export class GuidelinesComponent implements OnInit {
           const partnerCriteria = results.partner.data || [];
           const managerCriteria = results.manager.data || [];
 
-          // Merge both arrays and sort by ID
-          this.criterias = [...partnerCriteria, ...managerCriteria].sort((a: any, b: any) => a.id - b.id);
+          // Merge both arrays and sort by custom category order
+          this.criterias = [...partnerCriteria, ...managerCriteria].sort((a: any, b: any) => {
+            const orderA = this.categoryOrder[a.category] || 999;
+            const orderB = this.categoryOrder[b.category] || 999;
+            return orderA - orderB;
+          });
 
           // Group the criteria as before
           this.groupCriterias();
@@ -97,14 +106,21 @@ export class GuidelinesComponent implements OnInit {
   }
 
   groupCriterias(): void {
-    const categories = [
-      ...new Set(this.criterias.map((item) => item.category)),
-    ].sort();
-    this.groupedCriterias = categories.map((category) => ({
+    // Get unique categories
+    const uniqueCategories = [...new Set(this.criterias.map((item) => item.category))];
+
+    // Sort categories according to custom order
+    const sortedCategories = uniqueCategories.sort((a, b) => {
+      const orderA = this.categoryOrder[a] || 999;
+      const orderB = this.categoryOrder[b] || 999;
+      return orderA - orderB;
+    });
+
+    this.groupedCriterias = sortedCategories.map((category) => ({
       category,
       items: this.criterias
         .filter((item) => item.category === category)
-        .sort((a, b) => a.id - b.id),
+        .sort((a, b) => a.id - b.id), // Sort items within category by ID
     }));
   }
 
@@ -185,7 +201,12 @@ export class GuidelinesComponent implements OnInit {
 
     // Then continue with existing filtering logic
     if (this.selectedCategory === 'all') {
-      const result = this.filterCriterias(criteriaToFilter);
+      // Apply filter and sort by custom category order
+      const result = this.filterCriterias(criteriaToFilter).sort((a, b) => {
+        const orderA = this.categoryOrder[a.category] || 999;
+        const orderB = this.categoryOrder[b.category] || 999;
+        return orderA - orderB;
+      });
       return result;
     }
 

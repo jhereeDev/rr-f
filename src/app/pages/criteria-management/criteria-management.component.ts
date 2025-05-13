@@ -35,6 +35,12 @@ export class CriteriaManagementComponent implements OnInit {
   categories: string[] = [];
   allCategories: string[] = []; // Store all categories from both published and draft
   criteriaTypes: string[] = ['EXPERTS', 'DELIVERY', 'BOTH'];
+  // Add custom category order
+  categoryOrder: { [key: string]: number } = {
+    'Clients': 1,
+    'Partners': 2,
+    'Shareholders': 3
+  };
 
   displayedColumns: string[] = [
     'category',
@@ -174,13 +180,21 @@ export class CriteriaManagementComponent implements OnInit {
           }
 
           // Set the combined categories for use in dialogs
-          this.allCategories = Array.from(allCategories);
+          this.allCategories = Array.from(allCategories).sort((a, b) => {
+            const orderA = this.categoryOrder[a] || 999;
+            const orderB = this.categoryOrder[b] || 999;
+            return orderA - orderB;
+          });
 
           // Combine all criteria for the current view (published by default)
           this.allCriterias = [
             ...this.managerCriterias,
             ...this.partnerCriterias,
-          ];
+          ].sort((a, b) => {
+            const orderA = this.categoryOrder[a.category] || 999;
+            const orderB = this.categoryOrder[b.category] || 999;
+            return orderA - orderB;
+          });
 
           // Apply initial filtering for published view
           this.filterCriterias();
@@ -410,6 +424,13 @@ loadDraftCriterias(): void {
         (criteria) => criteria.category === this.selectedCategory
       );
     }
+
+    // Sort by custom category order
+    filtered.sort((a, b) => {
+      const orderA = this.categoryOrder[a.category] || 999;
+      const orderB = this.categoryOrder[b.category] || 999;
+      return orderA - orderB;
+    });
 
     setTimeout(() => {
       this.filteredCriterias = filtered;
