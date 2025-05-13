@@ -1,4 +1,3 @@
-// Updated member-control.component.ts
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
@@ -19,7 +18,9 @@ interface Member {
   jobTitle: string;
   department: string;
   manager: string;
+  manager_email: string;
   director: string;
+  director_email: string;
   status: string;
   email?: string;
   role?: number;
@@ -74,35 +75,19 @@ export class MemberControlComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-
-          // Ensure we have an array of members with the correct structure
-          let membersData = [];
-          if (response && response.data && Array.isArray(response.data)) {
-            membersData = response.data;
-          } else if (response && Array.isArray(response)) {
-            membersData = response;
-          } else if (response && response.results && Array.isArray(response.results)) {
-            membersData = response.results;
+          if (response && response.success && response.data) {
+            this.allMembers = response.data;
+            // Apply filtering based on search text
+            this.applyFilter();
+          } else {
+            console.error('Failed to load members:', response);
+            this.error = true;
+            this.errorMessage = response.error || 'Failed to load members';
+            this.toastService.error(this.errorMessage);
+            this.members = [];
+            this.filteredMembers = [];
+            this.totalItems = 0;
           }
-
-
-          // Transform API data to match our interface
-          this.allMembers = membersData.map((member: any) => ({
-            id: member.id || member.member_employee_id || '',
-            member_employee_id: member.member_employee_id || '',
-            firstName: member.member_firstname || member.firstName || '',
-            lastName: member.member_lastname || member.lastName || '',
-            jobTitle: member.member_title || member.jobTitle || '',
-            department: member.department || '',
-            manager: member.member_manager_id || member.manager || '',
-            director: member.member_director_id || member.director || '',
-            status: member.member_status || member.status || 'ACTIVE',
-            email: member.member_email || member.email || '',
-            role: member.role_id || member.role || 6
-          }));
-
-          // Apply filtering based on search text
-          this.applyFilter();
         },
         error: (err) => {
           console.error('Error loading members:', err);
@@ -124,14 +109,18 @@ export class MemberControlComponent implements OnInit {
       // Apply search filter across multiple fields
       const searchTerm = this.searchText.toLowerCase().trim();
 
-      this.members = this.allMembers.filter(member => {
+      this.members = this.allMembers.filter((member) => {
         return (
           member.firstName.toLowerCase().includes(searchTerm) ||
           member.lastName.toLowerCase().includes(searchTerm) ||
-          `${member.firstName} ${member.lastName}`.toLowerCase().includes(searchTerm) ||
+          `${member.firstName} ${member.lastName}`
+            .toLowerCase()
+            .includes(searchTerm) ||
           (member.email && member.email.toLowerCase().includes(searchTerm)) ||
-          (member.jobTitle && member.jobTitle.toLowerCase().includes(searchTerm)) ||
-          (member.member_employee_id && member.member_employee_id.toLowerCase().includes(searchTerm))
+          (member.jobTitle &&
+            member.jobTitle.toLowerCase().includes(searchTerm)) ||
+          (member.member_employee_id &&
+            member.member_employee_id.toLowerCase().includes(searchTerm))
         );
       });
     }
@@ -179,7 +168,9 @@ export class MemberControlComponent implements OnInit {
         this.refreshAfterAction = true;
 
         // Show success toast message
-        this.toastService.success(result.message || 'Member added successfully');
+        this.toastService.success(
+          result.message || 'Member added successfully'
+        );
 
         // Reload the member list
         this.loadMembers();
@@ -227,13 +218,15 @@ export class MemberControlComponent implements OnInit {
       width: '400px',
       data: {
         title: `${newStatus === 'ACTIVE' ? 'Activate' : 'Deactivate'} Member`,
-        message: `Are you sure you want to ${newStatus === 'ACTIVE' ? 'activate' : 'deactivate'} ${member.firstName} ${member.lastName}?`,
+        message: `Are you sure you want to ${
+          newStatus === 'ACTIVE' ? 'activate' : 'deactivate'
+        } ${member.firstName} ${member.lastName}?`,
         confirmText: 'Confirm',
-        cancelText: 'Cancel'
-      }
+        cancelText: 'Cancel',
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.updateMemberStatus(member, newStatus);
       }
@@ -241,20 +234,28 @@ export class MemberControlComponent implements OnInit {
   }
 
   updateMemberStatus(member: Member, newStatus: string): void {
-
-    this.memberService.updateMemberStatus(member.member_employee_id, newStatus)
+    this.memberService
+      .updateMemberStatus(member.member_employee_id, newStatus)
       .subscribe({
         next: (response) => {
           if (response && response.success) {
-            this.toastService.success(`Member ${newStatus === 'ACTIVE' ? 'activated' : 'deactivated'} successfully`);
+            this.toastService.success(
+              `Member ${
+                newStatus === 'ACTIVE' ? 'activated' : 'deactivated'
+              } successfully`
+            );
             this.loadMembers();
           } else {
-            this.toastService.error(response.error || 'Failed to update member status');
+            this.toastService.error(
+              response.error || 'Failed to update member status'
+            );
           }
         },
         error: (err) => {
-          this.toastService.error(err.message || 'An error occurred while updating member status');
-        }
+          this.toastService.error(
+            err.message || 'An error occurred while updating member status'
+          );
+        },
       });
   }
 

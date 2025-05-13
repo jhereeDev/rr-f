@@ -1,4 +1,3 @@
-// Updated member-edit-dialog.component.ts
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -40,14 +39,15 @@ export class MemberEditDialogComponent implements OnInit {
     private memberService: MemberService
   ) {
     // Get the role ID as a number
-    const roleId = typeof data.member.role === 'number'
-      ? data.member.role
-      : parseInt(data.member.role) || 6;
+    const roleId =
+      typeof data.member.role === 'number'
+        ? data.member.role
+        : parseInt(data.member.role) || 6;
 
     // Initialize the form with just the editable fields
     this.memberForm = this.fb.group({
       jobTitle: [data.member.jobTitle, Validators.required],
-      managerEmail: [data.member.manager, Validators.required],
+      managerEmail: [data.member.manager_email, Validators.required],
       status: [data.member.status, Validators.required],
       roleId: [roleId, Validators.required],
     });
@@ -62,13 +62,14 @@ export class MemberEditDialogComponent implements OnInit {
 
       // Create the update data object
       const updateData = {
-        member_title: this.memberForm.value.jobTitle,
-        member_manager_id: this.memberForm.value.managerEmail, // This will be processed on the backend
-        member_status: this.memberForm.value.status,
-        role_id: this.memberForm.value.roleId
+        jobTitle: this.memberForm.value.jobTitle,
+        manager_email: this.memberForm.value.managerEmail, // Use manager_email for clarity
+        status: this.memberForm.value.status,
+        roleId: this.memberForm.value.roleId,
       };
 
-      this.memberService.updateMember(this.data.member.id, updateData)
+      this.memberService
+        .updateMember(this.data.member.member_employee_id, updateData)
         .pipe(
           finalize(() => {
             this.isSubmitting = false;
@@ -85,13 +86,16 @@ export class MemberEditDialogComponent implements OnInit {
             }
           },
           error: (err) => {
-            this.errorMessage = err.error?.message || 'An unexpected error occurred';
+            this.errorMessage =
+              err.error?.message || 'An unexpected error occurred';
             this.toastService.error(this.errorMessage);
-          }
+          },
         });
     } else {
       this.memberForm.markAllAsTouched();
-      this.toastService.warning('Please fill out all required fields correctly');
+      this.toastService.warning(
+        'Please fill out all required fields correctly'
+      );
     }
   }
 

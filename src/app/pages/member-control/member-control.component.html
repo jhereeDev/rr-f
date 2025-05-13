@@ -1,14 +1,10 @@
-<!-- Updated member-control.component.html -->
 <div class="container">
   <div class="header">
     <div class="title-section">
       <div class="icon-title">
         <div class="checklist-icon">
           <div class="icon-container">
-            <img
-              src="assets/buttons/clock.png"
-              alt="Criteria Management Icon"
-            />
+            <img src="assets/buttons/trophy.png" alt="Member Management Icon" />
           </div>
         </div>
         <h1>Member Management</h1>
@@ -34,7 +30,12 @@
     <div class="search-container">
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Search Member</mat-label>
-        <input matInput [(ngModel)]="searchText" (input)="search($event)" placeholder="Search by name, email or ID" />
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (input)="search($event)"
+          placeholder="Search by name, email or ID"
+        />
         <button
           *ngIf="searchText"
           matSuffix
@@ -46,11 +47,7 @@
         </button>
       </mat-form-field>
 
-      <button
-        mat-flat-button
-        class="search-button"
-        (click)="loadMembers()"
-      >
+      <button mat-flat-button class="search-button" (click)="loadMembers()">
         <mat-icon>search</mat-icon>
         Search
       </button>
@@ -99,7 +96,6 @@
               <th>Email</th>
               <th>Job Title</th>
               <th>Manager</th>
-              <th>Director</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -109,8 +105,7 @@
               <td>{{ member.firstName }} {{ member.lastName }}</td>
               <td>{{ member.email }}</td>
               <td>{{ member.jobTitle }}</td>
-              <td>{{ member.manager }}</td>
-              <td>{{ member.director }}</td>
+              <td>{{ member.manager_email }}</td>
               <td>
                 <span
                   class="status-badge"
@@ -136,14 +131,24 @@
                     <mat-icon>visibility</mat-icon>
                     <span>View Details</span>
                   </button>
-                  <ng-container *ngIf="member.status.toUpperCase() === 'ACTIVE'">
-                    <button mat-menu-item (click)="confirmStatusChange(member, 'INACTIVE')">
+                  <ng-container
+                    *ngIf="member.status.toUpperCase() === 'ACTIVE'"
+                  >
+                    <button
+                      mat-menu-item
+                      (click)="confirmStatusChange(member, 'INACTIVE')"
+                    >
                       <mat-icon>block</mat-icon>
                       <span>Deactivate</span>
                     </button>
                   </ng-container>
-                  <ng-container *ngIf="member.status.toUpperCase() === 'INACTIVE'">
-                    <button mat-menu-item (click)="confirmStatusChange(member, 'ACTIVE')">
+                  <ng-container
+                    *ngIf="member.status.toUpperCase() === 'INACTIVE'"
+                  >
+                    <button
+                      mat-menu-item
+                      (click)="confirmStatusChange(member, 'ACTIVE')"
+                    >
                       <mat-icon>check_circle</mat-icon>
                       <span>Activate</span>
                     </button>

@@ -1,4 +1,3 @@
-<!-- Updated member-edit-dialog.component.html -->
 <div class="dialog-container">
   <h2 mat-dialog-title>
     {{ data.member.firstName }} {{ data.member.lastName }}
@@ -40,18 +39,26 @@
 
     <div class="form-row">
       <div class="form-group">
-        <h3>Manager ID <span class="required-indicator">*</span></h3>
+        <h3>Manager Email <span class="required-indicator">*</span></h3>
         <mat-form-field appearance="outline">
           <input
             matInput
             formControlName="managerEmail"
-            placeholder="Manager ID"
+            placeholder="Manager ID or Email"
           />
-          <mat-error *ngIf="memberForm.get('managerEmail')?.hasError('required')">
-            Manager ID is required
+          <mat-error
+            *ngIf="memberForm.get('managerEmail')?.hasError('required')"
+          >
+            Manager is required
           </mat-error>
         </mat-form-field>
-        <p class="form-hint">Enter the manager's employee ID</p>
+        <p class="form-hint">
+          Enter the manager's employee ID or email address
+        </p>
+        <p class="form-hint note">
+          <strong>Note:</strong> Director will be automatically set to the
+          manager's manager
+        </p>
       </div>
     </div>
 
@@ -79,8 +86,20 @@
     </div>
 
     <div class="dialog-actions">
-      <button mat-button type="button" (click)="close()" [disabled]="isSubmitting">Cancel</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="memberForm.invalid || isSubmitting">
+      <button
+        mat-button
+        type="button"
+        (click)="close()"
+        [disabled]="isSubmitting"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="memberForm.invalid || isSubmitting"
+      >
         <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
         <span *ngIf="!isSubmitting">Save Changes</span>
       </button>

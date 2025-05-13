@@ -96,7 +96,7 @@ export class MemberDetailsComponent implements OnInit {
             this.toastService.error(this.errorMessage);
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           this.errorMessage = err.message || 'Failed to load member details';
           this.toastService.error(this.errorMessage);
         },

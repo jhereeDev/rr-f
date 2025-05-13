@@ -1,4 +1,3 @@
-/* Updated member-edit-dialog.component.scss */
 .dialog-container {
   padding: 24px;
   max-width: 800px;
@@ -45,6 +44,12 @@ h3 {
   color: #777;
   margin-top: 4px;
   margin-bottom: 0;
+
+  &.note {
+    color: #3f51b5;
+    margin-top: 8px;
+    font-style: italic;
+  }
 }
 
 .dialog-actions {
@@ -63,25 +68,30 @@ h3 {
   }
 }
 
-/* Read-only field styling */
-.read-only-field {
-  background-color: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 15px 16px;
-  font-size: 16px;
-  color: #666;
-  min-height: 20px;
-}
-
-.read-only-content {
-  word-break: break-word;
-}
-
 /* Required field indicator */
 .required-indicator {
   color: #f44336;
   margin-left: 2px;
+}
+
+/* Error message styling */
+.error-message {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  background-color: #ffebee;
+  border-radius: 4px;
+  color: #d32f2f;
+  font-size: 14px;
+
+  .error-icon {
+    margin-right: 8px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    padding-right: 12px;
+  }
 }
 
 /* Remove form field bottom spacing */
@@ -93,9 +103,5 @@ h3 {
   .form-row {
     flex-direction: column;
     gap: 0;
-  }
-
-  .read-only-field {
-    margin-bottom: 12px;
   }
 }
