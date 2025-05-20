@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { CriteriaService } from 'src/app/common/services/criteria.service';
 import { ApprovalService } from 'src/app/common/services/approval.service';
 import { MemberService } from 'src/app/common/services/member.service';
 import { AuthService } from 'src/app/common/services/auth.service';
 import { ToastService } from 'src/app/common/services/toast.service';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { finalize } from 'rxjs/operators';
 
 const ALLOWED_FILE_TYPES = ['application/pdf'];
@@ -62,7 +64,8 @@ export class AdminEditRewardComponent implements OnInit {
     private memberService: MemberService,
     private router: Router,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private dialog: MatDialog
   ) {
     this.adminEditForm = this.fb.group({
       shortDescription: ['', Validators.required],
@@ -400,6 +403,19 @@ export class AdminEditRewardComponent implements OnInit {
       return;
     }
 
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.submitForm();
+      }
+    });
+  }
+
+  private submitForm(): void {
     this.submitted = true;
     this.isUpdating = true;
 

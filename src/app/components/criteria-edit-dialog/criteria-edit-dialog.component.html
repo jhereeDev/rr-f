@@ -14,11 +14,16 @@
           <mat-form-field appearance="outline">
             <mat-label>Category</mat-label>
             <mat-select formControlName="category">
-              <mat-option *ngFor="let category of existingCategories" [value]="category">
+              <mat-option
+                *ngFor="let category of existingCategories"
+                [value]="category"
+              >
                 {{ category }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="criteriaForm.get('category')?.hasError('required')">
+            <mat-error
+              *ngIf="criteriaForm.get('category')?.hasError('required')"
+            >
               Category is required
             </mat-error>
           </mat-form-field>
@@ -38,7 +43,9 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Accomplishment</mat-label>
           <input matInput formControlName="accomplishment" />
-          <mat-error *ngIf="criteriaForm.get('accomplishment')?.hasError('required')">
+          <mat-error
+            *ngIf="criteriaForm.get('accomplishment')?.hasError('required')"
+          >
             Accomplishment is required
           </mat-error>
         </mat-form-field>
@@ -47,18 +54,53 @@
       <!-- Details Section -->
       <div class="form-section">
         <h3>Details</h3>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Guidelines</mat-label>
-          <textarea matInput formControlName="guidelines" rows="3"></textarea>
-          <mat-error *ngIf="criteriaForm.get('guidelines')?.hasError('required')">
-            Guidelines are required
-          </mat-error>
-        </mat-form-field>
+        <div class="form-row">
+          <div class="field-container">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Guidelines</mat-label>
+              <textarea
+                matInput
+                formControlName="guidelines"
+                rows="4"
+                maxlength="500"
+                placeholder="Enter guidelines"
+              ></textarea>
+            </mat-form-field>
+            <div class="field-info">
+              <span class="char-count"
+                >{{ criteriaForm.get("guidelines")?.value?.length || 0 }}/500
+                characters</span
+              >
+              <span class="char-limit"
+                >Maximum 500 characters allowed for guidelines</span
+              >
+            </div>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Remarks</mat-label>
-          <textarea matInput formControlName="remarks" rows="2"></textarea>
-        </mat-form-field>
+        <div class="form-row">
+          <div class="field-container">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Remarks</mat-label>
+              <textarea
+                matInput
+                formControlName="remarks"
+                rows="3"
+                maxlength="200"
+                placeholder="Enter remarks (optional)"
+              ></textarea>
+            </mat-form-field>
+            <div class="field-info">
+              <span class="char-count"
+                >{{ criteriaForm.get("remarks")?.value?.length || 0 }}/200
+                characters</span
+              >
+              <span class="char-limit"
+                >Maximum 200 characters allowed for remarks (optional)</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Additional Settings Section -->
@@ -87,11 +129,24 @@
     </div>
 
     <div class="dialog-actions">
-      <button mat-button type="button" (click)="close()">Cancel</button>
-      <button mat-raised-button color="warn" type="button" (click)="deleteCriteria()">
+      <button mat-button class="cancel-button" type="button" (click)="close()">
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        class="delete-button"
+        type="button"
+        (click)="deleteCriteria()"
+      >
         Delete Criteria
       </button>
-      <button mat-raised-button color="primary" type="submit">
+      <button
+        mat-flat-button
+        class="save-button"
+        type="button"
+        [disabled]="criteriaForm.invalid || !criteriaForm.dirty"
+        (click)="onSubmit()"
+      >
         Save Changes
       </button>
     </div>

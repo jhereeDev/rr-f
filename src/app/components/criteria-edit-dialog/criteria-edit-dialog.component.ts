@@ -53,29 +53,13 @@ export class CriteriaEditDialogComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit(): void {
-    if (this.criteriaForm.valid) {
-      const formData = this.criteriaForm.value;
-
-      // Create the criteria object to send to the API
-      const criteriaData = {
-        category: formData.category,
-        accomplishment: formData.accomplishment,
-        points: parseInt(formData.points),
-        guidelines: formData.guidelines,
-        director_approval: formData.director_approval,
-        type: this.isManager ? formData.type : 'BOTH', // Type is only relevant for manager criteria
-        remarks: formData.remarks,
-      };
-
-      this.dialogRef.close(criteriaData);
-    } else {
-      this.criteriaForm.markAllAsTouched();
-      this.toastService.warning('Please fill out all required fields');
+    if (this.criteriaForm.valid && this.criteriaForm.dirty) {
+      this.dialogRef.close(this.criteriaForm.value);
     }
   }
 
   deleteCriteria(): void {
-    this.dialogRef.close({ delete: true, id: this.criteriaId });
+    this.dialogRef.close({ delete: true });
   }
 
   close(): void {

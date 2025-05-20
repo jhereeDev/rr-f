@@ -67,9 +67,16 @@
   }
 }
 
+.refresh-button {
+  background-color: #128354 !important;
+}
+
+.home-button {
+  background-color: #5236ab !important;
+}
+
 .home-button,
 .refresh-button {
-  background-color: #5236ab !important;
   color: white !important;
   border-radius: 100px !important;
   font-weight: 500 !important;

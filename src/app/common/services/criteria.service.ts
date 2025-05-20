@@ -121,7 +121,7 @@ export class CriteriaService {
    */
   updatePartnerCriteriaDraft(id: number, criteria: any): Observable<any> {
     return this.http
-      .put(`${this.apiUrl}/criterias/partner/draft/${id}`, criteria, {
+      .put(`${this.apiUrl}/criterias/partner/${id}`, criteria, {
         withCredentials: true,
       })
       .pipe(
@@ -301,7 +301,7 @@ export class CriteriaService {
    */
   updateManagerCriteriaDraft(id: number, criteria: any): Observable<any> {
     return this.http
-      .put(`${this.apiUrl}/criterias/manager/draft/${id}`, criteria, {
+      .put(`${this.apiUrl}/criterias/manager/${id}`, criteria, {
         withCredentials: true,
       })
       .pipe(

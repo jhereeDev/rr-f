@@ -93,11 +93,12 @@
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .search-field {
-  flex: 1;
-  max-width: 800px;
+  flex: 0 1 400px;
   margin-bottom: 0;
 
   ::ng-deep .mat-mdc-text-field-wrapper {
@@ -110,6 +111,11 @@
     input.mat-mdc-input-element {
       margin-top: 0;
       line-height: normal;
+      font-size: 14px;
+    }
+
+    .mat-mdc-form-field-label {
+      font-size: 13px;
     }
   }
 }
@@ -119,9 +125,21 @@
   color: white !important;
   border-radius: 100px !important;
   font-weight: 500;
-  padding: 0 24px;
-  height: 56px;
-  width: 130px;
+  padding: 0 16px;
+  height: 40px;
+  width: 100px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+  }
 }
 
 .add-member-button {
@@ -130,17 +148,19 @@
   border-radius: 100px !important;
   font-weight: 500;
   padding: 0 16px;
-  height: 56px;
+  height: 40px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  width: 170px;
+  width: 140px;
+  font-size: 13px;
 
   mat-icon {
-    font-size: 18px;
-    height: 18px;
-    width: 18px;
-    line-height: 18px;
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
   }
 }
 
@@ -285,17 +305,25 @@
 
   .search-container {
     flex-direction: column;
-    gap: 16px;
+    align-items: stretch;
   }
 
   .search-field {
     width: 100%;
-    max-width: none;
+    flex: 1;
   }
 
   .search-button,
   .add-member-button {
     width: 100%;
+    font-size: 12px;
+
+    mat-icon {
+      font-size: 14px;
+      height: 14px;
+      width: 14px;
+      line-height: 14px;
+    }
   }
 
   .pagination-container {
