@@ -209,11 +209,17 @@ export class CriteriaService {
   /**
    * Get all published manager criteria
    */
-  getAllManagerCriteria(): Observable<any> {
+  getAllManagerCriteria(
+    guidelines: boolean = true,
+    member_job_title: string = 'manager consulting delivery'
+  ): Observable<any> {
     return this.http
-      .get(`${this.apiUrl}/criterias/manager/published`, {
-        withCredentials: true,
-      })
+      .get(
+        `${this.apiUrl}/criterias/manager/published?guidelines=${guidelines}&member_job_title=${member_job_title}`,
+        {
+          withCredentials: true,
+        }
+      )
       .pipe(
         map((response) => response),
         catchError(this.handleError)

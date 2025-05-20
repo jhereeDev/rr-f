@@ -1,25 +1,48 @@
-// member-details.component.ts with real data integration
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastService } from '../../common/services/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MemberService } from '../../common/services/member.service';
+import { RewardpointsService } from '../../common/services/rewardpoints.service';
 import { finalize } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { UserModalComponent } from '../../components/user-points-modal/user-points-modal.component';
 
 interface RewardEntry {
   id: number;
-  category: string;
-  accomplishment: string;
-  points: number;
-  shortDescription: string;
-  status: string;
-  date: string;
-  notes: string;
-  attachments?: Array<{
-    filename: string;
-    path: string;
-    type?: string;
-  }>;
+  member_firstname: string;
+  member_lastname: string;
+  manager_id: string;
+  director_id: string;
+  manager_approval_status: string;
+  director_approval_status: string;
+  manager_notes: string;
+  director_notes: string;
+  rewards_entry: {
+    id: number;
+    member_employee_id: number;
+    criteria_id: number;
+    date_accomplished: string;
+    race_season: string;
+    cbps_group: string;
+    project_name: string;
+    short_description: string;
+    notes: string;
+    created_at: string;
+    updated_at: string;
+    attachments: Array<{
+      id: number;
+      filename: string;
+      path: string;
+    }>;
+  };
+  rewards_criteria: {
+    id: number;
+    category: string;
+    accomplishment: string;
+    points: number;
+    guidelines: string;
+  };
 }
 
 interface Attachment {
@@ -36,20 +59,12 @@ interface Attachment {
 export class MemberDetailsComponent implements OnInit {
   editProjectForm: FormGroup;
   accomplishments = ['OSAP >9.5', 'Clients/PBU Commendation'];
-  rewardEntries: RewardEntry[] = [];
-  displayedColumns: string[] = [
-    'category',
-    'accomplishment',
-    'points',
-    'shortDescription',
-    'status',
-    'date',
-    'notes',
-    'attachments',
-  ];
+  rewardEntries: any[] = [];
+  displayedColumns: string[] = [];
   memberData: any = null;
   isLoading = false;
   errorMessage = '';
+  memberId: string = '';
 
   // Current project attachments (can be updated after API integration)
   currentProjectAttachments: Attachment[] = [];
@@ -59,7 +74,9 @@ export class MemberDetailsComponent implements OnInit {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private router: Router,
-    private memberService: MemberService
+    private memberService: MemberService,
+    private rewardService: RewardpointsService,
+    private dialog: MatDialog
   ) {
     // Initialize the form for editing a specific project
     this.editProjectForm = this.fb.group({
@@ -71,10 +88,39 @@ export class MemberDetailsComponent implements OnInit {
   ngOnInit(): void {
     // Get member ID from route params
     this.route.params.subscribe((params) => {
-      const memberId = params['id'];
-      this.loadMemberData(memberId);
-      this.loadMemberRewardEntries(memberId);
+      this.memberId = params['id'];
+      this.loadMemberData(this.memberId);
+      this.loadMemberRewardEntries(this.memberId);
     });
+  }
+
+  updateDisplayedColumns(): void {
+    const baseColumns = [
+      'category',
+      'accomplishment',
+      'points',
+      'shortDescription',
+      'date',
+      'notes',
+      'actions',
+    ];
+
+    if (this.memberData?.role_id === 4 || this.memberData?.role_id === 3) {
+      // For role_id 4, don't add any approval status columns
+    } else if (this.memberData?.role_id === 5) {
+      // For role_id 5, only add director approval status
+      baseColumns.splice(4, 0, 'director_approval_status');
+    } else {
+      // For all other roles, add both approval status columns
+      baseColumns.splice(
+        4,
+        0,
+        'manager_approval_status',
+        'director_approval_status'
+      );
+    }
+
+    this.displayedColumns = baseColumns;
   }
 
   loadMemberData(memberId: string): void {
@@ -88,9 +134,11 @@ export class MemberDetailsComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (member) => {
-          if (member) {
-            this.memberData = member;
+        next: (response) => {
+          if (response) {
+            this.memberData = response;
+            this.updateDisplayedColumns();
+            console.log('memberData', this.memberData);
           } else {
             this.errorMessage = 'Member not found';
             this.toastService.error(this.errorMessage);
@@ -114,12 +162,14 @@ export class MemberDetailsComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (entries) => {
-          this.rewardEntries = entries;
-
-          // If there are entries, set the current project attachments from the first entry
-          if (entries.length > 0 && entries[0].attachments) {
-            this.currentProjectAttachments = entries[0].attachments;
+        next: (response) => {
+          if (response) {
+            // Format the attachments for each entry
+            this.rewardEntries = response;
+          } else {
+            this.errorMessage = 'Failed to load reward entries';
+            this.toastService.error(this.errorMessage);
+            this.rewardEntries = [];
           }
         },
         error: (err) => {
@@ -133,7 +183,6 @@ export class MemberDetailsComponent implements OnInit {
   onSubmit(): void {
     if (this.editProjectForm.valid) {
       // Here you would call the service to update the project
-      // For now, we'll just show a success toast
       this.toastService.success('Project updated successfully');
     } else {
       this.editProjectForm.markAllAsTouched();
@@ -160,8 +209,44 @@ export class MemberDetailsComponent implements OnInit {
     this.router.navigate(['/admin/members']);
   }
 
-  viewAttachment(attachment: Attachment): void {
-    // In a real application, you would use the RewardpointsService to download
-    window.open(attachment.path, '_blank');
+  // Open dialog to view reward entry details
+  viewRewardEntry(entry: RewardEntry): void {
+    // Open the UserModalComponent instead of RewardPointsModalComponent
+    this.dialog.open(UserModalComponent, {
+      data: { user: entry, access: 'view', resubmit: false },
+      width: '80%',
+      maxWidth: '1200px',
+      disableClose: false,
+    });
+  }
+
+  // Open dialog to edit reward entry
+  editRewardEntry(entry: RewardEntry): void {
+    this.dialog.open(UserModalComponent, {
+      width: '80%',
+      maxWidth: '1200px',
+      data: {
+        user: entry,
+        access: 'edit',
+        resubmit: false,
+      },
+      disableClose: false,
+    });
+
+    // Refresh data when dialog is closed
+    this.dialog.afterAllClosed.subscribe(() => {
+      this.loadMemberRewardEntries(this.memberId);
+    });
+  }
+
+  // Navigate to admin edit reward page
+  navigateToAdminEditReward(entry: RewardEntry): void {
+    this.router.navigate([
+      '/admin/members',
+      this.memberId,
+      'rewards',
+      entry.id,
+      'edit',
+    ]);
   }
 }

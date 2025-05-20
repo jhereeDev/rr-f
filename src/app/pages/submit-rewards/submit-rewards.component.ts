@@ -128,10 +128,10 @@ export class SubmitRewardsComponent implements OnInit {
         error: (error) => {
           console.error('Error fetching partner criteria:', error);
           this.toastService.error('Error loading criteria. Please try again.');
-        }
+        },
       });
     } else if (this.user.role_id === 5) {
-      this.criteriaService.getAllManagerCriteria().subscribe({
+      this.criteriaService.getAllManagerCriteria(false).subscribe({
         next: (res) => {
           this.criterias = res.data || [];
           this.categories = Array.from(
@@ -141,7 +141,7 @@ export class SubmitRewardsComponent implements OnInit {
         error: (error) => {
           console.error('Error fetching manager criteria:', error);
           this.toastService.error('Error loading criteria. Please try again.');
-        }
+        },
       });
     } else {
       console.warn(`Unknown role: ${this.user.role_id}, no criteria loaded`);
@@ -201,9 +201,6 @@ export class SubmitRewardsComponent implements OnInit {
 
   addFiles(files: File[]): void {
     files.forEach((file) => {
-      // Log the file type for debugging
-      console.log(`Attempting to add file: ${file.name}, type: ${file.type}`);
-
       if (this.isValidFileType(file.type)) {
         const uniqueId = `file-${Date.now()}-${Math.random()
           .toString(36)
@@ -230,7 +227,6 @@ export class SubmitRewardsComponent implements OnInit {
     }
 
     const isValid = ALLOWED_FILE_TYPES.includes(fileType);
-    console.log(`File type ${fileType} validity: ${isValid}`);
     return isValid;
   }
 
@@ -239,23 +235,16 @@ export class SubmitRewardsComponent implements OnInit {
   }
 
   removeChip(chipToRemove: Chip): void {
-    console.log('Removing chip:', chipToRemove);
-
     // Use the chip ID for more reliable removal
     const index = this.chips.findIndex((chip) => chip.id === chipToRemove.id);
 
     if (index >= 0) {
       const removedChip = this.chips.splice(index, 1)[0];
-      console.log('Removed chip at index:', index, removedChip);
 
       // Remove the file from selectedFiles by comparing file name (more reliable than object reference)
       if (removedChip.file) {
         this.selectedFiles = this.selectedFiles.filter(
           (file) => file.name !== removedChip.file?.name
-        );
-        console.log(
-          'Remaining files:',
-          this.selectedFiles.map((f) => f.name)
         );
       }
 
@@ -372,19 +361,6 @@ export class SubmitRewardsComponent implements OnInit {
   }
 
   get isFormValid(): boolean {
-    // Log invalid controls
-    Object.keys(this.rewardForm.controls).forEach((key) => {
-      const control = this.rewardForm.get(key);
-      if (control?.invalid) {
-        console.log(`Invalid field: ${key}`, {
-          errors: control.errors,
-          value: control.value,
-          touched: control.touched,
-          dirty: control.dirty,
-        });
-      }
-    });
-
     return this.rewardForm.valid && this.hasAttachments;
   }
 }

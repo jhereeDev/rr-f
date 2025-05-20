@@ -39,10 +39,6 @@ import { GuidelinesComponent } from './pages/guidelines/guidelines.component';
 import { TermsDialogComponent } from './components/terms-dialog/terms-dialog.component';
 import { WordLimitPipe } from './common/pipes/word-limit.pipe';
 import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
-import {
-  PdfFullscreenComponent,
-  PdfViewerComponent,
-} from './components/pdf-viewer/pdf-viewer.component';
 import { CriteriaManagementComponent } from './pages/criteria-management/criteria-management.component';
 import { CriteriaAddDialogComponent } from './components/criteria-add-dialog/criteria-add-dialog.component';
 import { CriteriaEditDialogComponent } from './components/criteria-edit-dialog/criteria-edit-dialog.component';
@@ -56,6 +52,8 @@ import { MemberConfirmDialogComponent } from './components/member-confirm-dialog
 import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderboard.component';
 import { MemberDetailsModule } from './pages/member-details.module';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { SharedModule } from './shared/shared.module';
+import { AdminEditRewardComponent } from './pages/admin-edit-reward/admin-edit-reward.component';
 
 @NgModule({
   declarations: [
@@ -76,8 +74,6 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
     TermsDialogComponent,
     WordLimitPipe,
     AdminHomeComponent,
-    PdfViewerComponent,
-    PdfFullscreenComponent,
     CriteriaManagementComponent,
     CriteriaAddDialogComponent,
     CriteriaEditDialogComponent,
@@ -90,6 +86,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
     MemberConfirmDialogComponent,
     CBPSLeaderboardComponent,
     ChangePasswordComponent,
+    AdminEditRewardComponent,
   ],
   imports: [
     BrowserModule,
@@ -114,6 +111,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
     MatCheckboxModule,
     A11yModule,
     MemberDetailsModule,
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

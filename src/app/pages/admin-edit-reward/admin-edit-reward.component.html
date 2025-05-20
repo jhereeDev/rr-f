@@ -1,0 +1,253 @@
+<div class="admin-edit-reward-page">
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <mat-icon>admin_panel_settings</mat-icon>
+          Admin: Edit Reward Entry
+        </h2>
+        <div class="spacer"></div>
+        <button mat-button color="warn" (click)="cancel()">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Member
+        </button>
+      </div>
+
+      <div class="card-content">
+        <form [formGroup]="adminEditForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Member</mat-label>
+              <input matInput formControlName="member" readonly />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Employee ID</mat-label>
+              <input matInput formControlName="employeeNumber" readonly />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Manager</mat-label>
+              <input matInput formControlName="managerName" readonly />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Director</mat-label>
+              <input matInput formControlName="directorName" readonly />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Category</mat-label>
+              <mat-select
+                formControlName="category"
+                (selectionChange)="onCategoryChange()"
+              >
+                <mat-option
+                  *ngFor="let category of categories"
+                  [value]="category"
+                >
+                  {{ category }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="adminEditForm.get('category')?.hasError('required')"
+              >
+                Category is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Accomplishment</mat-label>
+              <mat-select
+                formControlName="accomplishment"
+                (selectionChange)="onAccomplishmentChange()"
+              >
+                <mat-option
+                  *ngFor="let accomplishment of accomplishments"
+                  [value]="accomplishment.id"
+                >
+                  {{ accomplishment.accomplishment }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  adminEditForm.get('accomplishment')?.hasError('required')
+                "
+              >
+                Accomplishment is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Reward Points</mat-label>
+              <input matInput formControlName="rewardPoints" readonly />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>CBPS Group</mat-label>
+              <mat-select formControlName="cbpsGroup">
+                <mat-option *ngFor="let group of cbpsGroups" [value]="group">
+                  {{ group }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="adminEditForm.get('cbpsGroup')?.hasError('required')"
+              >
+                CBPS Group is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="showManagerStatus">
+              <mat-label>Manager Approval Status</mat-label>
+              <mat-select formControlName="managerApprovalStatus">
+                <mat-option value="pending">Pending</mat-option>
+                <mat-option value="approved">Approved</mat-option>
+                <mat-option value="rejected">Rejected</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="showDirectorStatus">
+              <mat-label>Director Approval Status</mat-label>
+              <mat-select formControlName="directorApprovalStatus">
+                <mat-option value="pending">Pending</mat-option>
+                <mat-option value="approved">Approved</mat-option>
+                <mat-option value="rejected">Rejected</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Race Season</mat-label>
+              <input matInput formControlName="raceSeason" readonly />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Date Accomplished</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                formControlName="date"
+                [max]="maxDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error
+                *ngIf="adminEditForm.get('date')?.hasError('required')"
+              >
+                Date is required
+              </mat-error>
+              <mat-hint>Cannot select future dates</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Project Name</mat-label>
+              <input matInput formControlName="projectName" />
+              <mat-error
+                *ngIf="adminEditForm.get('projectName')?.hasError('required')"
+              >
+                Project Name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Short Description</mat-label>
+              <textarea
+                matInput
+                formControlName="shortDescription"
+                rows="3"
+              ></textarea>
+              <mat-error
+                *ngIf="
+                  adminEditForm.get('shortDescription')?.hasError('required')
+                "
+              >
+                Short description is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Notes</mat-label>
+              <textarea matInput formControlName="notes" rows="3"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <div class="attachments-section">
+              <label>Attachments</label>
+              <div class="file-uploader">
+                <div class="chips-wrapper">
+                  <mat-chip-listbox>
+                    <mat-chip
+                      *ngFor="let chip of chips"
+                      (removed)="removeChip(chip)"
+                    >
+                      {{ chip.label }}
+                      <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                    </mat-chip>
+                  </mat-chip-listbox>
+                </div>
+                <button
+                  type="button"
+                  mat-stroked-button
+                  color="primary"
+                  (click)="fileInput.click()"
+                >
+                  <mat-icon>attach_file</mat-icon>
+                  Add Attachment
+                </button>
+                <input
+                  #fileInput
+                  type="file"
+                  accept=".pdf"
+                  style="display: none"
+                  (change)="onFileSelected($event)"
+                  multiple
+                />
+              </div>
+              <div class="file-info">
+                <small>Accepted file types: PDF</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button
+              type="button"
+              mat-stroked-button
+              color="warn"
+              (click)="cancel()"
+              [disabled]="isUpdating"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              mat-raised-button
+              color="primary"
+              [disabled]="!isFormValid"
+            >
+              <mat-spinner *ngIf="isUpdating" diameter="20"></mat-spinner>
+              <span *ngIf="!isUpdating">Update Reward Entry</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

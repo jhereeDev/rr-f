@@ -1,185 +1,64 @@
-/* member-details.component.scss */
 .member-details-container {
-  padding: 24px;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 24px;
 }
 
 .member-header {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 32px;
+  position: relative;
+}
+
+.back-button {
+  margin-bottom: 16px;
+  color: #5236ab;
+  border-color: #5236ab;
+
+  mat-icon {
+    margin-right: 4px;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+
+  span {
+    vertical-align: middle;
+  }
 }
 
 .member-name {
   font-size: 28px;
   font-weight: 600;
   color: #5236ab;
+  margin-bottom: 8px;
   margin-top: 0;
-  margin-bottom: 4px;
 }
 
 .member-title {
   font-size: 16px;
   color: #666;
-  margin: 0;
-}
-
-.back-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #5236ab;
-  color: white;
-  border-radius: 4px;
-  height: 40px;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-
-  mat-icon {
-    color: white;
-  }
-
-  .mdc-button__label,
-  ::ng-deep .mdc-button__label {
-    color: white;
-  }
-}
-
-.section-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
   margin-top: 0;
-  margin-bottom: 16px;
-}
-
-.project-details-section {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  margin-bottom: 32px;
-  position: relative;
-}
-
-.status-badge-container {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 500;
-  display: inline-block;
-  text-align: center;
-  min-width: 80px;
-
-  &.status-approved {
-    background-color: #e3fcef;
-    color: #00a67e;
-  }
-
-  &.status-rejected {
-    background-color: #fbe7e8;
-    color: #ca2b3e;
-  }
-
-  &.status-pending {
-    background-color: #fff2d9;
-    color: #e8980f;
-  }
-}
-
-.attachments {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.attachment-button {
-  background-color: #5236ab;
-  color: white;
-  border-radius: 16px;
-  padding: 4px 12px;
-  font-size: 13px;
-}
-
-.form-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.form-group {
-  flex: 1;
-
-  h4 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #666;
-    margin-bottom: 8px;
-    margin-top: 0;
-  }
-
-  mat-form-field {
-    width: 100%;
-  }
-}
-
-.form-hint {
-  font-size: 12px;
-  color: #777;
-  margin-top: 4px;
   margin-bottom: 0;
 }
 
-.date-info-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 32px;
-  margin-bottom: 24px;
-}
-
-.date-group {
-  h4 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #666;
-    margin-bottom: 8px;
-    margin-top: 0;
-  }
-
-  .date-value {
-    font-size: 16px;
-    color: #333;
-    margin: 0;
-  }
-}
-
-.save-changes-container {
-  display: flex;
-  justify-content: flex-end;
-
-  button {
-    background-color: #5236ab;
-    color: white;
-    min-width: 120px;
-  }
+.section-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
 }
 
 .reward-entries-section {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 24px;
+  margin-top: 32px;
 }
 
 .table-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
 }
 
@@ -213,79 +92,99 @@
   }
 }
 
-/* Remove form field bottom spacing */
-::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none !important;
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+
+  &.status-approved {
+    background-color: #e3fcef;
+    color: #00a67e;
+  }
+
+  &.status-rejected {
+    background-color: #fbe7e8;
+    color: #ca2b3e;
+  }
+
+  &.status-pending {
+    background-color: #fff2d9;
+    color: #e8980f;
+  }
 }
 
-app-attachments-container {
-  width: 100%;
-  margin-bottom: 24px;
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+
+  p {
+    margin-top: 16px;
+    color: #666;
+  }
 }
 
-.attachments-cell {
-  .attachment-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+.error-message {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: #fbe7e8;
+  color: #ca2b3e;
+  border-radius: 8px;
+  margin-top: 16px;
 
-    button {
-      mat-icon {
-        font-size: 20px;
-      }
+  mat-icon {
+    margin-right: 12px;
+  }
+}
+
+.no-entries {
+  padding: 32px;
+  text-align: center;
+  color: #666;
+}
+
+/* New styles for action buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+
+  button {
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
     }
   }
 }
 
 @media (max-width: 768px) {
-  .member-header {
-    padding-right: 80px;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .date-info-container {
-    flex-direction: column;
-    gap: 16px;
-  }
-
   .member-details-container {
-    padding: 12px;
-  }
-
-  .project-details-section,
-  .reward-entries-section {
     padding: 16px;
   }
 
-  .table-container {
-    overflow-x: auto;
+  .member-name {
+    font-size: 24px;
+  }
 
-    .reward-entries-table {
-      min-width: 800px;
+  .reward-entries-table {
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 14px;
     }
-  }
-}
 
-@media (max-width: 480px) {
-  .member-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-
-    .back-button {
-      margin-top: 10px;
+    .status-badge {
+      padding: 4px 8px;
+      font-size: 11px;
     }
-  }
-
-  .form-row {
-    flex-direction: column;
-  }
-
-  .date-info-container {
-    grid-template-columns: 1fr;
   }
 }

@@ -25,9 +25,9 @@ export class GuidelinesComponent implements OnInit {
   title: any | null = null;
   activeTab: string = 'delivery';
   categoryOrder: { [key: string]: number } = {
-    'Clients': 1,
-    'Partners': 2,
-    'Shareholders': 3
+    Clients: 1,
+    Partners: 2,
+    Shareholders: 3,
   };
 
   constructor(
@@ -64,24 +64,24 @@ export class GuidelinesComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error loading partner criteria:', error);
-        }
+        },
       });
     } else if (this.userRole === 5) {
       // For role 5, fetch only manager criteria
-      this.criteriaService.getAllManagerCriteria().subscribe({
+      this.criteriaService.getAllManagerCriteria(true).subscribe({
         next: (result) => {
           this.criterias = result.data || [];
           this.groupCriterias();
         },
         error: (error) => {
           console.error('Error loading manager criteria:', error);
-        }
+        },
       });
     } else {
       // For other roles, fetch both criteria types (maintain original behavior)
       forkJoin({
         partner: this.criteriaService.getAllPartnerCriteria(),
-        manager: this.criteriaService.getAllManagerCriteria()
+        manager: this.criteriaService.getAllManagerCriteria(),
       }).subscribe({
         next: (results) => {
           // Combine the results from both API calls
@@ -89,25 +89,29 @@ export class GuidelinesComponent implements OnInit {
           const managerCriteria = results.manager.data || [];
 
           // Merge both arrays and sort by custom category order
-          this.criterias = [...partnerCriteria, ...managerCriteria].sort((a: any, b: any) => {
-            const orderA = this.categoryOrder[a.category] || 999;
-            const orderB = this.categoryOrder[b.category] || 999;
-            return orderA - orderB;
-          });
+          this.criterias = [...partnerCriteria, ...managerCriteria].sort(
+            (a: any, b: any) => {
+              const orderA = this.categoryOrder[a.category] || 999;
+              const orderB = this.categoryOrder[b.category] || 999;
+              return orderA - orderB;
+            }
+          );
 
           // Group the criteria as before
           this.groupCriterias();
         },
         error: (error) => {
           console.error('Error loading criteria:', error);
-        }
+        },
       });
     }
   }
 
   groupCriterias(): void {
     // Get unique categories
-    const uniqueCategories = [...new Set(this.criterias.map((item) => item.category))];
+    const uniqueCategories = [
+      ...new Set(this.criterias.map((item) => item.category)),
+    ];
 
     // Sort categories according to custom order
     const sortedCategories = uniqueCategories.sort((a, b) => {
@@ -162,14 +166,6 @@ export class GuidelinesComponent implements OnInit {
     // Apply director approval filter if not 'all'
     if (this.directorApprovalFilter !== 'all') {
       const requiresApproval = this.directorApprovalFilter === 'yes';
-
-      // Count items by director approval status before filtering
-      const approvalCount = items.filter(
-        (item) => !!item.director_approval
-      ).length;
-      const noApprovalCount = items.filter(
-        (item) => !item.director_approval
-      ).length;
 
       filteredItems = filteredItems.filter((item) => {
         // Handle potential non-boolean values

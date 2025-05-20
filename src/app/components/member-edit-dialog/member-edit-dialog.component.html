@@ -62,23 +62,6 @@
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <h3>Role <span class="required-indicator">*</span></h3>
-        <mat-form-field appearance="outline">
-          <mat-select formControlName="roleId">
-            <mat-option *ngFor="let role of roles" [value]="role.id">
-              {{ role.name }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="memberForm.get('roleId')?.hasError('required')">
-            Role is required
-          </mat-error>
-        </mat-form-field>
-        <p class="form-hint">Choose the member's role in the system</p>
-      </div>
-    </div>
-
     <!-- Error Message Display -->
     <div class="error-message" *ngIf="errorMessage">
       <mat-icon>error_outline</mat-icon>

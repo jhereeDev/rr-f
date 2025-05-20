@@ -315,6 +315,12 @@ export class EditRewardsComponent implements OnInit {
         );
       }
 
+      // Log FormData contents
+      console.log('FormData contents:');
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
+
       this.rewardPointsService.updateRewardEntry(this.id, formData).subscribe({
         next: (res) => {
           this.isUpdating = false;

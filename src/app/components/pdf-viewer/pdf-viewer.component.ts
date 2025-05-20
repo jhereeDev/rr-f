@@ -6,13 +6,13 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { RewardpointsService } from 'src/app/common/services/rewardpoints.service';
 import {
   MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { Inject } from '@angular/core';
+import { RewardDetailService } from 'src/app/common/services/reward-detail.service';
 
 @Component({
   selector: 'app-pdf-viewer',
@@ -31,7 +31,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
   private previousFilePath: string | null = null;
 
   constructor(
-    private rewardService: RewardpointsService,
+    private rewardDetailService: RewardDetailService,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog
   ) {}
@@ -76,7 +76,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
     }
 
     this.loading = true;
-    this.rewardService.downloadAttachment(this.filePath).subscribe({
+    this.rewardDetailService.downloadAttachment(this.filePath).subscribe({
       next: (pdfBlob: Blob) => {
         const pdfObjectUrl = URL.createObjectURL(pdfBlob);
         this.pdfUrl =
@@ -143,6 +143,12 @@ export class PdfViewerComponent implements OnInit, OnChanges {
         frameborder="0"
         class="pdf-iframe"
       ></iframe>
+      <div *ngIf="!loading && !pdfUrl" class="pdf-error">
+        <p>Failed to load PDF. Please try downloading instead.</p>
+        <button mat-raised-button color="primary" (click)="downloadPdf()">
+          Download PDF
+        </button>
+      </div>
     </div>
   `,
   styles: [
@@ -172,6 +178,15 @@ export class PdfViewerComponent implements OnInit, OnChanges {
         border: none;
         flex: 1;
       }
+      .pdf-error {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        color: #f44336;
+      }
     `,
   ],
 })
@@ -187,7 +202,7 @@ export class PdfFullscreenComponent {
       filePath: string | null;
     },
     private dialogRef: MatDialogRef<PdfFullscreenComponent>,
-    private rewardService: RewardpointsService,
+    private rewardDetailService: RewardDetailService,
     private sanitizer: DomSanitizer
   ) {
     if (data.pdfUrl) {
@@ -195,12 +210,14 @@ export class PdfFullscreenComponent {
       this.loading = false;
     } else if (data.filePath) {
       this.loadPdf(data.filePath);
+    } else {
+      this.loading = false;
     }
   }
 
   loadPdf(filePath: string): void {
     this.loading = true;
-    this.rewardService.downloadAttachment(filePath).subscribe({
+    this.rewardDetailService.downloadAttachment(filePath).subscribe({
       next: (pdfBlob: Blob) => {
         const pdfObjectUrl = URL.createObjectURL(pdfBlob);
         this.pdfUrl =
@@ -212,6 +229,29 @@ export class PdfFullscreenComponent {
         this.loading = false;
       },
     });
+  }
+
+  downloadPdf(): void {
+    if (this.data.filePath) {
+      this.loading = true;
+      this.rewardDetailService
+        .downloadAttachment(this.data.filePath)
+        .subscribe({
+          next: (blob: Blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = this.data.fileName;
+            link.click();
+            window.URL.revokeObjectURL(url);
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error('Error downloading PDF:', error);
+            this.loading = false;
+          },
+        });
+    }
   }
 
   close(): void {

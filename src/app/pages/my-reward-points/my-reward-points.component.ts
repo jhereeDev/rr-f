@@ -6,7 +6,6 @@ import { UserData } from 'src/app/models/user.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PageEvent } from '@angular/material/paginator';
-import { RewardPointsModalComponent } from 'src/app/components/reward-points-modal/reward-points-modal.component';
 import { ApprovalService } from 'src/app/common/services/approval.service';
 import { UserModalComponent } from 'src/app/components/user-points-modal/user-points-modal.component';
 
@@ -102,7 +101,6 @@ export class MyRewardPointsComponent implements OnInit {
       .subscribe(
         (data: any) => {
           if (Array.isArray(data)) {
-            console.log(data);
             this.approvedRewards = data.filter(
               (reward) =>
                 reward.director_approval_status === 'approved' &&
@@ -153,17 +151,6 @@ export class MyRewardPointsComponent implements OnInit {
     this.snackBar.open(message, action, {
       duration: 3000,
     });
-  }
-
-  downloadAttachment(attachment: any): void {
-    const link = document.createElement('a');
-    link.href = this.sanitizer.bypassSecurityTrustUrl(
-      'assets/' + attachment.path
-    ) as string;
-    link.download = attachment.filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
 
   /**

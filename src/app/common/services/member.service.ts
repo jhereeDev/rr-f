@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.development';
 import { ToastService } from './toast.service';
+import { delay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +38,6 @@ export class MemberService {
         responseType: 'json',
       })
       .pipe(
-        tap((response) => console.log('Raw members response:', response)),
         map((response: any) => {
           // Handle different response formats
           if (response && 'data' in response) {
@@ -107,28 +107,20 @@ export class MemberService {
    * @param id Member ID
    */
   getMember(id: number): Observable<any> {
+    // Use the new API endpoint for member details
     return this.http
-      .get(`${this.apiUrl}/members/${id}`, {
+      .get(`${this.apiUrl}/members/details/${id}`, {
         withCredentials: true,
         responseType: 'json',
       })
       .pipe(
-        map((response: any) => {
-          const memberData = response && (response.data || response);
-          if (memberData) {
-            return {
-              success: true,
-              data: this.transformMemberData([memberData])[0],
-            };
-          }
-          return { success: false, data: null };
-        }),
+        map((response: any) => response.data || response),
         catchError((error) => {
           console.error(`Error fetching member ${id}:`, error);
           this.toastService.error(
             'Could not fetch member details. Please try again.'
           );
-          return of({ success: false, error: error.message, data: null });
+          throw error;
         })
       );
   }
@@ -150,7 +142,6 @@ export class MemberService {
     const url = `${this.apiUrl}/members/lookup?email=${encodeURIComponent(
       email
     )}`;
-    console.log(`Looking up member by email:`, email);
 
     return this.http
       .get(url, {
@@ -158,7 +149,6 @@ export class MemberService {
         responseType: 'json',
       })
       .pipe(
-        tap((response) => console.log('Member lookup response:', response)),
         map((response: any) => {
           if (response && (response.data || response.success)) {
             const memberData = response.data || response;
@@ -222,7 +212,6 @@ export class MemberService {
         responseType: 'json',
       })
       .pipe(
-        tap((response) => console.log('Update member response:', response)),
         catchError((error) => {
           console.error(`Error updating member ${id}:`, error);
           this.toastService.error('Could not update member. Please try again.');
@@ -263,8 +252,6 @@ export class MemberService {
    * @returns Observable with the mapping results
    */
   syncMemberMapping(placeholder: string = 'CONSULTANT'): Observable<any> {
-    console.log(`Starting member sync for role: ${placeholder}`);
-
     return this.http
       .post(
         `${this.apiUrl}/users/map`,
@@ -276,7 +263,6 @@ export class MemberService {
       )
       .pipe(
         map((response) => {
-          console.log(`Mapping response for ${placeholder}:`, response);
           return response;
         }),
         catchError((error) => {
@@ -333,12 +319,14 @@ export class MemberService {
    * @param memberId Member ID
    */
   getMemberRewardEntries(memberId: number): Observable<any> {
+    // Use the new API endpoint for member reward entries
     return this.http
-      .get(`${this.apiUrl}/members/${memberId}/rewards`, {
+      .get(`${this.apiUrl}/members/details/${memberId}/rewards`, {
         withCredentials: true,
         responseType: 'json',
       })
       .pipe(
+        map((response: any) => response.data || response),
         catchError((error) => {
           console.error(
             `Error fetching reward entries for member ${memberId}:`,
@@ -347,8 +335,55 @@ export class MemberService {
           this.toastService.error(
             'Could not fetch reward entries. Please try again.'
           );
-          return of({ success: false, error: error.message });
+          throw error;
         })
       );
+  }
+
+  /**
+   * Update a specific reward entry
+   * @param memberId Member ID
+   * @param rewardId Reward entry ID
+   * @param data Updated data for the reward entry
+   */
+  updateMemberRewardEntry(
+    memberId: number,
+    rewardId: number,
+    data: any
+  ): Observable<any> {
+    return this.http
+      .put(
+        `${this.apiUrl}/members/details/${memberId}/rewards/${rewardId}`,
+        data,
+        {
+          withCredentials: true,
+          responseType: 'json',
+        }
+      )
+      .pipe(
+        catchError((error) => {
+          console.error(`Error updating reward entry ${rewardId}:`, error);
+          this.toastService.error(
+            'Could not update reward entry. Please try again.'
+          );
+          throw error;
+        })
+      );
+  }
+
+  /**
+   * Update a specific reward entry
+   * @param memberId Member ID
+   * @param rewardId Reward entry ID
+   * @param data Updated data for the reward entry
+   */
+  adminUpdateMemberRewardEntry(
+    rewardId: number,
+    formData: any
+  ): Observable<any> {
+    return this.http.put(`${this.apiUrl}/rewards/admin/${rewardId}`, formData, {
+      withCredentials: true,
+      responseType: 'json',
+    });
   }
 }

@@ -43,6 +43,7 @@ export class UserModalComponent implements OnInit {
       if (!(res && res.success)) {
         return;
       }
+
       const user = res.user as UserData;
       this.user = user;
       this.approvalStatus =
@@ -69,11 +70,6 @@ export class UserModalComponent implements OnInit {
   showNotification(message: string, action: string) {
     this.snackBar.open(message, action, { duration: 3000 });
   }
-
-  // Remove this method as we're now using the PDF viewer
-  // downloadAttachment(attachment: any): void {
-  //   // This is replaced by the PDF viewer
-  // }
 
   showRejectionCommentBox(): void {
     this.showCommentBox = true;

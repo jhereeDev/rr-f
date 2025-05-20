@@ -7,17 +7,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { MemberDetailsComponent } from './member-details/member-details.component';
-import { AttachmentViewerComponent } from '../components/attachment-viewer/attachment-viewer.component';
-import { AttachmentsContainerComponent } from '../components/attachments-container/attachments-container.component';
 import { AdminManagementComponent } from './admin/admin-management/admin-management.component';
+import { SharedModule } from '../shared/shared.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     MemberDetailsComponent,
-    AttachmentsContainerComponent,
-    AttachmentViewerComponent,
     AdminManagementComponent,
   ],
   imports: [
@@ -29,6 +29,10 @@ import { AdminManagementComponent } from './admin/admin-management/admin-managem
     MatSelectModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
+    MatTooltipModule,
+    RouterModule,
+    SharedModule,
   ],
   exports: [MemberDetailsComponent],
 })

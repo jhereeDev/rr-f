@@ -13,7 +13,13 @@ interface RewardEntry {
   status: string;
   date: string;
   notes: string;
-  attachments?: string[];
+  attachments?: any[];
+}
+
+interface Attachment {
+  filename: string;
+  path: string;
+  type?: string;
 }
 
 @Component({
@@ -35,6 +41,11 @@ export class MemberDetailsComponent implements OnInit {
     'notes',
     'attachments',
   ];
+
+  // For PDF viewer
+  selectedAttachmentIndex: number = -1;
+  selectedAttachment: Attachment | null = null;
+  activeEntryId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -65,7 +76,7 @@ export class MemberDetailsComponent implements OnInit {
         status: 'Approved',
         date: '3/10/2025, 3:59 PM',
         notes: 'No notes',
-        attachments: ['doc1.pdf'],
+        attachments: [{ filename: 'doc1.pdf', path: 'path/to/doc1.pdf' }],
       },
       {
         id: 2,
@@ -76,7 +87,7 @@ export class MemberDetailsComponent implements OnInit {
         status: 'Rejected',
         date: '3/10/2025, 3:59 PM',
         notes: 'Please Provide Attachment',
-        attachments: ['doc2.pdf'],
+        attachments: [{ filename: 'doc2.pdf', path: 'path/to/doc2.pdf' }],
       },
       {
         id: 3,
@@ -87,7 +98,7 @@ export class MemberDetailsComponent implements OnInit {
         status: 'Approved',
         date: '3/10/2025, 3:59 PM',
         notes: 'No notes',
-        attachments: ['doc3.pdf'],
+        attachments: [{ filename: 'doc3.pdf', path: 'path/to/doc3.pdf' }],
       },
       {
         id: 4,
@@ -98,9 +109,18 @@ export class MemberDetailsComponent implements OnInit {
         status: 'Approved',
         date: '3/10/2025, 3:59 PM',
         notes: 'No notes',
-        attachments: ['doc4.pdf'],
+        attachments: [{ filename: 'doc4.pdf', path: 'path/to/doc4.pdf' }],
       },
     ];
+  }
+
+  viewAttachment(entryId: number, attachmentIndex: number): void {
+    const entry = this.rewardEntries.find((e) => e.id === entryId);
+    if (entry && entry.attachments && entry.attachments.length > 0) {
+      this.activeEntryId = entryId;
+      this.selectedAttachmentIndex = attachmentIndex;
+      this.selectedAttachment = entry.attachments[attachmentIndex];
+    }
   }
 
   onSubmit(): void {

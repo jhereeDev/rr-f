@@ -45,7 +45,7 @@ export class MemberAddDialogComponent implements OnInit {
           })
         )
         .subscribe({
-          next: (response) => {
+          next: (response: any) => {
             if (response && response.success) {
               this.toastService.success(response.message || 'Member added successfully');
               this.dialogRef.close(response);
@@ -54,7 +54,7 @@ export class MemberAddDialogComponent implements OnInit {
               this.toastService.error(this.errorMessage);
             }
           },
-          error: (err) => {
+          error: (err: any) => {
             this.errorMessage = err.error?.message || 'An unexpected error occurred';
             this.toastService.error(this.errorMessage);
           }

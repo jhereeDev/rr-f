@@ -17,6 +17,7 @@ import { MemberControlComponent } from './pages/member-control/member-control.co
 import { CBPSLeaderboardComponent } from './pages/cbps-leaderboard/cbps-leaderboard.component';
 import { MemberDetailsComponent } from './pages/member-details/member-details.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { AdminEditRewardComponent } from './pages/admin-edit-reward/admin-edit-reward.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -106,6 +107,12 @@ const routes: Routes = [
   {
     path: 'admin/members/:id',
     component: MemberDetailsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [1] }, // Admin role only
+  },
+  {
+    path: 'admin/members/:memberId/rewards/:rewardId/edit',
+    component: AdminEditRewardComponent,
     canActivate: [AuthGuard],
     data: { roles: [1] }, // Admin role only
   },

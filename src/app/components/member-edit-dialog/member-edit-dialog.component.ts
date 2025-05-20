@@ -14,20 +14,16 @@ export class MemberEditDialogComponent implements OnInit {
   memberForm: FormGroup;
   statuses = ['ACTIVE', 'INACTIVE'];
   jobTitles = [
+    'Junior Consultant',
     'Associate Consultant',
-    'Consultant',
-    'Senior Consultant',
-    'Manager',
-    'Director',
-    'Vice President',
+    'Service Consultant',
+    'Principal Consultant',
+    'Lead Consultant',
+    'Manager Consulting Expert',
+    'Manager Consulting Delivery',
+    'Director Consulting Delivery',
   ];
-  roles = [
-    { id: 6, name: 'Partner' },
-    { id: 5, name: 'Manager' },
-    { id: 4, name: 'Director' },
-    { id: 3, name: 'VP/SVP' },
-    { id: 2, name: 'Admin' },
-  ];
+
   isSubmitting = false;
   errorMessage = '';
 
@@ -83,6 +79,7 @@ export class MemberEditDialogComponent implements OnInit {
             } else {
               this.errorMessage = response.error || 'Failed to update member';
               this.toastService.error(this.errorMessage);
+              console.log('response', response);
             }
           },
           error: (err) => {
