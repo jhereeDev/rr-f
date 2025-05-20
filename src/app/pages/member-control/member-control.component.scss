@@ -164,6 +164,28 @@
   }
 }
 
+.export-button {
+  background-color: #00a67e !important;
+  color: white !important;
+  border-radius: 100px !important;
+  font-weight: 500;
+  padding: 0 16px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 160px;
+  font-size: 12px;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+  }
+}
+
 .table-container {
   background-color: white;
   border-radius: 8px;

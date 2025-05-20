@@ -386,4 +386,25 @@ export class MemberService {
       responseType: 'json',
     });
   }
+
+  /**
+   * Export members list to Excel
+   * @returns Observable with the Excel file blob
+   */
+  exportMembersToExcel(): Observable<Blob> {
+    return this.http
+      .get(`${this.apiUrl}/members/export`, {
+        withCredentials: true,
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Error exporting members:', error);
+          this.toastService.error(
+            'Could not export members. Please try again.'
+          );
+          throw error;
+        })
+      );
+  }
 }

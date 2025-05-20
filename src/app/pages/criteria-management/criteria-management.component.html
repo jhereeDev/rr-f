@@ -83,7 +83,10 @@
             (selectionChange)="onCategoryChange($event.value)"
           >
             <mat-option value="all">All Categories</mat-option>
-            <mat-option *ngFor="let category of categories" [value]="category">
+            <mat-option
+              *ngFor="let category of allCategories"
+              [value]="category"
+            >
               {{ category }}
             </mat-option>
           </mat-select>

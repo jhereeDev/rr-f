@@ -7,7 +7,7 @@
             <img src="assets/buttons/trophy.png" alt="Member Management Icon" />
           </div>
         </div>
-        <h1>Member Management</h1>
+        <h1>Partners Management</h1>
       </div>
       <div class="action-buttons">
         <button mat-flat-button class="home-button" [routerLink]="['/admin']">
@@ -20,7 +20,7 @@
           (click)="syncMemberMapping()"
         >
           <mat-icon>sync</mat-icon>
-          Sync Member Mapping
+          Sync Partners Mapping
         </button>
       </div>
     </div>
@@ -29,7 +29,7 @@
   <div class="content">
     <div class="search-container">
       <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search Member</mat-label>
+        <mat-label>Search Partner</mat-label>
         <input
           matInput
           [(ngModel)]="searchText"
@@ -59,6 +59,11 @@
       >
         <mat-icon>add</mat-icon>
         Add Partner
+      </button>
+
+      <button mat-flat-button class="export-button" (click)="exportMembers()">
+        <mat-icon>download</mat-icon>
+        Export Partners
       </button>
     </div>
 
@@ -92,7 +97,7 @@
         <table class="member-table">
           <thead>
             <tr>
-              <th>Member Name</th>
+              <th>Partner Name</th>
               <th>Email</th>
               <th>Job Title</th>
               <th>Manager</th>
@@ -125,7 +130,7 @@
                 <mat-menu #menu="matMenu">
                   <button mat-menu-item (click)="openEditMemberDialog(member)">
                     <mat-icon>edit</mat-icon>
-                    <span>Edit Member</span>
+                    <span>Edit Partner</span>
                   </button>
                   <button mat-menu-item (click)="viewMemberDetails(member)">
                     <mat-icon>visibility</mat-icon>

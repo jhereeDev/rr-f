@@ -273,4 +273,30 @@ export class MemberControlComponent implements OnInit {
         return '';
     }
   }
+
+  exportMembers(): void {
+    this.memberService.exportMembersToExcel().subscribe({
+      next: (blob: Blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        // Create a temporary link element
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `partners-list-${
+          new Date().toISOString().split('T')[0]
+        }.xlsx`;
+        // Append to body, click and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        // Clean up the URL
+        window.URL.revokeObjectURL(url);
+        this.toastService.success('Partners list exported successfully');
+      },
+      error: (error) => {
+        console.error('Error exporting members:', error);
+        this.toastService.error('Failed to export partners list');
+      },
+    });
+  }
 }
